@@ -10,6 +10,12 @@ importers:
 
   apps/pattern-atlas-web:
     dependencies:
+      '@atlas-patterns/content':
+        specifier: workspace:*
+        version: link:../../packages/content
+      '@atlas-patterns/schemas':
+        specifier: workspace:*
+        version: link:../../packages/schemas
       next:
         specifier: 16.2.12
         version: 16.2.12(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -45,13 +51,30 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  packages/content: {}
+  packages/content:
+    dependencies:
+      '@atlas-patterns/schemas':
+        specifier: workspace:*
+        version: link:../schemas
 
   packages/integrations: {}
 
   packages/schemas: {}
 
-  packages/ui: {}
+  packages/ui:
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.17
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.17)
+      react:
+        specifier: ^19.2.4
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.2.4
+        version: 19.2.4(react@19.2.4)
 
 packages:
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { patterns } from "../../../../packages/content/src/patterns";
+import { patterns } from "@atlas-patterns/content";
 
 export const metadata: Metadata = {
   title: "Patterns",
