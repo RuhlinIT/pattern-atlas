@@ -1,6 +1,12 @@
 {
-  "name": "@atlas/content",
+  "name": "@atlas-patterns/content",
   "private": true,
   "version": "0.1.0",
-  "type": "module"
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@atlas-patterns/schemas": "workspace:*"
+  }
 }
