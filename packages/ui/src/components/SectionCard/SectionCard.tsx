@@ -9,9 +9,9 @@ type SectionCardProps = {
 
 export function SectionCard({ title, children, as: Component = 'section' }: SectionCardProps) {
   return (
-    <Component className="{styles.card}">
-      <h2 className="{styles.title}">{title}</h2>
-      <div className="{styles.body}">{children}</div>
+    <Component className={styles.card}>
+      <h2 className={styles.title}>{title}</h2>
+      <div className={styles.body}>{children}</div>
     </Component>
   );
 }
