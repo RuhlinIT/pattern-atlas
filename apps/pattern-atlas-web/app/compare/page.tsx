@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SectionCard } from "@atlas-patterns/ui";
+import { PageHeader, SectionCard } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Compare",
@@ -31,15 +31,11 @@ const comparisonLanes = [
 export default function ComparePage() {
   return (
     <section className="page">
-      <div className="page-header">
-        <p className="eyebrow">Cross-stack view</p>
-        <h1>Compare implementations</h1>
-        <p className="lead">
-          This space will compare the same pattern across languages and platform
-          boundaries so the design intent stays visible even when the syntax
-          changes.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Cross-stack view"
+        title="Compare implementations"
+        description="This space will compare the same pattern across languages and platform boundaries so the design intent stays visible even when the syntax changes."
+      />
 
       <div className="grid card-grid">
         {comparisonLanes.map((lane) => (

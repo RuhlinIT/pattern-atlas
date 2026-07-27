@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { patterns } from "@atlas-patterns/content";
-import { SectionCard } from "@atlas-patterns/ui";
+import { PageHeader, SectionCard } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Patterns",
@@ -9,14 +9,11 @@ export const metadata: Metadata = {
 export default function PatternsPage() {
   return (
     <section className="page">
-      <div className="page-header">
-        <p className="eyebrow">Library</p>
-        <h1>Patterns</h1>
-        <p className="lead">
-          A growing set of design patterns with implementation notes, tradeoffs,
-          and cross-stack integration guidance.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Library"
+        title="Patterns"
+        description="A growing set of design patterns with implementation notes, tradeoffs, and cross-stack integration guidance."
+      />
 
       <div className="grid card-grid">
         {patterns.map((pattern) => (

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SectionCard } from "@atlas-patterns/ui";
+import { PageHeader, SectionCard } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -15,14 +15,11 @@ const settingsAreas = [
 export default function SettingsPage() {
   return (
     <section className="page">
-      <div className="page-header">
-        <p className="eyebrow">Workspace</p>
-        <h1>Settings</h1>
-        <p className="lead">
-          A lightweight placeholder for user preferences, comparison defaults,
-          and future publication workflow controls.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Workspace"
+        title="Settings"
+        description="A lightweight placeholder for user preferences, comparison defaults, and future publication workflow controls."
+      />
 
       <SectionCard title="Planned settings">
         <ul className="list">
