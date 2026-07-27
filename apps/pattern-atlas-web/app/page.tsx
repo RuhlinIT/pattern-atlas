@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SectionCard } from "@atlas-patterns/ui";
 
 const focusAreas = [
   "Pattern comparison across languages",
@@ -37,23 +38,21 @@ export default function HomePage() {
       </div>
 
       <div className="grid two-up">
-        <section className="panel">
-          <h2>Current focus</h2>
+        <SectionCard title="Current focus">
           <ul className="list">
             {focusAreas.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
-        </section>
+        </SectionCard>
 
-        <section className="panel">
-          <h2>First pattern set</h2>
+        <SectionCard title="First pattern set">
           <ul className="list">
             {starterPatterns.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
-        </section>
+        </SectionCard>
       </div>
     </section>
   );

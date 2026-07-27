@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SectionCard } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -23,14 +24,13 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <section className="panel">
-        <h2>Planned settings</h2>
+      <SectionCard title="Planned settings">
         <ul className="list">
           {settingsAreas.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
-      </section>
+      </SectionCard>
     </section>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SectionCard } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Compare",
@@ -42,10 +43,9 @@ export default function ComparePage() {
 
       <div className="grid card-grid">
         {comparisonLanes.map((lane) => (
-          <article key={lane.title} className="panel">
-            <h2>{lane.title}</h2>
+          <SectionCard key={lane.title} title={lane.title}>
             <p>{lane.description}</p>
-          </article>
+          </SectionCard>
         ))}
       </div>
     </section>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { patterns } from "@atlas-patterns/content";
+import { SectionCard } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Patterns",
@@ -19,12 +20,11 @@ export default function PatternsPage() {
 
       <div className="grid card-grid">
         {patterns.map((pattern) => (
-          <article key={pattern.slug} className="panel">
+          <SectionCard key={pattern.slug} title={pattern.name}>
             <div className="panel-meta">
               <span className="tag">{pattern.category}</span>
             </div>
 
-            <h2>{pattern.name}</h2>
             <p>{pattern.intent}</p>
 
             <div className="stack">
@@ -38,7 +38,7 @@ export default function PatternsPage() {
                 <strong>Integration:</strong> {pattern.integrationNotes}
               </p>
             </div>
-          </article>
+          </SectionCard>
         ))}
       </div>
     </section>

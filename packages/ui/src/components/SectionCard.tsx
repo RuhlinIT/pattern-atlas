@@ -1,15 +1,16 @@
-import type { ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
 
 type SectionCardProps = {
   title: string;
   children: ReactNode;
+  as?: ElementType;
 };
 
-export function SectionCard({ title, children }: SectionCardProps) {
+export function SectionCard({ title, children, as: Component = 'section' }: SectionCardProps) {
   return (
-    <section>
+    <Component className="panel">
       <h2>{title}</h2>
-      <div>{children}</div>
-    </section>
+      {children}
+    </Component>
   );
 }
