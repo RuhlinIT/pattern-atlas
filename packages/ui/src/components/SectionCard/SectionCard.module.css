@@ -1,0 +1,21 @@
+.card {
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 22px;
+}
+
+.body {
+  color: var(--muted);
+}
+
+.body p {
+  margin-top: 0;
+  line-height: 1.7;
+}
