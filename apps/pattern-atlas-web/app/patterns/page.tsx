@@ -8,10 +8,14 @@ export const metadata: Metadata = {
   title: "Patterns",
 };
 
-const categories = ["Behavioral", "Structural", "Creational"] as const;
+const patternCategories = [
+  "Behavioral",
+  "Structural",
+  "Creational",
+] as const satisfies readonly PatternCategory[];
 
 function isPatternCategory(value: string): value is PatternCategory {
-  return (categories as readonly string[]).includes(value);
+  return (patternCategories as readonly string[]).includes(value);
 }
 
 type PatternsPageProps = {
@@ -25,12 +29,14 @@ export default async function PatternsPage({
 }: PatternsPageProps) {
   const params = await searchParams;
 
-  const categories = Array.from(
+  const availableCategories: PatternCategory[] = Array.from(
     new Set(patterns.map((pattern) => pattern.category)),
   ).sort();
 
-  const requestedCategory = params?.category;
-  const activeCategory = requestedCategory && isPatternCategory(requestedCategory)
+  const requestedCategory = params?.category ?? "";
+  const activeCategory: PatternCategory | undefined = isPatternCategory(
+    requestedCategory,
+  )
     ? requestedCategory
     : undefined;
 
@@ -53,7 +59,7 @@ export default async function PatternsPage({
       </div>
 
       <CategoryFilter
-        categories={categories}
+        categories={availableCategories}
         activeCategory={activeCategory ?? "All"}
       />
 
