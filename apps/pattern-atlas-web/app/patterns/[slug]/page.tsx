@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { PatternExamplesTabs } from "./PatternExamplesTabs";
 
 import { getPatternBySlug, patterns } from "@atlas-patterns/content";
 import { PageHeader, SectionCard, Tag } from "@atlas-patterns/ui";
@@ -84,28 +85,7 @@ export default async function PatternDetailPage({
       </div>
 
       <SectionCard title="Examples">
-        {pattern.examples.length === 0 ? (
-          <p>No examples yet.</p>
-        ) : (
-          <div className="stack">
-            {pattern.examples.map((example) => (
-              <article key={example.language} className="example-card">
-                <div className="panel-meta">
-                  <Tag>{example.language}</Tag>
-                </div>
-
-                <h3>{example.title}</h3>
-                <p>{example.summary}</p>
-
-                <pre className="code-block">
-                  <code>{example.code}</code>
-                </pre>
-
-                <p>{example.explanation}</p>
-              </article>
-            ))}
-          </div>
-        )}
+        <PatternExamplesTabs examples={pattern.examples} />
       </SectionCard>
     </section>
   );
