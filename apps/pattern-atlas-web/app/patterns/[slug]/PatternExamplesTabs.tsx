@@ -19,9 +19,7 @@ function getPreviousIndex(current: number, total: number) {
   return current === 0 ? total - 1 : current - 1;
 }
 
-export function PatternExamplesTabs({
-  scenarios,
-}: PatternExamplesTabsProps) {
+export function PatternExamplesTabs({ scenarios }: PatternExamplesTabsProps) {
   const baseId = useId();
   const orderedScenarios = useMemo(() => scenarios, [scenarios]);
 
@@ -129,33 +127,35 @@ export function PatternExamplesTabs({
       <div className="stack-sm">
         <p className="results-meta">Scenarios</p>
 
-        <div
-          className="tab-list"
-          role="tablist"
-          aria-label="Pattern scenarios"
-          onKeyDown={handleScenarioKeyDown}
-        >
-          {orderedScenarios.map((scenario, index) => {
-            const isActive = index === activeScenarioIndex;
-            const tabId = `${baseId}-scenario-tab-${scenario.slug}`;
-            const panelId = `${baseId}-scenario-panel-${scenario.slug}`;
+        <div className="tabs-shell">
+          <div
+            className="tab-list"
+            role="tablist"
+            aria-label={`${activeScenario.title} scenarios`}
+            onKeyDown={handleScenarioKeyDown}
+          >
+            {orderedScenarios.map((scenario, index) => {
+              const isActive = index === activeScenarioIndex;
+              const tabId = `${baseId}-scenario-tab-${scenario.slug}`;
+              const panelId = `${baseId}-scenario-panel-${scenario.slug}`;
 
-            return (
-              <button
-                key={scenario.slug}
-                id={tabId}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                aria-controls={panelId}
-                tabIndex={isActive ? 0 : -1}
-                className={`tab-button${isActive ? " active" : ""}`}
-                onClick={() => handleScenarioSelect(index)}
-              >
-                {scenario.title}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={scenario.slug}
+                  id={tabId}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls={panelId}
+                  tabIndex={isActive ? 0 : -1}
+                  className={`tab-button${isActive ? " active" : ""}`}
+                  onClick={() => handleScenarioSelect(index)}
+                >
+                  {scenario.title}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -175,6 +175,7 @@ export function PatternExamplesTabs({
 
         <div className="stack-sm">
           <p className="results-meta">Languages</p>
+          <div className="tabs-shell">
 
           <div
             className="tab-list"
@@ -182,6 +183,7 @@ export function PatternExamplesTabs({
             aria-label={`${activeScenario.title} languages`}
             onKeyDown={handleLanguageKeyDown}
           >
+
             {languageExamples.map((example, index) => {
               const isActive = index === activeLanguageIndex;
               const tabId = `${baseId}-language-tab-${activeScenario.slug}-${example.language}`;
@@ -204,6 +206,7 @@ export function PatternExamplesTabs({
               );
             })}
           </div>
+        </div>
         </div>
 
         <section
