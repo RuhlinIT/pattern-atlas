@@ -31,6 +31,11 @@ export function PatternExamplesTabs({ scenarios }: PatternExamplesTabsProps) {
   }
 
   const activeScenario = orderedScenarios[activeScenarioIndex];
+
+  if (!activeScenario) {
+    return <p>No scenarios yet.</p>;
+  }
+
   const languageExamples = activeScenario.languageExamples;
   const activeLanguageExample: PatternLanguageExample | undefined =
     languageExamples[activeLanguageIndex] ?? languageExamples[0];
@@ -176,37 +181,35 @@ export function PatternExamplesTabs({ scenarios }: PatternExamplesTabsProps) {
         <div className="stack-sm">
           <p className="results-meta">Languages</p>
           <div className="tabs-shell">
+            <div
+              className="tab-list"
+              role="tablist"
+              aria-label={`${activeScenario.title} languages`}
+              onKeyDown={handleLanguageKeyDown}
+            >
+              {languageExamples.map((example, index) => {
+                const isActive = index === activeLanguageIndex;
+                const tabId = `${baseId}-language-tab-${activeScenario.slug}-${example.language}`;
+                const panelId = `${baseId}-language-panel-${activeScenario.slug}-${example.language}`;
 
-          <div
-            className="tab-list"
-            role="tablist"
-            aria-label={`${activeScenario.title} languages`}
-            onKeyDown={handleLanguageKeyDown}
-          >
-
-            {languageExamples.map((example, index) => {
-              const isActive = index === activeLanguageIndex;
-              const tabId = `${baseId}-language-tab-${activeScenario.slug}-${example.language}`;
-              const panelId = `${baseId}-language-panel-${activeScenario.slug}-${example.language}`;
-
-              return (
-                <button
-                  key={`${activeScenario.slug}-${example.language}`}
-                  id={tabId}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  aria-controls={panelId}
-                  tabIndex={isActive ? 0 : -1}
-                  className={`tab-button${isActive ? " active" : ""}`}
-                  onClick={() => setActiveLanguageIndex(index)}
-                >
-                  {example.language}
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={`${activeScenario.slug}-${example.language}`}
+                    id={tabId}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    aria-controls={panelId}
+                    tabIndex={isActive ? 0 : -1}
+                    className={`tab-button${isActive ? " active" : ""}`}
+                    onClick={() => setActiveLanguageIndex(index)}
+                  >
+                    {example.language}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
         </div>
 
         <section

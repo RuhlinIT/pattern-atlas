@@ -13,7 +13,7 @@ export {
   ObserverPattern,
   FacadePattern,
   CommandPattern,
-} from "./index";
+}
 
 export const patterns: PatternRecord[] = [
   AdapterPattern,

@@ -2,10 +2,17 @@ import type { Metadata } from "next";
 import { patterns } from "@atlas-patterns/content";
 import { ButtonLink, PageHeader, SectionCard, Tag } from "@atlas-patterns/ui";
 import { CategoryFilter } from "./CategoryFilter";
+import type { PatternCategory } from "@atlas-patterns/schemas";
 
 export const metadata: Metadata = {
   title: "Patterns",
 };
+
+const categories = ["Behavioral", "Structural", "Creational"] as const;
+
+function isPatternCategory(value: string): value is PatternCategory {
+  return (categories as readonly string[]).includes(value);
+}
 
 type PatternsPageProps = {
   searchParams?: Promise<{
@@ -23,7 +30,7 @@ export default async function PatternsPage({
   ).sort();
 
   const requestedCategory = params?.category;
-  const activeCategory = categories.includes(requestedCategory ?? "")
+  const activeCategory = requestedCategory && isPatternCategory(requestedCategory)
     ? requestedCategory
     : undefined;
 

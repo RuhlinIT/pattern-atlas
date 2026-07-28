@@ -1,7 +1,5 @@
 import type { PatternRecord } from "@atlas-patterns/schemas";
-import { paymentGatewayExamples } from "./adapter/paymentGatewayExamples";
-import { legacyNotificationExamples } from "./adapter/legacyNotificationExamples";
-import { fileFormatExamples } from "./adapter/fileFormatExamples";
+import { fileFormatExamples, legacyNotificationExamples, paymentGatewayExamples } from "./adapter";
 
 export const AdapterPattern: PatternRecord = {
   slug: "adapter",
