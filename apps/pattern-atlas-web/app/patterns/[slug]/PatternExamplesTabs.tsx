@@ -2,15 +2,13 @@
 
 import { useId, useMemo, useState, type KeyboardEvent } from "react";
 import type { PatternExample } from "@atlas-patterns/schemas";
-import { Tag } from "@atlas-patterns/ui";
+import { CodeBlock, Tag } from "@atlas-patterns/ui";
 
 type PatternExamplesTabsProps = {
   examples: PatternExample[];
 };
 
-export function PatternExamplesTabs({
-  examples,
-}: PatternExamplesTabsProps) {
+export function PatternExamplesTabs({ examples }: PatternExamplesTabsProps) {
   const baseId = useId();
 
   const sortedExamples = useMemo(() => examples, [examples]);
@@ -93,9 +91,10 @@ export function PatternExamplesTabs({
         <h3>{activeExample.title}</h3>
         <p>{activeExample.summary}</p>
 
-        <pre className="code-block">
-          <code>{activeExample.code}</code>
-        </pre>
+        <CodeBlock
+          code={activeExample.code}
+          language={activeExample.language}
+        />
 
         <p>{activeExample.explanation}</p>
       </section>
