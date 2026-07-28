@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PatternExamplesTabs } from "./PatternExamplesTabs";
 
 import { getPatternBySlug, patterns } from "@atlas-patterns/content";
 import { PageHeader, SectionCard, Tag } from "@atlas-patterns/ui";
+import { PatternExamplesTabs } from "./PatternExamplesTabs";
 
 type PatternDetailPageProps = {
   params: Promise<{
@@ -84,8 +84,22 @@ export default async function PatternDetailPage({
         </SectionCard>
       </div>
 
-      <SectionCard title="Examples">
-        <PatternExamplesTabs examples={pattern.examples} />
+      <SectionCard title="Scenarios">
+        <PatternExamplesTabs scenarios={pattern.scenarios} />
+      </SectionCard>
+
+      <SectionCard title="Real-world examples">
+        {pattern.realWorldExamples.length === 0 ? (
+          <p>No real-world examples yet.</p>
+        ) : (
+          <ul className="list">
+            {pattern.realWorldExamples.map((example) => (
+              <li key={example.title}>
+                <strong>{example.title}:</strong> {example.description}
+              </li>
+            ))}
+          </ul>
+        )}
       </SectionCard>
     </section>
   );

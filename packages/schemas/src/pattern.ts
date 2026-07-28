@@ -5,12 +5,22 @@ export type PatternCategory =
   | "Architectural"
   | "Integration";
 
-export type PatternExample = {
+export type PatternLanguageExample = {
   language: string;
-  title: string;
-  summary: string;
   code: string;
   explanation: string;
+};
+
+export type PatternScenario = {
+  slug: string;
+  title: string;
+  summary: string;
+  languageExamples: PatternLanguageExample[];
+};
+
+export type PatternUseCase = {
+  title: string;
+  description: string;
 };
 
 export type PatternRecord = {
@@ -23,5 +33,6 @@ export type PatternRecord = {
   languages: string[];
   platforms: string[];
   integrationNotes: string;
-  examples: PatternExample[];
+  scenarios: PatternScenario[];
+  realWorldExamples: PatternUseCase[];
 };
