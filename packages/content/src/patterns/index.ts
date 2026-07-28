@@ -1,2 +1,22 @@
-export * from './DecoratorPattern';
-export * from './StrategyPattern';
+import type { PatternRecord } from "@atlas-patterns/schemas";
+import { DecoratorPattern } from "./DecoratorPattern";
+import { StrategyPattern } from "./StrategyPattern";
+import { ObserverPattern } from "./ObserverPattern";
+import { FacadePattern } from "./FacadePattern";
+import { AdapterPattern } from "./AdapterPattern";
+
+export {
+  AdapterPattern,
+  DecoratorPattern,
+  StrategyPattern,
+  ObserverPattern,
+  FacadePattern,
+} from "./index";
+
+export const patterns: PatternRecord[] = [
+  AdapterPattern,
+  StrategyPattern,
+  DecoratorPattern,
+  ObserverPattern,
+  FacadePattern,
+];

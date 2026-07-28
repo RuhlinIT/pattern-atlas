@@ -1,6 +1,5 @@
-import type { PatternRecord } from "@atlas-patterns/schemas";
-import { patternExporter } from "./patternExporter";
+import { patterns } from "./patterns";
 
-export function getPatternBySlug(slug: string): PatternRecord | undefined {
-  return patternExporter.find((pattern) => pattern.slug === slug);
+export function getPatternBySlug(slug: string) {
+  return patterns.find((pattern) => pattern.slug === slug);
 }

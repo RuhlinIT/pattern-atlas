@@ -1,2 +1,2 @@
-export { patternExporter } from "./patternExporter";
-export { getPatternBySlug } from "./get-pattern-by-slug";
+export * from "./patterns";
+export * from "./get-pattern-by-slug";

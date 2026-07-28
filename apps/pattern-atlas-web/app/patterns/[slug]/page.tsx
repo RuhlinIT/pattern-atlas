@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getPatternBySlug, patternExporter } from "@atlas-patterns/content";
+import { getPatternBySlug, patterns } from "@atlas-patterns/content";
 import { PageHeader, SectionCard, Tag } from "@atlas-patterns/ui";
 import { PatternExamplesTabs } from "./PatternExamplesTabs";
 
@@ -12,7 +12,7 @@ type PatternDetailPageProps = {
 };
 
 export async function generateStaticParams() {
-  return patternExporter.map((pattern) => ({
+  return patterns.map((pattern) => ({
     slug: pattern.slug,
   }));
 }
