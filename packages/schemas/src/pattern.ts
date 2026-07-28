@@ -5,6 +5,14 @@ export type PatternCategory =
   | "Architectural"
   | "Integration";
 
+export type PatternExample = {
+  language: string;
+  title: string;
+  summary: string;
+  code: string;
+  explanation: string;
+};
+
 export type PatternRecord = {
   slug: string;
   name: string;
@@ -15,4 +23,5 @@ export type PatternRecord = {
   languages: string[];
   platforms: string[];
   integrationNotes: string;
+  examples: PatternExample[];
 };

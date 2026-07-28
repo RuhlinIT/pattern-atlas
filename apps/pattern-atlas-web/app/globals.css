@@ -102,6 +102,8 @@ button {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
+  display: grid;
+  gap: 24px;
 }
 
 .hero-actions {
@@ -208,4 +210,25 @@ strong {
   background: var(--accent-strong);
   color: #062033;
   border-color: var(--accent-strong);
+}
+
+.code-block {
+  margin: 12px 0 0;
+  padding: 16px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.code-block code {
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    Menlo,
+    monospace;
 }

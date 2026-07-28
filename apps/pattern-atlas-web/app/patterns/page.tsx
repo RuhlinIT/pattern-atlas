@@ -17,6 +17,7 @@ export default async function PatternsPage({
   searchParams,
 }: PatternsPageProps) {
   const params = await searchParams;
+
   const categories = Array.from(
     new Set(patterns.map((pattern) => pattern.category)),
   ).sort();
@@ -74,6 +75,10 @@ export default async function PatternsPage({
                 <strong>Integration:</strong> {pattern.integrationNotes}
               </p>
             </div>
+
+            <ButtonLink href={`/patterns/${pattern.slug}`}>
+              View pattern
+            </ButtonLink>
           </SectionCard>
         ))}
       </div>
