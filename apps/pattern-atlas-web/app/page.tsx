@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { SectionCard } from "@atlas-patterns/ui";
+import { ButtonLink, PageHeader, SectionCard } from "@atlas-patterns/ui";
 
 const focusAreas = [
   "Pattern comparison across languages",
@@ -18,23 +17,19 @@ const starterPatterns = [
 export default function HomePage() {
   return (
     <section className="page">
-      <div className="hero">
-        <p className="eyebrow">Software Design Patterns</p>
-        <h1>Build the same solution across any stack.</h1>
-        <p className="lead">
-          Pattern Atlas is the working surface for exploring how software design
-          patterns translate across languages, frameworks, and platforms without
-          losing their architectural intent.
-        </p>
+      <PageHeader
+        eyebrow="Software Design Patterns"
+        title="Build the same solution across any stack."
+        description="Pattern Atlas is the working surface for exploring how software design patterns translate across languages, frameworks, and platforms without losing their architectural intent."
+      />
 
-        <div className="hero-actions">
-          <Link href="/patterns" className="button button-primary">
-            Browse patterns
-          </Link>
-          <Link href="/compare" className="button button-secondary">
-            Start comparing
-          </Link>
-        </div>
+      <div className="hero-actions">
+        <ButtonLink href="/patterns" variant="primary">
+          Browse patterns
+        </ButtonLink>
+        <ButtonLink href="/compare" variant="secondary">
+          Start comparing
+        </ButtonLink>
       </div>
 
       <div className="grid two-up">

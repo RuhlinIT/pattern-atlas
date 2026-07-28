@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { patterns } from "@atlas-patterns/content";
-import { PageHeader, SectionCard, Tag } from "@atlas-patterns/ui";
+import { ButtonLink, PageHeader, SectionCard, Tag } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Patterns",
@@ -14,6 +14,12 @@ export default function PatternsPage() {
         title="Patterns"
         description="A growing set of design patterns with implementation notes, tradeoffs, and cross-stack integration guidance."
       />
+
+      <div className="page-actions">
+        <ButtonLink href="/compare" variant="secondary">
+          Compare patterns
+        </ButtonLink>
+      </div>
 
       <div className="grid card-grid">
         {patterns.map((pattern) => (

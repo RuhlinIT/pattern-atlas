@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageHeader, SectionCard } from "@atlas-patterns/ui";
+import { ButtonLink, PageHeader, SectionCard } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -20,6 +20,12 @@ export default function SettingsPage() {
         title="Settings"
         description="A lightweight placeholder for user preferences, comparison defaults, and future publication workflow controls."
       />
+
+      <div className="page-actions">
+        <ButtonLink href="/patterns" variant="secondary">
+          Browse patterns
+        </ButtonLink>
+      </div>
 
       <SectionCard title="Planned settings">
         <ul className="list">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageHeader, SectionCard } from "@atlas-patterns/ui";
+import { ButtonLink, PageHeader, SectionCard } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Compare",
@@ -36,6 +36,12 @@ export default function ComparePage() {
         title="Compare implementations"
         description="This space will compare the same pattern across languages and platform boundaries so the design intent stays visible even when the syntax changes."
       />
+
+      <div className="page-actions">
+        <ButtonLink href="/patterns" variant="secondary">
+          Browse patterns
+        </ButtonLink>
+      </div>
 
       <div className="grid card-grid">
         {comparisonLanes.map((lane) => (
