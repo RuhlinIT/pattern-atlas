@@ -4,6 +4,7 @@ import { StrategyPattern } from "./StrategyPattern";
 import { ObserverPattern } from "./ObserverPattern";
 import { FacadePattern } from "./FacadePattern";
 import { AdapterPattern } from "./AdapterPattern";
+import { CommandPattern } from "./CommandPattern";
 
 export {
   AdapterPattern,
@@ -11,6 +12,7 @@ export {
   StrategyPattern,
   ObserverPattern,
   FacadePattern,
+  CommandPattern,
 } from "./index";
 
 export const patterns: PatternRecord[] = [
@@ -19,4 +21,5 @@ export const patterns: PatternRecord[] = [
   DecoratorPattern,
   ObserverPattern,
   FacadePattern,
+  CommandPattern,
 ];
