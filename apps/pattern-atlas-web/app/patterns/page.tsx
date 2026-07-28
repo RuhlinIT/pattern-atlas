@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { patterns } from "@atlas-patterns/content";
-import { PageHeader, SectionCard } from "@atlas-patterns/ui";
+import { PageHeader, SectionCard, Tag } from "@atlas-patterns/ui";
 
 export const metadata: Metadata = {
   title: "Patterns",
@@ -19,7 +19,7 @@ export default function PatternsPage() {
         {patterns.map((pattern) => (
           <SectionCard key={pattern.slug} title={pattern.name}>
             <div className="panel-meta">
-              <span className="tag">{pattern.category}</span>
+              <Tag>{pattern.category}</Tag>
             </div>
 
             <p>{pattern.intent}</p>
