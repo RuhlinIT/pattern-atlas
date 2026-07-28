@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { patterns } from "@atlas-patterns/content";
+import { patternExporter } from "@atlas-patterns/content";
 import { ButtonLink, PageHeader, SectionCard, Tag } from "@atlas-patterns/ui";
 import { CategoryFilter } from "./CategoryFilter";
 
@@ -19,7 +19,7 @@ export default async function PatternsPage({
   const params = await searchParams;
 
   const categories = Array.from(
-    new Set(patterns.map((pattern) => pattern.category)),
+    new Set(patternExporter.map((pattern) => pattern.category)),
   ).sort();
 
   const requestedCategory = params?.category;
@@ -28,8 +28,8 @@ export default async function PatternsPage({
     : undefined;
 
   const filteredPatterns = activeCategory
-    ? patterns.filter((pattern) => pattern.category === activeCategory)
-    : patterns;
+    ? patternExporter.filter((pattern) => pattern.category === activeCategory)
+    : patternExporter;
 
   return (
     <section className="page">
