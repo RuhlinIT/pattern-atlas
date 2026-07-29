@@ -35,4 +35,9 @@ export type PatternRecord = {
   integrationNotes: string;
   scenarios: PatternScenario[];
   realWorldExamples: PatternUseCase[];
+  whenToUse?: string[];
+  complexity?: "Low" | "Medium" | "High";
+  flexibility?: "Low" | "Medium" | "High";
+  relatedPatterns?: string[];
+  antiPatterns?: string[];
 };

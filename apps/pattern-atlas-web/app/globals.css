@@ -111,7 +111,7 @@ button {
   gap: 16px;
   margin-top: 24px;
   flex-wrap: wrap;
-  margin-bottom:24px;
+  margin-bottom: 24px;
 }
 
 .grid {
@@ -292,7 +292,7 @@ strong {
 .tab-button.active {
   z-index: 3;
   color: var(--accent);
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
   background: #38bdf824;
   border-color: var(--border);
   font-weight: 700;
@@ -339,5 +339,345 @@ strong {
   .example-card {
     border-radius: 16px;
     padding: 16px;
+  }
+}
+
+/* Compare route */
+
+.compare-picker,
+.compare-table {
+  margin-top: 32px;
+}
+
+.compare-picker {
+  display: grid;
+  gap: 24px;
+}
+
+.compare-picker__header,
+.compare-table__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.compare-picker__description,
+.compare-table__description {
+  color: var(--muted);
+  max-width: 72ch;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.compare-picker__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.compare-picker__fieldset {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  background: rgba(18, 26, 43, 0.72);
+  box-shadow: var(--shadow);
+}
+
+.compare-picker__legend {
+  padding: 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.compare-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.compare-picker__card {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
+  box-shadow: var(--shadow);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.compare-picker__card:hover {
+  transform: translateY(-1px);
+  border-color: #32415f;
+}
+
+.compare-picker__card.is-selected {
+  border-color: var(--accent-strong);
+  background: linear-gradient(
+    180deg,
+    rgba(56, 189, 248, 0.18) 0%,
+    rgba(24, 34, 53, 0.95) 100%
+  );
+}
+
+.compare-picker__card.is-disabled {
+  opacity: 0.72;
+}
+
+.compare-picker__card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.compare-picker__category,
+.compare-picker__status,
+.compare-picker__hint,
+.compare-table__pattern-category {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.compare-picker__category,
+.compare-table__pattern-category {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.compare-picker__status {
+  background: var(--accent-strong);
+  color: #062033;
+}
+
+.compare-picker__hint {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.compare-picker__name,
+.compare-table__pattern-name {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.compare-picker__summary {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.compare-picker__card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Button link fallback styles */
+
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.button-link:hover {
+  transform: translateY(-1px);
+}
+
+.button-link--secondary {
+  background: var(--accent-strong);
+  color: #062033;
+  border-color: var(--accent-strong);
+}
+
+.button-link--secondary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.button-link--ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.button-link--ghost:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: #32415f;
+}
+
+/* Compare table */
+
+.compare-table--empty {
+  display: grid;
+  gap: 12px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
+  box-shadow: var(--shadow);
+}
+
+.compare-table__scroll {
+  margin-top: 16px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.compare-table__scroll:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.compare-table__element {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.compare-table__element thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.compare-table__corner,
+.compare-table__column-header,
+.compare-table__row-header,
+.compare-table__cell {
+  padding: 16px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.compare-table__corner {
+  min-width: 180px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.compare-table__column-header {
+  min-width: 260px;
+}
+
+.compare-table__pattern-head {
+  display: grid;
+  gap: 8px;
+}
+
+.compare-table__pattern-link {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.compare-table__pattern-link:hover {
+  text-decoration: underline;
+}
+
+.compare-table__group-row th {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.compare-table__row-header {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface);
+  min-width: 180px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  border-right: 1px solid var(--border);
+}
+
+.compare-table__cell {
+  color: var(--muted);
+  line-height: 1.6;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.compare-table__element tbody tr:first-of-type .compare-table__cell,
+.compare-table__element tbody tr:first-of-type .compare-table__row-header {
+  border-top: none;
+}
+
+.compare-table__list {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.compare-table__empty {
+  color: var(--muted);
+}
+
+/* Small screens */
+
+@media (max-width: 768px) {
+  .compare-picker__fieldset {
+    padding: 16px;
+  }
+
+  .compare-picker__card {
+    padding: 16px;
+  }
+
+  .compare-table__element {
+    min-width: 680px;
+  }
+
+  .compare-table__corner,
+  .compare-table__column-header,
+  .compare-table__row-header,
+  .compare-table__cell {
+    padding: 12px;
   }
 }

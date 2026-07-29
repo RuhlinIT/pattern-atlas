@@ -1,55 +1,56 @@
-import type { Metadata } from "next";
-import { ButtonLink, PageHeader, SectionCard } from "@atlas-patterns/ui";
+import { patterns } from "@atlas-patterns/content";
+import { PageHeader } from "@atlas-patterns/ui";
+import {
+  buildCompareRows,
+  filterDifferenceRows,
+  parseCompareSearchParams,
+} from "./compare.utils";
+import { ComparePicker } from "./ComparePicker";
+import { CompareTable } from "./CompareTable";
+import type { ComparePageProps } from "./compare.types";
 
-export const metadata: Metadata = {
-  title: "Compare",
-};
+export default async function ComparePage({ searchParams }: ComparePageProps) {
+  const params = await searchParams;
+  const state = parseCompareSearchParams(params);
 
-const comparisonLanes = [
-  {
-    title: "FrontEnd",
-    description:
-      "Compare how patterns show up in component architecture, state management, and client-side interaction models.",
-  },
-  {
-    title: "BackEnd",
-    description:
-      "Review service boundaries, application structure, and data flow patterns across server runtimes.",
-  },
-  {
-    title: "DevOps",
-    description:
-      "Map pattern thinking into automation, deployment pipelines, observability, and operational workflows.",
-  },
-  {
-    title: "FullStack Integration",
-    description:
-      "Trace how a pattern expressed in one codebase can be adapted through APIs, events, contracts, or adapters in another.",
-  },
-];
+  const items = patterns.map((pattern) => ({
+    slug: pattern.slug,
+    name: pattern.name,
+    category: pattern.category,
+    summary: pattern.intent,
+  }));
 
-export default function ComparePage() {
+  const selectedPatterns = patterns.filter((pattern) =>
+    state.selectedSlugs.includes(pattern.slug),
+  );
+
+  const allRows = buildCompareRows(selectedPatterns);
+  const rows = state.differencesOnly
+    ? filterDifferenceRows(allRows)
+    : allRows;
+
   return (
     <section className="page">
       <PageHeader
-        eyebrow="Cross-stack view"
-        title="Compare implementations"
-        description="This space will compare the same pattern across languages and platform boundaries so the design intent stays visible even when the syntax changes."
+        eyebrow="Analysis"
+        title="Compare patterns"
+        description="Evaluate design patterns side by side across intent, tradeoffs, languages, and integration fit."
       />
 
-      <div className="page-actions">
-        <ButtonLink href="/patterns" variant="secondary">
-          Browse patterns
-        </ButtonLink>
-      </div>
+      <ComparePicker
+        items={items}
+        selectedSlugs={state.selectedSlugs}
+        maxSelections={3}
+        activeCategory={state.category ?? "All"}
+        differencesOnly={state.differencesOnly}
+      />
 
-      <div className="grid card-grid">
-        {comparisonLanes.map((lane) => (
-          <SectionCard key={lane.title} title={lane.title}>
-            <p>{lane.description}</p>
-          </SectionCard>
-        ))}
-      </div>
+      <CompareTable
+        patterns={selectedPatterns}
+        rows={rows}
+        differencesOnly={state.differencesOnly}
+        emptyMessage="Select two or more patterns to compare."
+      />
     </section>
   );
 }
