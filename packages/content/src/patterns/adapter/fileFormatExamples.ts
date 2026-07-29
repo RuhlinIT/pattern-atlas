@@ -111,8 +111,43 @@ print(directory.list_users())`,
   },
   {
     language: "Angular",
-    code: `...Angular example...`,
+    code: `import { Injectable } from '@angular/core';
+
+
+  type UserRecord = {
+    id: number;
+    name: string;
+  };
+
+
+  abstract class UserDirectory {
+    abstract listUsers(): UserRecord[];
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class CsvUserSource {
+    fetchRows(): string[] {
+      return ['1,Ada Lovelace', '2,Grace Hopper'];
+    }
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class CsvUserAdapter extends UserDirectory {
+    constructor(private source: CsvUserSource) {
+      super();
+    }
+
+
+    listUsers(): UserRecord[] {
+      return this.source.fetchRows().map((row) => {
+        const [id, name] = row.split(',');
+        return { id: Number(id), name };
+      });
+    }
+  }`,
     explanation:
-      "A short sentence explaining how the pattern appears in Angular terms.",
+      "The Angular adapter service converts CSV rows into the structured user records expected by the rest of the application.",
   },
 ];

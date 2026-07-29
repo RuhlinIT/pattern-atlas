@@ -114,4 +114,48 @@ export const paymentGatewayExamples: PatternLanguageExample[] = [
     explanation:
       "The adapter lets checkout code remain stable even though the integrated gateway uses a different method name and value format.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+  abstract class PaymentProcessor {
+    abstract pay(amount: number): void;
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class LegacyPaymentGateway {
+    makePayment(totalInCents: number): void {
+      console.log(\`Legacy gateway charged \${totalInCents} cents\`);
+    }
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class PaymentGatewayAdapter extends PaymentProcessor {
+    constructor(private gateway: LegacyPaymentGateway) {
+      super();
+    }
+
+
+    pay(amount: number): void {
+      const totalInCents = Math.round(amount * 100);
+      this.gateway.makePayment(totalInCents);
+    }
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class CheckoutService {
+    constructor(private processor: PaymentGatewayAdapter) {}
+
+
+    checkout(amount: number): void {
+      this.processor.pay(amount);
+    }
+  }`,
+    explanation:
+      "The Angular adapter service preserves the app's payment contract while dependency injection supplies the legacy gateway it wraps and translates for.",
+  },
 ];

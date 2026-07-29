@@ -118,4 +118,52 @@ alerts.trigger_alert("CPU threshold exceeded")`,
     explanation:
       "The adapter makes an incompatible legacy messaging API look like the notifier interface expected by the rest of the application.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+class MessagePayload {
+  constructor(public body: string) {}
+}
+
+
+abstract class Notifier {
+  abstract send(message: string): void;
+}
+
+
+@Injectable({ providedIn: 'root' })
+class LegacyMessenger {
+  deliver(payload: MessagePayload): void {
+    console.log(\`Legacy messenger sent: \${payload.body}\`);
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+class NotificationAdapter extends Notifier {
+  constructor(private messenger: LegacyMessenger) {
+    super();
+  }
+
+
+  send(message: string): void {
+    this.messenger.deliver(new MessagePayload(message));
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+class AlertService {
+  constructor(private notifier: NotificationAdapter) {}
+
+
+  triggerAlert(message: string): void {
+    this.notifier.send(message);
+  }
+}`,
+    explanation:
+      "The Angular adapter service translates the app's notifier contract into the legacy messenger's payload-based API while keeping alert logic unchanged.",
+  },
 ];
