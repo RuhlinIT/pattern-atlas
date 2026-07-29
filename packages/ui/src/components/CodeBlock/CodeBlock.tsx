@@ -18,6 +18,7 @@ const languageMap: Record<string, string> = {
   PHP: "php",
   Go: "go",
   Kotlin: "kotlin",
+  Angular: "typescript",
 };
 
 function getSyntaxLanguage(language: string) {
