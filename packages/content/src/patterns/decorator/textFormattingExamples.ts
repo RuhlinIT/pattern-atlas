@@ -165,4 +165,61 @@ print(formatted.render())`,
     explanation:
       "The formatter chain adds output behavior in layers, which makes combinations flexible without changing the plain text class.",
   },
+  {
+    language: "Angular",
+    code: `interface Text {
+  render(): string;
+}
+
+
+class PlainText implements Text {
+  constructor(private value: string) {}
+
+
+  render(): string {
+    return this.value;
+  }
+}
+
+
+abstract class TextDecorator implements Text {
+  constructor(protected text: Text) {}
+
+
+  render(): string {
+    return this.text.render();
+  }
+}
+
+
+class BoldDecorator extends TextDecorator {
+  render(): string {
+    return \`<b>\${super.render()}</b>\`;
+  }
+}
+
+
+class ItalicDecorator extends TextDecorator {
+  render(): string {
+    return \`<i>\${super.render()}</i>\`;
+  }
+}
+
+
+class UnderlineDecorator extends TextDecorator {
+  render(): string {
+    return \`<u>\${super.render()}</u>\`;
+  }
+}
+
+
+const formatted = new UnderlineDecorator(
+  new ItalicDecorator(new BoldDecorator(new PlainText('Pattern Atlas'))),
+);
+
+
+console.log(formatted.render());`,
+    explanation:
+      "Formatting decorators wrap the same Text contract, so Angular code can combine styles dynamically without hardcoding every rendering combination.",
+  },
 ];

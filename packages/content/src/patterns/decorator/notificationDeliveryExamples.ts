@@ -131,4 +131,53 @@ notifier.send("Deployment completed")`,
     explanation:
       "The core notifier remains simple while logging and retry are added as interchangeable wrapper layers.",
   },
+  {
+    language: "Angular",
+    code: `interface Notifier {
+  send(message: string): void;
+}
+
+
+class EmailNotifier implements Notifier {
+  send(message: string): void {
+    console.log(\`Email sent: \${message}\`);
+  }
+}
+
+
+abstract class NotifierDecorator implements Notifier {
+  constructor(protected wrappee: Notifier) {}
+
+
+  send(message: string): void {
+    this.wrappee.send(message);
+  }
+}
+
+
+class LoggingNotifier extends NotifierDecorator {
+  send(message: string): void {
+    console.log('Logging notification');
+    super.send(message);
+  }
+}
+
+
+class RetryNotifier extends NotifierDecorator {
+  send(message: string): void {
+    console.log('Retry policy applied');
+    super.send(message);
+  }
+}
+
+
+const notifier = new RetryNotifier(
+  new LoggingNotifier(new EmailNotifier()),
+);
+
+
+notifier.send('Deployment completed');`,
+    explanation:
+      "Logging and retry wrap the same Notifier contract, so Angular code can stack delivery behavior without changing the core notifier implementation.",
+  },
 ];

@@ -218,4 +218,84 @@ print(order.get_cost())`,
     explanation:
       "Decorators extend both description and cost behavior in layers while keeping the same Coffee abstraction.",
   },
+  {
+    language: "Angular",
+    code: `interface Coffee {
+  getDescription(): string;
+  getCost(): number;
+}
+
+
+class SimpleCoffee implements Coffee {
+  getDescription(): string {
+    return 'Simple coffee';
+  }
+
+
+  getCost(): number {
+    return 3;
+  }
+}
+
+
+abstract class CoffeeDecorator implements Coffee {
+  constructor(protected coffee: Coffee) {}
+
+
+  getDescription(): string {
+    return this.coffee.getDescription();
+  }
+
+
+  getCost(): number {
+    return this.coffee.getCost();
+  }
+}
+
+
+class MilkDecorator extends CoffeeDecorator {
+  getDescription(): string {
+    return \`\${super.getDescription()}, milk\`;
+  }
+
+
+  getCost(): number {
+    return super.getCost() + 1;
+  }
+}
+
+
+class MochaDecorator extends CoffeeDecorator {
+  getDescription(): string {
+    return \`\${super.getDescription()}, mocha\`;
+  }
+
+
+  getCost(): number {
+    return super.getCost() + 2;
+  }
+}
+
+
+class WhipDecorator extends CoffeeDecorator {
+  getDescription(): string {
+    return \`\${super.getDescription()}, whip\`;
+  }
+
+
+  getCost(): number {
+    return super.getCost() + 1;
+  }
+}
+
+
+const order = new WhipDecorator(
+  new MochaDecorator(new MilkDecorator(new SimpleCoffee())),
+);
+
+console.log(order.getDescription());
+console.log(order.getCost());`,
+    explanation:
+      "Each add-on wraps the coffee with extra behavior while preserving the same Coffee contract, so Angular code can compose drink variations without a subclass for every combination.",
+  },
 ];

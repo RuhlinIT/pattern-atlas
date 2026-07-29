@@ -131,4 +131,53 @@ source.write_data("Quarterly report")`,
     explanation:
       "The writer contract stays unchanged while compression and encryption are added as separate reusable layers.",
   },
+  {
+    language: "Angular",
+    code: `interface DataSource {
+  writeData(data: string): void;
+}
+
+
+class FileDataSource implements DataSource {
+  writeData(data: string): void {
+    console.log(\`Writing file: \${data}\`);
+  }
+}
+
+
+abstract class DataSourceDecorator implements DataSource {
+  constructor(protected wrappee: DataSource) {}
+
+
+  writeData(data: string): void {
+    this.wrappee.writeData(data);
+  }
+}
+
+
+class CompressionDecorator extends DataSourceDecorator {
+  writeData(data: string): void {
+    const compressed = \`compressed(\${data})\`;
+    super.writeData(compressed);
+  }
+}
+
+
+class EncryptionDecorator extends DataSourceDecorator {
+  writeData(data: string): void {
+    const encrypted = \`encrypted(\${data})\`;
+    super.writeData(encrypted);
+  }
+}
+
+
+const source = new EncryptionDecorator(
+  new CompressionDecorator(new FileDataSource()),
+);
+
+
+source.writeData('Quarterly report');`,
+    explanation:
+      "Compression and encryption wrap the file writer in layers, so Angular code can extend storage behavior through composition without changing the base writer.",
+  },
 ];

@@ -159,4 +159,63 @@ print(client.get("/users"))`,
     explanation:
       "The decorators keep the same get contract, which makes it easy to add caching and metrics without changing consumers.",
   },
+  {
+    language: "Angular",
+    code: `interface HttpClient {
+  get(url: string): string;
+}
+
+
+class BaseHttpClient implements HttpClient {
+  get(url: string): string {
+    return \`response from \${url}\`;
+  }
+}
+
+
+abstract class HttpClientDecorator implements HttpClient {
+  constructor(protected wrappee: HttpClient) {}
+
+
+  get(url: string): string {
+    return this.wrappee.get(url);
+  }
+}
+
+
+class MetricsHttpClient extends HttpClientDecorator {
+  get(url: string): string {
+    console.log(\`Measuring request to \${url}\`);
+    return super.get(url);
+  }
+}
+
+
+class CachingHttpClient extends HttpClientDecorator {
+  private cache = new Map<string, string>();
+
+
+  get(url: string): string {
+    if (this.cache.has(url)) {
+      return this.cache.get(url)!;
+    }
+
+
+    const response = super.get(url);
+    this.cache.set(url, response);
+    return response;
+  }
+}
+
+
+const client = new CachingHttpClient(
+  new MetricsHttpClient(new BaseHttpClient()),
+);
+
+
+console.log(client.get('/users'));
+console.log(client.get('/users'));`,
+    explanation:
+      "Caching and metrics remain independent wrapper layers around the same HttpClient contract, so Angular code can compose or remove them without changing callers.",
+  },
 ];

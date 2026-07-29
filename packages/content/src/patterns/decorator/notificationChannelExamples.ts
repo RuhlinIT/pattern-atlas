@@ -154,4 +154,58 @@ print(notifier.send("Build completed"))`,
     explanation:
       "The same message can be delivered through multiple channels by composing decorators around a single base notifier.",
   },
+  {
+    language: "Angular",
+    code: `interface Notifier {
+  send(message: string): string;
+}
+
+
+class BasicNotifier implements Notifier {
+  send(message: string): string {
+    return \`In-app: \${message}\`;
+  }
+}
+
+
+abstract class NotifierDecorator implements Notifier {
+  constructor(protected notifier: Notifier) {}
+
+
+  send(message: string): string {
+    return this.notifier.send(message);
+  }
+}
+
+
+class EmailDecorator extends NotifierDecorator {
+  send(message: string): string {
+    return \`\${super.send(message)} | Email: \${message}\`;
+  }
+}
+
+
+class SmsDecorator extends NotifierDecorator {
+  send(message: string): string {
+    return \`\${super.send(message)} | SMS: \${message}\`;
+  }
+}
+
+
+class SlackDecorator extends NotifierDecorator {
+  send(message: string): string {
+    return \`\${super.send(message)} | Slack: \${message}\`;
+  }
+}
+
+
+const notifier = new SlackDecorator(
+  new SmsDecorator(new EmailDecorator(new BasicNotifier())),
+);
+
+
+console.log(notifier.send('Build completed'));`,
+    explanation:
+      "Each notification channel wraps the same Notifier contract, so Angular code can combine delivery behaviors dynamically without changing the base notifier.",
+  },
 ];
