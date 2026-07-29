@@ -1,5 +1,7 @@
 import type { PatternRecord } from "@atlas-patterns/schemas";
-import { notificationDeliveryExamples, paymentProcessingExamples, shippingCostCalculationExamples } from "./strategy";
+import { notificationDeliveryExamples } from "./strategy/notificationDeliveryExamples";
+import { paymentProcessingExamples } from "./strategy/paymentProcessingExamples";
+import { shippingCostCalculationExamples } from "./strategy/shippingCostCalculationExamples";
 
 export const StrategyPattern: PatternRecord = {
   slug: "strategy",

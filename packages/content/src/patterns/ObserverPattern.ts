@@ -1,5 +1,7 @@
 import type { PatternRecord } from "@atlas-patterns/schemas";
-import { newsPublisherExamples, orderStatusNotificationsExamples, stockPriceAlertsExamples } from "./observer";
+import { newsPublisherExamples } from "./observer/newsPublisherExamples";
+import { orderStatusNotificationsExamples } from "./observer/orderStatusNotificationsExamples";
+import { stockPriceAlertsExamples } from "./observer/stockPriceAlertsExamples";
 
 export const ObserverPattern: PatternRecord = {
   slug: "observer",

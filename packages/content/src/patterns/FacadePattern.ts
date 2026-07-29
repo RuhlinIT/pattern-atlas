@@ -1,5 +1,7 @@
-import { checkoutWorkflowExamples, homeTheaterStartupExamples, videoConversionPipelineExamples } from './facade';
 import type { PatternRecord } from "@atlas-patterns/schemas";
+import { checkoutWorkflowExamples } from './facade/checkoutWorkflowExamples';
+import { homeTheaterStartupExamples } from './facade/homeTheaterStartupExamples';
+import { videoConversionPipelineExamples } from './facade/videoConversionPipelineExamples';
 
 export const FacadePattern: PatternRecord = {
   slug: "facade",

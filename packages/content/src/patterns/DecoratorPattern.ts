@@ -1,5 +1,10 @@
 import type { PatternRecord } from "@atlas-patterns/schemas";
-import { coffeeCustomizationExamples, fileStorageExamples, httpClientExamples, notificationChannelExamples, notificationDeliveryExamples, textFormattingExamples } from "./decorator";
+import { textFormattingExamples } from "./decorator/textFormattingExamples";
+import { coffeeCustomizationExamples } from "./decorator/coffeeCustomizationExamples";
+import { fileStorageExamples } from "./decorator/fileStorageExamples";
+import { httpClientExamples } from "./decorator/httpClientExamples";
+import { notificationChannelExamples } from "./decorator/notificationChannelExamples";
+import { notificationDeliveryExamples } from "./decorator/notificationDeliveryExamples";
 
 export const DecoratorPattern: PatternRecord = {
   slug: "decorator",

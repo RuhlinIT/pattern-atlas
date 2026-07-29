@@ -1,5 +1,7 @@
 import type { PatternRecord } from "@atlas-patterns/schemas";
-import { jobQueueProcessingExamples, remoteControlActionsExamples, textEditorUndoExamples } from "./command";
+import { textEditorUndoExamples } from "./command/textEditorUndoExamples";
+import { jobQueueProcessingExamples } from "./command/jobQueueProcessingExamples";
+import { remoteControlActionsExamples } from "./command/remoteControlActionsExamples";
 
 export const CommandPattern: PatternRecord = {
   slug: "command",
