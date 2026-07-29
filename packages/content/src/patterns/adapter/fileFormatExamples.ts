@@ -109,4 +109,10 @@ print(directory.list_users())`,
     explanation:
       "The adapter translates legacy row data into the structured records that client code can consume consistently.",
   },
+  {
+    language: "Angular",
+    code: `...Angular example...`,
+    explanation:
+      "A short sentence explaining how the pattern appears in Angular terms.",
+  },
 ];

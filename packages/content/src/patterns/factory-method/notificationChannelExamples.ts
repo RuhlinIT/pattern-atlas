@@ -150,4 +150,57 @@ export const notificationChannelExamples: PatternLanguageExample[] = [
     explanation:
       "The creator centralizes notification behavior while subclasses determine which concrete sender is created for delivery.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+                    interface NotificationSender {
+                        send(recipient: string, message: string): void;
+                    }
+
+
+                    class EmailSender implements NotificationSender {
+                        send(recipient: string, message: string): void {
+                            console.log(\`Email to \${recipient}: \${message}\`);
+                        }
+                    }
+
+
+                    class SmsSender implements NotificationSender {
+                        send(recipient: string, message: string): void {
+                            console.log(\`SMS to \${recipient}: \${message}\`);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    abstract class NotificationService {
+                        abstract createSender(): NotificationSender;
+
+
+                        notify(recipient: string, message: string): void {
+                            const sender = this.createSender();
+                            sender.send(recipient, message);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class EmailNotificationService extends NotificationService {
+                        createSender(): NotificationSender {
+                            return new EmailSender();
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class SmsNotificationService extends NotificationService {
+                        createSender(): NotificationSender {
+                            return new SmsSender();
+                        }
+                    }`,
+    explanation:
+      "The Angular service defines the notification workflow, while concrete services use the factory method to select the delivery implementation.",
+  },
 ];

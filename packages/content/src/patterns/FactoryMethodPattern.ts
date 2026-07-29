@@ -15,7 +15,7 @@ export const FactoryMethodPattern: PatternRecord = {
     "Adds extra indirection and more types compared with direct construction",
     "Can feel unnecessarily abstract when object creation is simple and unlikely to vary",
   ],
-  languages: ["TypeScript", "Java", "Python"],
+  languages: ["TypeScript", "Java", "Python", "Angular"],
   platforms: ["Applications", "APIs", "Frameworks", "Service layers"],
   integrationNotes:
     "Factory Method is useful when framework hooks, integrations, or environment-specific workflows need to create interchangeable implementations behind a stable contract.",

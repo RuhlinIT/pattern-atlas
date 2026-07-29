@@ -150,4 +150,57 @@ export const documentExportExamples: PatternLanguageExample[] = [
     explanation:
       "The export flow stays stable in the creator, while subclasses customize which concrete document gets produced.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+                    interface DocumentFile {
+                        export(): void;
+                    }
+
+
+                    class PdfDocument implements DocumentFile {
+                        export(): void {
+                            console.log('Exporting PDF document');
+                        }
+                    }
+
+
+                    class CsvDocument implements DocumentFile {
+                        export(): void {
+                            console.log('Exporting CSV document');
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    abstract class DocumentExporter {
+                        abstract createDocument(): DocumentFile;
+
+
+                        runExport(): void {
+                            const document = this.createDocument();
+                            document.export();
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class PdfExporter extends DocumentExporter {
+                        createDocument(): DocumentFile {
+                            return new PdfDocument();
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class CsvExporter extends DocumentExporter {
+                        createDocument(): DocumentFile {
+                            return new CsvDocument();
+                        }
+                    }`,
+    explanation:
+      "The Angular service keeps the export workflow in one place while concrete exporters choose which document implementation to create.",
+  },
 ];

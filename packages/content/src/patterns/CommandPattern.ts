@@ -15,7 +15,7 @@ export const CommandPattern: PatternRecord = {
     "Introduces extra classes or objects for each action",
     "Can feel heavier than direct method calls when the workflow is simple",
   ],
-  languages: ["TypeScript", "Java", "Python"],
+  languages: ["TypeScript", "Java", "Python", "Angular"],
   platforms: ["Web", "Backend", "Applications"],
   integrationNotes:
     "Commands work well for UI actions, background jobs, workflow steps, and undoable operations because invokers can trigger commands without depending on receiver details.",

@@ -15,7 +15,7 @@ export const StrategyPattern: PatternRecord = {
     "Adds more moving parts than a direct conditional approach",
     "Works best when behavior variations are real and likely to grow",
   ],
-  languages: ["TypeScript", "Java", "Python"],
+  languages: ["TypeScript", "Java", "Python", "Angular"],
   platforms: ["Web", "Backend", "Services"],
   integrationNotes:
     "Strategies can cross codebases through shared contracts, API selection rules, or runtime configuration.",

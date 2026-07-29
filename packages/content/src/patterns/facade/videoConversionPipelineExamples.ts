@@ -129,4 +129,61 @@ export const videoConversionPipelineExamples: PatternLanguageExample[] = [
     explanation:
       "The facade provides a single conversion call while keeping the pipeline steps inside the subsystem boundary.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class VideoReader {
+                        read(fileName: string): void {
+                            console.log(\`Reading \${fileName}\`);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class VideoDecoder {
+                        decode(): void {
+                            console.log('Decoding video stream');
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class VideoEncoder {
+                        encode(format: string): void {
+                            console.log(\`Encoding to \${format}\`);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class VideoWriter {
+                        write(outputFile: string): void {
+                            console.log(\`Writing output to \${outputFile}\`);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class VideoConversionFacade {
+                        constructor(
+                            private reader: VideoReader,
+                            private decoder: VideoDecoder,
+                            private encoder: VideoEncoder,
+                            private writer: VideoWriter,
+                        ) {}
+
+
+                        convert(inputFile: string, outputFile: string, format: string): void {
+                            this.reader.read(inputFile);
+                            this.decoder.decode();
+                            this.encoder.encode(format);
+                            this.writer.write(outputFile);
+                        }
+                    }`,
+    explanation:
+      "The Angular facade service coordinates several media-processing services behind one task-oriented API.",
+  },
 ];

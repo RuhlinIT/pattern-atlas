@@ -182,4 +182,79 @@ export const homeTheaterStartupExamples: PatternLanguageExample[] = [
     explanation:
       "The client avoids manual device coordination because the facade wraps the ordered startup behavior behind one method.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class Lights {
+                        dim(): void {
+                            console.log("Dimming lights");
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class Projector {
+                        on(): void {
+                            console.log("Turning on projector");
+                        }
+
+
+                        setInput(source: string): void {
+                            console.log(\`Projector input set to \${source}\`);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class SoundSystem {
+                        on(): void {
+                            console.log("Turning on sound system");
+                        }
+
+
+                        setVolume(level: number): void {
+                            console.log(\`Setting volume to \${level}\`);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class StreamingPlayer {
+                        on(): void {
+                            console.log("Turning on streaming player");
+                        }
+
+
+                        play(movie: string): void {
+                            console.log(\`Playing \${movie}\`);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class HomeTheaterFacade {
+                        constructor(
+                            private lights: Lights,
+                            private projector: Projector,
+                            private sound: SoundSystem,
+                            private player: StreamingPlayer,
+                        ) {}
+
+
+                        watchMovie(movie: string): void {
+                            this.lights.dim();
+                            this.projector.on();
+                            this.projector.setInput("HDMI 1");
+                            this.sound.on();
+                            this.sound.setVolume(10);
+                            this.player.on();
+                            this.player.play(movie);
+                        }
+                    }`,
+    explanation:
+      "The Angular facade service exposes one movie-startup API while dependency injection supplies the underlying device services it coordinates.",
+  },
 ];

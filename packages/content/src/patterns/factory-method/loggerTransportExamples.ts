@@ -150,4 +150,57 @@ export const loggerTransportExamples: PatternLanguageExample[] = [
     explanation:
       "The logger defines the common logging process, while subclasses decide which transport object should be created for each context.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+                    interface LoggerTransport {
+                        write(message: string): void;
+                    }
+
+
+                    class ConsoleTransport implements LoggerTransport {
+                        write(message: string): void {
+                            console.log(\`[console] \${message}\`);
+                        }
+                    }
+
+
+                    class FileTransport implements LoggerTransport {
+                        write(message: string): void {
+                            console.log(\`[file] \${message}\`);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    abstract class Logger {
+                        abstract createTransport(): LoggerTransport;
+
+
+                        log(message: string): void {
+                            const transport = this.createTransport();
+                            transport.write(message);
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class DevelopmentLogger extends Logger {
+                        createTransport(): LoggerTransport {
+                            return new ConsoleTransport();
+                        }
+                    }
+
+
+                    @Injectable({ providedIn: 'root' })
+                    class BatchJobLogger extends Logger {
+                        createTransport(): LoggerTransport {
+                            return new FileTransport();
+                        }
+                    }`,
+    explanation:
+      "The Angular logger service preserves one logging flow while environment-specific services choose the concrete transport to create.",
+  },
 ];

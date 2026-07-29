@@ -139,4 +139,66 @@ export const checkoutWorkflowExamples: PatternLanguageExample[] = [
     explanation:
       "The checkout facade gives callers one entrypoint while internally coordinating the subsystem calls needed to complete the order.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+                @Injectable({ providedIn: 'root' })
+                class AuthService {
+                    authenticate(userId: string): boolean {
+                        console.log(\`Authenticating \${userId}\`);
+                        return true;
+                    }
+                }
+
+
+                @Injectable({ providedIn: 'root' })
+                class PaymentService {
+                    charge(userId: string, amount: number): void {
+                        console.log(\`Charging \${userId} $\${amount}\`);
+                    }
+                }
+
+
+                @Injectable({ providedIn: 'root' })
+                class InventoryService {
+                    reserve(itemId: string): void {
+                        console.log(\`Reserving item \${itemId}\`);
+                    }
+                }
+
+
+                @Injectable({ providedIn: 'root' })
+                class NotificationService {
+                    sendConfirmation(userId: string): void {
+                        console.log(\`Sending confirmation to \${userId}\`);
+                    }
+                }
+
+
+                @Injectable({ providedIn: 'root' })
+                class CheckoutFacade {
+                    constructor(
+                        private auth: AuthService,
+                        private payment: PaymentService,
+                        private inventory: InventoryService,
+                        private notifications: NotificationService,
+                    ) {}
+
+
+                    placeOrder(userId: string, itemId: string, amount: number): void {
+                        if (!this.auth.authenticate(userId)) {
+                            throw new Error('Authentication failed');
+                        }
+
+
+                        this.inventory.reserve(itemId);
+                        this.payment.charge(userId, amount);
+                        this.notifications.sendConfirmation(userId);
+                    }
+                }`,
+    explanation:
+      "The Angular facade service gives components one checkout API while dependency injection supplies the subsystem services it coordinates internally.",
+  },
 ];
