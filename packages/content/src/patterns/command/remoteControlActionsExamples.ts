@@ -160,4 +160,62 @@ off_remote.press_button()`,
     explanation:
       "The remote can trigger different actions through interchangeable command objects while the light stays focused on device behavior.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+  abstract class Command {
+    abstract execute(): void;
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class Light {
+    on(): void {
+      console.log('Light turned on');
+    }
+
+
+    off(): void {
+      console.log('Light turned off');
+    }
+  }
+
+
+  class LightOnCommand extends Command {
+    constructor(private light: Light) {
+      super();
+    }
+
+
+    execute(): void {
+      this.light.on();
+    }
+  }
+
+
+  class LightOffCommand extends Command {
+    constructor(private light: Light) {
+      super();
+    }
+
+
+    execute(): void {
+      this.light.off();
+    }
+  }
+
+
+  class RemoteControl {
+    constructor(private command: Command) {}
+
+
+    pressButton(): void {
+      this.command.execute();
+    }
+  }`,
+    explanation:
+      "The Angular receiver service handles device behavior, while the remote invoker triggers interchangeable command objects through one shared interface.",
+  },
 ];

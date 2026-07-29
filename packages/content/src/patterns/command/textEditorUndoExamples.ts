@@ -202,4 +202,75 @@ print(editor.get_content())`,
     explanation:
       "The history object can execute and undo commands because each command carries the information needed to perform and reverse the operation.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+  abstract class Command {
+    abstract execute(): void;
+    abstract undo(): void;
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class DocumentEditor {
+    private content = '';
+
+
+    insert(text: string): void {
+      this.content += text;
+    }
+
+
+    removeLast(length: number): void {
+      this.content = this.content.slice(0, -length);
+    }
+
+
+    getContent(): string {
+      return this.content;
+    }
+  }
+
+
+  class InsertTextCommand extends Command {
+    constructor(
+      private editor: DocumentEditor,
+      private text: string,
+    ) {
+      super();
+    }
+
+
+    execute(): void {
+      this.editor.insert(this.text);
+    }
+
+
+    undo(): void {
+      this.editor.removeLast(this.text.length);
+    }
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class CommandHistory {
+    private history: Command[] = [];
+
+
+    executeCommand(command: Command): void {
+      command.execute();
+      this.history.push(command);
+    }
+
+
+    undoLast(): void {
+      const command = this.history.pop();
+      command?.undo();
+    }
+  }`,
+    explanation:
+      "The Angular history service can execute and undo command objects, while the editor service stays focused on document state changes.",
+  },
 ];

@@ -151,4 +151,56 @@ queue.run_next()`,
     explanation:
       "The job queue stores executable commands rather than direct function calls, which makes scheduling and orchestration cleaner.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+  abstract class Command {
+    abstract execute(): void;
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class EmailService {
+    send(to: string, body: string): void {
+      console.log(\`Email sent to \${to}: \${body}\`);
+    }
+  }
+
+
+  class SendEmailCommand extends Command {
+    constructor(
+      private emailService: EmailService,
+      private to: string,
+      private body: string,
+    ) {
+      super();
+    }
+
+
+    execute(): void {
+      this.emailService.send(this.to, this.body);
+    }
+  }
+
+
+  @Injectable({ providedIn: 'root' })
+  class JobQueue {
+    private queue: Command[] = [];
+
+
+    add(command: Command): void {
+      this.queue.push(command);
+    }
+
+
+    runNext(): void {
+      const command = this.queue.shift();
+      command?.execute();
+    }
+  }`,
+    explanation:
+      "The Angular queue service stores command objects for deferred execution, while the email service remains the receiver that performs the actual work.",
+  },
 ];
