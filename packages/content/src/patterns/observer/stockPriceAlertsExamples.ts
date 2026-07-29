@@ -153,4 +153,55 @@ stock.set_price(105)`,
     explanation:
       "The stock pushes price updates to any subscribed observers, while each observer decides how to respond.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+
+
+interface Observer {
+  update(price: number): void;
+}
+
+
+@Injectable({ providedIn: 'root' })
+class Stock {
+  private price$ = new BehaviorSubject<number>(95);
+
+
+  subscribe(observer: Observer): Subscription {
+    return this.price$.subscribe((price) => observer.update(price));
+  }
+
+
+  setPrice(price: number): void {
+    this.price$.next(price);
+  }
+}
+
+
+class PriceDisplay implements Observer {
+  update(price: number): void {
+    console.log(\`Display updated: \${price}\`);
+  }
+}
+
+
+class PriceAlert implements Observer {
+  update(price: number): void {
+    if (price > 100) {
+      console.log(\`Alert: stock price is \${price}\`);
+    }
+  }
+}
+
+
+const stock = new Stock();
+const displaySubscription = stock.subscribe(new PriceDisplay());
+stock.subscribe(new PriceAlert());
+stock.setPrice(105);
+displaySubscription.unsubscribe();`,
+    explanation:
+      "The Angular stock service publishes each price change through a shared stream, while display and alert observers subscribe independently and react to the same update.",
+  },
 ];

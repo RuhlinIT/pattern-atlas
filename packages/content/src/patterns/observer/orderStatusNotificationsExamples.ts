@@ -156,4 +156,67 @@ order.set_status("shipped")`,
     explanation:
       "The order broadcasts status updates once, and each observer handles its own side effect independently.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+
+
+interface OrderObserver {
+  update(status: string): void;
+}
+
+
+@Injectable({ providedIn: 'root' })
+class Order {
+  private statusChanges = new Subject<string>();
+  private status: string;
+
+
+  constructor() {
+    this.status = 'created';
+  }
+
+
+  subscribe(observer: OrderObserver): Subscription {
+    return this.statusChanges.subscribe((status) => observer.update(status));
+  }
+
+
+  setStatus(status: string): void {
+    this.status = status;
+    this.statusChanges.next(this.status);
+  }
+}
+
+
+class EmailNotifier implements OrderObserver {
+  update(status: string): void {
+    console.log(\`Email sent for status: \${status}\`);
+  }
+}
+
+
+class WarehouseUpdater implements OrderObserver {
+  update(status: string): void {
+    console.log(\`Warehouse updated for status: \${status}\`);
+  }
+}
+
+
+class AnalyticsTracker implements OrderObserver {
+  update(status: string): void {
+    console.log(\`Analytics tracked: \${status}\`);
+  }
+}
+
+
+const order = new Order();
+order.subscribe(new EmailNotifier());
+order.subscribe(new WarehouseUpdater());
+order.subscribe(new AnalyticsTracker());
+order.setStatus('shipped');`,
+    explanation:
+      "The Angular order service publishes each status change once, and multiple observers react independently through subscriptions to the same update stream.",
+  },
 ];

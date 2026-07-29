@@ -134,4 +134,60 @@ publisher.publish("New design patterns article is live")`,
     explanation:
       "Subscribers register dynamically, and the publisher notifies all of them when a new article appears.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+
+
+@Injectable({ providedIn: 'root' })
+class NewsPublisher {
+  private headlines = new Subject<string>();
+
+
+  subscribe(subscriber: Subscriber): Subscription {
+    return this.headlines.subscribe((headline) => subscriber.update(headline));
+  }
+
+
+  publish(headline: string): void {
+    this.headlines.next(headline);
+  }
+}
+
+
+interface Subscriber {
+  update(headline: string): void;
+}
+
+
+class MobileAppSubscriber implements Subscriber {
+  update(headline: string): void {
+    console.log(\`Mobile app received: \${headline}\`);
+  }
+}
+
+
+class EmailSubscriber implements Subscriber {
+  update(headline: string): void {
+    console.log(\`Email subscriber received: \${headline}\`);
+  }
+}
+
+
+class WebSubscriber implements Subscriber {
+  update(headline: string): void {
+    console.log(\`Web subscriber received: \${headline}\`);
+  }
+}
+
+
+const publisher = new NewsPublisher();
+publisher.subscribe(new MobileAppSubscriber());
+publisher.subscribe(new EmailSubscriber());
+publisher.subscribe(new WebSubscriber());
+publisher.publish('New design patterns article is live');`,
+    explanation:
+      "The Angular publisher service emits one headline stream, and each subscriber reacts independently by subscribing to the published updates.",
+  },
 ];
