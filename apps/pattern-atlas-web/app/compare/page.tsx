@@ -6,6 +6,7 @@ import {
   parseCompareSearchParams,
 } from "./compare.utils";
 import { ComparePicker } from "./ComparePicker";
+import { CompareSelectedSummary } from "./CompareSelectedSummary";
 import { CompareTable } from "./CompareTable";
 import type { ComparePageProps } from "./compare.types";
 
@@ -25,9 +26,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
   );
 
   const allRows = buildCompareRows(selectedPatterns);
-  const rows = state.differencesOnly
-    ? filterDifferenceRows(allRows)
-    : allRows;
+  const rows = state.differencesOnly ? filterDifferenceRows(allRows) : allRows;
 
   return (
     <section className="page">
@@ -43,6 +42,13 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
         maxSelections={3}
         activeCategory={state.category ?? "All"}
         differencesOnly={state.differencesOnly}
+      />
+
+      <CompareSelectedSummary
+        patterns={selectedPatterns}
+        category={state.category ?? "All"}
+        differencesOnly={state.differencesOnly}
+        maxSelections={3}
       />
 
       <CompareTable

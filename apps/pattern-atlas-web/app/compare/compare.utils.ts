@@ -1,8 +1,10 @@
 import { patterns } from "@atlas-patterns/content";
 import type { PatternCategory } from "@atlas-patterns/schemas";
 import type {
+  BuildCompareHrefOptions,
   ComparePageSearchParams,
   CompareRow,
+  CompareRowGroup,
   CompareRowValue,
   CompareablePattern,
   ParsedCompareState,
@@ -15,6 +17,29 @@ const patternCategories = [
 ] as const satisfies readonly PatternCategory[];
 
 const MAX_COMPARE_SELECTIONS = 3;
+
+export function buildCompareHref({
+  selectedSlugs,
+  category,
+  differencesOnly = false,
+}: BuildCompareHrefOptions): string {
+  const params = new URLSearchParams();
+
+  if (selectedSlugs.length > 0) {
+    params.set("patterns", selectedSlugs.join(","));
+  }
+
+  if (category && category !== "All") {
+    params.set("category", category);
+  }
+
+  if (differencesOnly) {
+    params.set("differences", "true");
+  }
+
+  const queryString = params.toString();
+  return queryString ? `/compare?${queryString}` : "/compare";
+}
 
 export function isPatternCategory(value: string): value is PatternCategory {
   return (patternCategories as readonly string[]).includes(value);
@@ -66,93 +91,6 @@ export function parseCompareSearchParams(
   };
 }
 
-export function buildCompareRows(
-  selectedPatterns: CompareablePattern[],
-): CompareRow[] {
-  return [
-    {
-      key: "category",
-      label: "Category",
-      group: "basics",
-      values: toValueMap(
-        selectedPatterns,
-        (pattern) => pattern.category,
-      ),
-    },
-    {
-      key: "intent",
-      label: "Intent",
-      group: "basics",
-      values: toValueMap(
-        selectedPatterns,
-        (pattern) => pattern.intent,
-      ),
-    },
-    {
-      key: "problem",
-      label: "Problem",
-      group: "basics",
-      values: toValueMap(
-        selectedPatterns,
-        (pattern) => pattern.problem,
-      ),
-    },
-    {
-      key: "tradeoffs",
-      label: "Tradeoffs",
-      group: "decision",
-      values: toValueMap(
-        selectedPatterns,
-        (pattern) => pattern.tradeoffs,
-      ),
-    },
-    {
-      key: "languages",
-      label: "Languages",
-      group: "practical",
-      values: toValueMap(
-        selectedPatterns,
-        (pattern) => pattern.languages,
-      ),
-    },
-    {
-      key: "platforms",
-      label: "Platforms",
-      group: "practical",
-      values: toValueMap(
-        selectedPatterns,
-        (pattern) => pattern.platforms,
-      ),
-    },
-    {
-      key: "integrationNotes",
-      label: "Integration",
-      group: "practical",
-      values: toValueMap(
-        selectedPatterns,
-        (pattern) => pattern.integrationNotes,
-      ),
-    },
-  ];
-}
-
-export function filterDifferenceRows(rows: CompareRow[]): CompareRow[] {
-  return rows.filter((row) => {
-    const normalized = Object.values(row.values).map(normalizeCompareValue);
-    return new Set(normalized).size > 1;
-  });
-}
-
-export function groupCompareRows(
-  rows: CompareRow[],
-): Record<CompareRow["group"], CompareRow[]> {
-  return {
-    basics: rows.filter((row) => row.group === "basics"),
-    decision: rows.filter((row) => row.group === "decision"),
-    practical: rows.filter((row) => row.group === "practical"),
-  };
-}
-
 function toValueMap(
   selectedPatterns: CompareablePattern[],
   getValue: (pattern: CompareablePattern) => CompareRowValue,
@@ -162,10 +100,86 @@ function toValueMap(
   );
 }
 
-function normalizeCompareValue(value: CompareRowValue): string {
-  if (Array.isArray(value)) {
-    return value.join("|");
+export function buildCompareRows(
+  selectedPatterns: CompareablePattern[],
+): CompareRow[] {
+  return [
+    {
+      key: "category",
+      label: "Category",
+      group: "basics",
+      values: toValueMap(selectedPatterns, (pattern) => pattern.category),
+    },
+    {
+      key: "intent",
+      label: "Intent",
+      group: "basics",
+      values: toValueMap(selectedPatterns, (pattern) => pattern.intent),
+    },
+    {
+      key: "problem",
+      label: "Problem",
+      group: "decision",
+      values: toValueMap(selectedPatterns, (pattern) => pattern.problem),
+    },
+    {
+      key: "tradeoffs",
+      label: "Tradeoffs",
+      group: "decision",
+      values: toValueMap(selectedPatterns, (pattern) => pattern.tradeoffs),
+    },
+    {
+      key: "languages",
+      label: "Languages",
+      group: "practical",
+      values: toValueMap(selectedPatterns, (pattern) => pattern.languages ?? []),
+    },
+    {
+      key: "platforms",
+      label: "Platforms",
+      group: "practical",
+      values: toValueMap(selectedPatterns, (pattern) => pattern.platforms ?? []),
+    },
+    {
+      key: "integrationNotes",
+      label: "Integration notes",
+      group: "practical",
+      values: toValueMap(
+        selectedPatterns,
+        (pattern) => pattern.integrationNotes ?? null,
+      ),
+    },
+  ];
+}
+
+function areValuesEqual(values: CompareRowValue[]): boolean {
+  if (values.length <= 1) {
+    return true;
   }
 
-  return value ?? "";
+  const normalize = (value: CompareRowValue) =>
+    Array.isArray(value) ? JSON.stringify(value) : value ?? null;
+
+  const [first, ...rest] = values.map(normalize);
+  return rest.every((value) => value === first);
+}
+
+export function filterDifferenceRows(rows: CompareRow[]): CompareRow[] {
+  return rows.filter((row) => !areValuesEqual(Object.values(row.values)));
+}
+
+export function groupCompareRows(
+  rows: CompareRow[],
+): Record<CompareRowGroup, CompareRow[]> {
+  return rows.reduce<Record<CompareRowGroup, CompareRow[]>>(
+    (groups, row) => {
+      groups[row.group].push(row);
+      return groups;
+    },
+    {
+      basics: [],
+      decision: [],
+      practical: [],
+    },
+  );
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { CompareTableProps, CompareRow } from "./compare.types";
+import type { CompareRow, CompareTableProps } from "./compare.types";
 import { groupCompareRows } from "./compare.utils";
 
 function renderValue(value: CompareRow["values"][string]) {
@@ -112,9 +112,7 @@ export function CompareTable({
             {groupedRows.basics.length > 0 ? (
               <>
                 <tr className="compare-table__group-row">
-                  <th scope="rowgroup" colSpan={patterns.length + 1}>
-                    Basics
-                  </th>
+                  <th colSpan={patterns.length + 1}>Basics</th>
                 </tr>
                 {groupedRows.basics.map((row) => renderRow(row, patternSlugs))}
               </>
@@ -123,9 +121,7 @@ export function CompareTable({
             {groupedRows.decision.length > 0 ? (
               <>
                 <tr className="compare-table__group-row">
-                  <th scope="rowgroup" colSpan={patterns.length + 1}>
-                    Decision factors
-                  </th>
+                  <th colSpan={patterns.length + 1}>Decision factors</th>
                 </tr>
                 {groupedRows.decision.map((row) => renderRow(row, patternSlugs))}
               </>
@@ -134,9 +130,7 @@ export function CompareTable({
             {groupedRows.practical.length > 0 ? (
               <>
                 <tr className="compare-table__group-row">
-                  <th scope="rowgroup" colSpan={patterns.length + 1}>
-                    Practical fit
-                  </th>
+                  <th colSpan={patterns.length + 1}>Practical fit</th>
                 </tr>
                 {groupedRows.practical.map((row) => renderRow(row, patternSlugs))}
               </>

@@ -3,29 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import type { ComparePickerProps } from "./compare.types";
-
-function buildCompareHref(options: {
-  selectedSlugs: string[];
-  category?: string;
-  differencesOnly?: boolean;
-}) {
-  const params = new URLSearchParams();
-
-  if (options.selectedSlugs.length > 0) {
-    params.set("patterns", options.selectedSlugs.join(","));
-  }
-
-  if (options.category && options.category !== "All") {
-    params.set("category", options.category);
-  }
-
-  if (options.differencesOnly) {
-    params.set("differences", "true");
-  }
-
-  const queryString = params.toString();
-  return queryString ? `/compare?${queryString}` : "/compare";
-}
+import { buildCompareHref } from "./compare.utils";
 
 export function ComparePicker({
   items,
@@ -41,9 +19,7 @@ export function ComparePicker({
       <div className="compare-picker__header">
         <div>
           <p className="eyebrow">Selection</p>
-          <h2 id="compare-picker-title">
-            Choose up to {maxSelections} patterns
-          </h2>
+          <h2 id="compare-picker-title">Choose up to {maxSelections} patterns</h2>
           <p className="compare-picker__description">
             Pick two or three patterns to compare side by side.
           </p>
@@ -100,9 +76,7 @@ export function ComparePicker({
                   .join(" ")}
               >
                 <div className="compare-picker__card-top">
-                  <span className="compare-picker__category">
-                    {item.category}
-                  </span>
+                  <span className="compare-picker__category">{item.category}</span>
                   {isSelected ? (
                     <span className="compare-picker__status">Selected</span>
                   ) : null}
@@ -117,10 +91,7 @@ export function ComparePicker({
                       Max {maxSelections} selected
                     </span>
                   ) : (
-                    <Link
-                      className="button-link button-link--secondary"
-                      href={href}
-                    >
+                    <Link className="button-link button-link--secondary" href={href}>
                       {isSelected ? "Remove" : "Add to compare"}
                     </Link>
                   )}

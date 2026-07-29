@@ -43,6 +43,27 @@ export type ParsedCompareState = {
   differencesOnly: boolean;
 };
 
+export type BuildCompareHrefOptions = {
+  selectedSlugs: string[];
+  category?: PatternCategory | "All";
+  differencesOnly?: boolean;
+};
+
+export type ComparePickerProps = {
+  items: ComparePickerItem[];
+  selectedSlugs: string[];
+  maxSelections?: number;
+  activeCategory?: PatternCategory | "All";
+  differencesOnly?: boolean;
+};
+
+export type CompareSelectedSummaryProps = {
+  patterns: CompareablePattern[];
+  category?: PatternCategory | "All";
+  differencesOnly?: boolean;
+  maxSelections?: number;
+};
+
 export type CompareTableProps = {
   patterns: CompareablePattern[];
   rows: CompareRow[];
@@ -52,12 +73,4 @@ export type CompareTableProps = {
 
 export type ComparePageProps = {
   searchParams?: Promise<ComparePageSearchParams>;
-};
-
-export type ComparePickerProps = {
-  items: ComparePickerItem[];
-  selectedSlugs: string[];
-  maxSelections?: number;
-  activeCategory?: PatternCategory | "All";
-  differencesOnly?: boolean;
 };
