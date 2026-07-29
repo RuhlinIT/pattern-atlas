@@ -96,4 +96,56 @@ print(shipping.get_cost(8))`,
     explanation:
       "The service delegates pricing logic to the selected strategy so shipping options can evolve independently of the calling code.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+abstract class ShippingStrategy {
+  abstract calculate(weight: number): number;
+}
+
+
+@Injectable({ providedIn: 'root' })
+class StandardShipping extends ShippingStrategy {
+  calculate(weight: number): number {
+    return 5 + weight * 0.5;
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+class ExpressShipping extends ShippingStrategy {
+  calculate(weight: number): number {
+    return 15 + weight * 1.25;
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+class ShippingService {
+  private strategy: ShippingStrategy;
+
+
+  constructor(
+    private standardShipping: StandardShipping,
+    private expressShipping: ExpressShipping,
+  ) {
+    this.strategy = this.expressShipping;
+  }
+
+
+  setStrategy(method: 'standard' | 'express'): void {
+    this.strategy =
+      method === 'standard' ? this.standardShipping : this.expressShipping;
+  }
+
+
+  getCost(weight: number): number {
+    return this.strategy.calculate(weight);
+  }
+}`,
+    explanation:
+      "The Angular service acts as the strategy context, while injectable shipping strategies provide interchangeable pricing behavior selected at runtime.",
+  },
 ];

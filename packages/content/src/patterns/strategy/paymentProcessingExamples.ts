@@ -96,4 +96,56 @@ checkout.checkout(250.0)`,
     explanation:
       "The checkout flow stays simple because payment behavior is delegated to the selected strategy implementation.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+abstract class PaymentStrategy {
+  abstract pay(amount: number): void;
+}
+
+
+@Injectable({ providedIn: 'root' })
+class CreditCardPayment extends PaymentStrategy {
+  pay(amount: number): void {
+    console.log(\`Paid $\${amount} with credit card\`);
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+class PayPalPayment extends PaymentStrategy {
+  pay(amount: number): void {
+    console.log(\`Paid $\${amount} with PayPal\`);
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+class CheckoutService {
+  private strategy: PaymentStrategy;
+
+
+  constructor(
+    private creditCardPayment: CreditCardPayment,
+    private payPalPayment: PayPalPayment,
+  ) {
+    this.strategy = this.payPalPayment;
+  }
+
+
+  setStrategy(method: 'credit-card' | 'paypal'): void {
+    this.strategy =
+      method === 'credit-card' ? this.creditCardPayment : this.payPalPayment;
+  }
+
+
+  checkout(amount: number): void {
+    this.strategy.pay(amount);
+  }
+}`,
+    explanation:
+      "The Angular checkout service acts as the strategy context, while injectable payment services provide interchangeable payment behaviors selected at runtime.",
+  },
 ];

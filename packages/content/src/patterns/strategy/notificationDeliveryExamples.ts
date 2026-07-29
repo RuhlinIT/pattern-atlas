@@ -96,4 +96,56 @@ notifier.notify("Deployment completed")`,
     explanation:
       "The caller delegates channel behavior to the selected strategy, which keeps notification expansion simpler and safer.",
   },
+  {
+    language: "Angular",
+    code: `import { Injectable } from '@angular/core';
+
+
+abstract class NotificationStrategy {
+  abstract send(message: string): void;
+}
+
+
+@Injectable({ providedIn: 'root' })
+class EmailNotification extends NotificationStrategy {
+  send(message: string): void {
+    console.log(\`Email: \${message}\`);
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+class SmsNotification extends NotificationStrategy {
+  send(message: string): void {
+    console.log(\`SMS: \${message}\`);
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+class NotificationService {
+  private strategy: NotificationStrategy;
+
+
+  constructor(
+    private emailNotification: EmailNotification,
+    private smsNotification: SmsNotification,
+  ) {
+    this.strategy = this.smsNotification;
+  }
+
+
+  setStrategy(channel: 'email' | 'sms'): void {
+    this.strategy =
+      channel === 'email' ? this.emailNotification : this.smsNotification;
+  }
+
+
+  notify(message: string): void {
+    this.strategy.send(message);
+  }
+}`,
+    explanation:
+      "The Angular service acts as the strategy context, while injectable channel services provide interchangeable notification behaviors selected at runtime.",
+  },
 ];
