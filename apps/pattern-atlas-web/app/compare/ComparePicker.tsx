@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import type { ComparePickerProps } from "./compare.types";
 import { buildCompareHref } from "./compare.utils";
 
@@ -15,7 +16,11 @@ export function ComparePicker({
   const selectedSet = useMemo(() => new Set(selectedSlugs), [selectedSlugs]);
 
   return (
-    <section className="compare-picker" aria-labelledby="compare-picker-title">
+    <motion.section className="compare-picker" aria-labelledby="compare-picker-title"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+    >
       <div className="compare-picker__header">
         <div>
           <p className="eyebrow">Selection</p>
@@ -49,7 +54,7 @@ export function ComparePicker({
         </legend>
 
         <div className="compare-picker__grid">
-          {items.map((item) => {
+          {items.map((item, index) => {
             const isSelected = selectedSet.has(item.slug);
             const selectionLimitReached =
               selectedSlugs.length >= maxSelections && !isSelected;
@@ -65,7 +70,7 @@ export function ComparePicker({
             });
 
             return (
-              <article
+              <motion.article
                 key={item.slug}
                 className={[
                   "compare-picker__card",
@@ -74,6 +79,11 @@ export function ComparePicker({
                 ]
                   .filter(Boolean)
                   .join(" ")}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: index * 0.03, ease: "easeOut" }}
+                whileHover={{ y: -3 }}
+                layout
               >
                 <div className="compare-picker__card-top">
                   <span className="compare-picker__category">{item.category}</span>
@@ -103,11 +113,11 @@ export function ComparePicker({
                     View pattern
                   </Link>
                 </div>
-              </article>
+              </motion.article>
             );
           })}
         </div>
       </fieldset>
-    </section>
+    </motion.section>
   );
 }

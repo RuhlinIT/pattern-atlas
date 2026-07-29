@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 import type { CompareRow, CompareTableProps } from "./compare.types";
 import { groupCompareRows } from "./compare.utils";
 
@@ -24,9 +27,21 @@ function renderValue(value: CompareRow["values"][string]) {
   return <span>{value}</span>;
 }
 
-function renderRow(row: CompareRow, patternSlugs: string[]) {
+function MotionRow({
+  row,
+  patternSlugs,
+}: {
+  row: CompareRow;
+  patternSlugs: string[];
+}) {
   return (
-    <tr key={row.key}>
+    <motion.tr
+      layout={false}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -6 }}
+      transition={{ duration: 0.16, ease: "easeOut" }}
+    >
       <th scope="row" className="compare-table__row-header">
         {row.label}
       </th>
@@ -36,9 +51,25 @@ function renderRow(row: CompareRow, patternSlugs: string[]) {
           {renderValue(row.values[slug] ?? null)}
         </td>
       ))}
-    </tr>
+    </motion.tr>
   );
 }
+
+// function renderRow(row: CompareRow, patternSlugs: string[]) {
+//   return (
+//     <tr key={row.key}>
+//       <th scope="row" className="compare-table__row-header">
+//         {row.label}
+//       </th>
+
+//       {patternSlugs.map((slug) => (
+//         <td key={slug} className="compare-table__cell">
+//           {renderValue(row.values[slug] ?? null)}
+//         </td>
+//       ))}
+//     </tr>
+//   );
+// }
 
 export function CompareTable({
   patterns,
@@ -48,10 +79,16 @@ export function CompareTable({
 }: CompareTableProps) {
   if (patterns.length < 2) {
     return (
-      <section className="compare-table compare-table--empty" aria-live="polite">
+      <motion.section
+        className="compare-table compare-table--empty"
+        aria-live="polite"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+      >
         <h2>Comparison</h2>
         <p>{emptyMessage}</p>
-      </section>
+      </motion.section>
     );
   }
 
@@ -59,7 +96,11 @@ export function CompareTable({
   const patternSlugs = patterns.map((pattern) => pattern.slug);
 
   return (
-    <section className="compare-table" aria-labelledby="compare-table-title">
+    <motion.section className="compare-table" aria-labelledby="compare-table-title"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+    >
       <div className="compare-table__header">
         <div>
           <p className="eyebrow">Analysis</p>
@@ -114,7 +155,11 @@ export function CompareTable({
                 <tr className="compare-table__group-row">
                   <th colSpan={patterns.length + 1}>Basics</th>
                 </tr>
-                {groupedRows.basics.map((row) => renderRow(row, patternSlugs))}
+                <AnimatePresence initial={false}>
+                    {groupedRows.basics.map((row) => (
+                        <MotionRow key={row.key} row={row} patternSlugs={patternSlugs}/>
+                    ))}
+                </AnimatePresence>
               </>
             ) : null}
 
@@ -123,7 +168,11 @@ export function CompareTable({
                 <tr className="compare-table__group-row">
                   <th colSpan={patterns.length + 1}>Decision factors</th>
                 </tr>
-                {groupedRows.decision.map((row) => renderRow(row, patternSlugs))}
+                <AnimatePresence initial={false}>
+                    {groupedRows.decision.map((row) => (
+                    <MotionRow key={row.key} row={row} patternSlugs={patternSlugs}/>
+                    ))}
+                </AnimatePresence>
               </>
             ) : null}
 
@@ -132,12 +181,16 @@ export function CompareTable({
                 <tr className="compare-table__group-row">
                   <th colSpan={patterns.length + 1}>Practical fit</th>
                 </tr>
-                {groupedRows.practical.map((row) => renderRow(row, patternSlugs))}
+                <AnimatePresence initial={false}>
+                    {groupedRows.practical.map((row) => (
+                        <MotionRow key={row.key} row={row} patternSlugs={patternSlugs}/>
+                    ))}
+                </AnimatePresence>
               </>
             ) : null}
           </tbody>
         </table>
       </div>
-    </section>
+    </motion.section>
   );
 }

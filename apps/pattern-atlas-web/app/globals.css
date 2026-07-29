@@ -782,3 +782,9 @@ strong {
     padding: 16px;
   }
 }
+
+.compare-picker__card,
+.compare-summary__chip,
+.compare-table__scroll {
+  will-change: transform, opacity;
+}
