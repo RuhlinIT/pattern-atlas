@@ -14,12 +14,14 @@ import { BridgePattern } from "./BridgePattern";
 import { CompositePattern } from "./CompositePattern";
 import { FlyweightPattern } from "./FlyweightPattern";
 import { ProxyPattern } from "./ProxyPattern";
+import { ChainOfResponsibilityPattern } from "./ChainOfResponsibilityPattern";
 
 export {
   AbstractFactoryPattern,
   AdapterPattern,
   BridgePattern,
   BuilderPattern,
+  ChainOfResponsibilityPattern,
   CommandPattern,
   CompositePattern,
   DecoratorPattern,
@@ -38,6 +40,7 @@ export const patterns: PatternRecord[] = [
   AdapterPattern,
   BridgePattern,
   BuilderPattern,
+  ChainOfResponsibilityPattern,
   CommandPattern,
   CompositePattern,
   DecoratorPattern,
