@@ -13,22 +13,24 @@ import { SingletonPattern } from "./SingletonPattern";
 import { BridgePattern } from "./BridgePattern";
 import { CompositePattern } from "./CompositePattern";
 import { FlyweightPattern } from "./FlyweightPattern";
+import { ProxyPattern } from "./ProxyPattern";
 
 export {
   AbstractFactoryPattern,
   AdapterPattern,
   BridgePattern,
   BuilderPattern,
+  CommandPattern,
   CompositePattern,
   DecoratorPattern,
-  FlyweightPattern,
-  StrategyPattern,
-  ObserverPattern,
   FacadePattern,
-  CommandPattern,
   FactoryMethodPattern,
+  FlyweightPattern,
+  ObserverPattern,
   PrototypePattern,
+  ProxyPattern,
   SingletonPattern,
+  StrategyPattern,
 }
 
 export const patterns: PatternRecord[] = [
@@ -36,14 +38,15 @@ export const patterns: PatternRecord[] = [
   AdapterPattern,
   BridgePattern,
   BuilderPattern,
+  CommandPattern,
   CompositePattern,
-  StrategyPattern,
   DecoratorPattern,
+  FacadePattern,
+  FactoryMethodPattern,
   FlyweightPattern,
   ObserverPattern,
-  FacadePattern,
-  CommandPattern,
-  FactoryMethodPattern,
   PrototypePattern,
+  ProxyPattern,
   SingletonPattern,
+  StrategyPattern,
 ];
