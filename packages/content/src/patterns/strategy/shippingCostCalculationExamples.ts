@@ -148,4 +148,203 @@ class ShippingService {
     explanation:
       "The Angular service acts as the strategy context, while injectable shipping strategies provide interchangeable pricing behavior selected at runtime.",
   },
+  {
+    language: "React",
+    code: `import React, { useMemo } from "react";
+
+interface ShippingStrategy {
+  calculate(weight: number): number;
+}
+
+class StandardShipping implements ShippingStrategy {
+  calculate(weight: number): number {
+    return 5 + weight * 0.5;
+  }
+}
+
+class ExpressShipping implements ShippingStrategy {
+  calculate(weight: number): number {
+    return 15 + weight * 1.25;
+  }
+}
+
+class ShippingService {
+  constructor(private strategy: ShippingStrategy) {}
+
+  getCost(weight: number): number {
+    return this.strategy.calculate(weight);
+  }
+}
+
+function ShippingQuote({ shipping }: { shipping: ShippingService }) {
+  return <p>Cost for 8 lb: {shipping.getCost(8).toFixed(2)}</p>;
+}
+
+export function App() {
+  const shipping = useMemo(() => new ShippingService(new ExpressShipping()), []);
+
+  return (
+    <main>
+      <h1>Shipping Cost Calculation</h1>
+      <ShippingQuote shipping={shipping} />
+    </main>
+  );
+}`,
+    explanation:
+      "The React example keeps shipping pricing behind a strategy interface, so the UI can ask for a quote without knowing how the cost is computed.",
+  },
+  {
+    language: "React_Native",
+    code: `import React, { useMemo } from "react";
+import { SafeAreaView, Text, View } from "react-native";
+
+interface ShippingStrategy {
+  calculate(weight: number): number;
+}
+
+class StandardShipping implements ShippingStrategy {
+  calculate(weight: number): number {
+    return 5 + weight * 0.5;
+  }
+}
+
+class ExpressShipping implements ShippingStrategy {
+  calculate(weight: number): number {
+    return 15 + weight * 1.25;
+  }
+}
+
+class ShippingService {
+  constructor(private strategy: ShippingStrategy) {}
+
+  getCost(weight: number): number {
+    return this.strategy.calculate(weight);
+  }
+}
+
+function ShippingQuote({ shipping }: { shipping: ShippingService }) {
+  return (
+    <Text>{"Cost for 8 lb: $" + shipping.getCost(8).toFixed(2)}</Text>
+  );
+}
+
+export function App() {
+  const shipping = useMemo(() => new ShippingService(new ExpressShipping()), []);
+
+  return (
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+      <View style={{ gap: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: "600" }}>Shipping Cost Calculation</Text>
+        <ShippingQuote shipping={shipping} />
+      </View>
+    </SafeAreaView>
+  );
+}`,
+    explanation:
+      "The React Native version uses the same strategy-based shipping calculation, but presents the quote in a mobile-friendly layout.",
+  },
+  {
+    language: "C#",
+    code: `using System;
+
+public interface IShippingStrategy
+{
+    decimal Calculate(decimal weight);
+}
+
+public class StandardShipping : IShippingStrategy
+{
+    public decimal Calculate(decimal weight)
+    {
+        return 5m + weight * 0.5m;
+    }
+}
+
+public class ExpressShipping : IShippingStrategy
+{
+    public decimal Calculate(decimal weight)
+    {
+        return 15m + weight * 1.25m;
+    }
+}
+
+public class ShippingService
+{
+    private readonly IShippingStrategy _strategy;
+
+    public ShippingService(IShippingStrategy strategy)
+    {
+        _strategy = strategy;
+    }
+
+    public decimal GetCost(decimal weight)
+    {
+        return _strategy.Calculate(weight);
+    }
+}
+
+var shipping = new ShippingService(new ExpressShipping());
+Console.WriteLine(shipping.GetCost(8m));`,
+    explanation:
+      "The C# example isolates shipping rules behind a shared contract, so the delivery mode can change without rewriting the service.",
+  },
+  {
+    language: ".NET",
+    code: `using System;
+using Microsoft.Extensions.DependencyInjection;
+
+public interface IShippingStrategy
+{
+    decimal Calculate(decimal weight);
+}
+
+public class StandardShipping : IShippingStrategy
+{
+    public decimal Calculate(decimal weight)
+    {
+        return 5m + weight * 0.5m;
+    }
+}
+
+public class ExpressShipping : IShippingStrategy
+{
+    public decimal Calculate(decimal weight)
+    {
+        return 15m + weight * 1.25m;
+    }
+}
+
+public class ShippingService
+{
+    private IShippingStrategy _strategy;
+
+    public ShippingService(IShippingStrategy strategy)
+    {
+        _strategy = strategy;
+    }
+
+    public void SetStrategy(IShippingStrategy strategy)
+    {
+        _strategy = strategy;
+    }
+
+    public decimal GetCost(decimal weight)
+    {
+        return _strategy.Calculate(weight);
+    }
+}
+
+var services = new ServiceCollection();
+services.AddSingleton<StandardShipping>();
+services.AddSingleton<ExpressShipping>();
+services.AddSingleton<ShippingService>(provider =>
+    new ShippingService(provider.GetRequiredService<ExpressShipping>())
+);
+
+var provider = services.BuildServiceProvider();
+var shipping = provider.GetRequiredService<ShippingService>();
+Console.WriteLine(shipping.GetCost(8m));`,
+    explanation:
+      "The .NET version shows the same strategy pattern with dependency injection available, so the shipping context can swap pricing behavior without changing callers.",
+  },
 ];
