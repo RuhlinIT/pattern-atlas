@@ -203,4 +203,300 @@ queue.run_next()`,
     explanation:
       "The Angular queue service stores command objects for deferred execution, while the email service remains the receiver that performs the actual work.",
   },
+  {
+    language: "React",
+    code: `import React, { useMemo, useState } from "react";
+
+interface Command {
+  execute(): void;
+}
+
+class EmailService {
+  send(to: string, body: string): void {
+    console.log(\`Email sent to \${to}: \${body}\`);
+  }
+}
+
+class SendEmailCommand implements Command {
+  constructor(
+    private emailService: EmailService,
+    private to: string,
+    private body: string,
+  ) {}
+
+  execute(): void {
+    this.emailService.send(this.to, this.body);
+  }
+}
+
+class JobQueue {
+  private queue: Command[] = [];
+
+  add(command: Command): void {
+    this.queue.push(command);
+  }
+
+  runNext(): void {
+    const command = this.queue.shift();
+    command?.execute();
+  }
+
+  getSize(): number {
+    return this.queue.length;
+  }
+}
+
+export function App() {
+  const queue = useMemo(() => new JobQueue(), []);
+  const emailService = useMemo(() => new EmailService(), []);
+  const [queuedCount, setQueuedCount] = useState(0);
+
+  const addJobs = () => {
+    queue.add(new SendEmailCommand(emailService, "team@example.com", "Build passed"));
+    queue.add(new SendEmailCommand(emailService, "ops@example.com", "Deploy started"));
+    setQueuedCount(queue.getSize());
+  };
+
+  const runNext = () => {
+    queue.runNext();
+    setQueuedCount(queue.getSize());
+  };
+
+  return (
+    <main>
+      <h1>Job Queue</h1>
+      <p>Queued jobs: {queuedCount}</p>
+      <button onClick={addJobs}>Add jobs</button>
+      <button onClick={runNext}>Run next</button>
+    </main>
+  );
+}`,
+    explanation:
+      "The React example treats commands as queueable objects, so the UI can submit work now and execute it later without coupling to the email service directly.",
+  },
+  {
+    language: "React_Native",
+    code: `import React, { useMemo, useState } from "react";
+import { Pressable, SafeAreaView, Text, View } from "react-native";
+
+interface Command {
+  execute(): void;
+}
+
+class EmailService {
+  send(to: string, body: string): void {
+    console.log(\`Email sent to \${to}: \${body}\`);
+  }
+}
+
+class SendEmailCommand implements Command {
+  constructor(
+    private emailService: EmailService,
+    private to: string,
+    private body: string,
+  ) {}
+
+  execute(): void {
+    this.emailService.send(this.to, this.body);
+  }
+}
+
+class JobQueue {
+  private queue: Command[] = [];
+
+  add(command: Command): void {
+    this.queue.push(command);
+  }
+
+  runNext(): void {
+    const command = this.queue.shift();
+    command?.execute();
+  }
+
+  getSize(): number {
+    return this.queue.length;
+  }
+}
+
+function ActionButton({ label, onPress }: { label: string; onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={{ padding: 12, backgroundColor: "#111827", borderRadius: 8 }}
+    >
+      <Text style={{ color: "#fff", textAlign: "center" }}>{label}</Text>
+    </Pressable>
+  );
+}
+
+export function App() {
+  const queue = useMemo(() => new JobQueue(), []);
+  const emailService = useMemo(() => new EmailService(), []);
+  const [queuedCount, setQueuedCount] = useState(0);
+
+  const addJobs = () => {
+    queue.add(new SendEmailCommand(emailService, "team@example.com", "Build passed"));
+    queue.add(new SendEmailCommand(emailService, "ops@example.com", "Deploy started"));
+    setQueuedCount(queue.getSize());
+  };
+
+  const runNext = () => {
+    queue.runNext();
+    setQueuedCount(queue.getSize());
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+      <View style={{ gap: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: "600" }}>Job Queue</Text>
+        <Text>Queued jobs: {queuedCount}</Text>
+        <ActionButton label="Add jobs" onPress={addJobs} />
+        <ActionButton label="Run next" onPress={runNext} />
+      </View>
+    </SafeAreaView>
+  );
+}`,
+    explanation:
+      "The React Native version uses the same command objects, but exposes queue actions through mobile-friendly pressable controls instead of web buttons.",
+  },
+  {
+    language: "C#",
+    code: `using System;
+using System.Collections.Generic;
+
+public interface ICommand
+{
+    void Execute();
+}
+
+public class EmailService
+{
+    public void Send(string to, string body)
+    {
+        Console.WriteLine($"Email sent to {to}: {body}");
+    }
+}
+
+public class SendEmailCommand : ICommand
+{
+    private readonly EmailService _emailService;
+    private readonly string _to;
+    private readonly string _body;
+
+    public SendEmailCommand(EmailService emailService, string to, string body)
+    {
+        _emailService = emailService;
+        _to = to;
+        _body = body;
+    }
+
+    public void Execute()
+    {
+        _emailService.Send(_to, _body);
+    }
+}
+
+public class JobQueue
+{
+    private readonly Queue<ICommand> _queue = new();
+
+    public void Add(ICommand command)
+    {
+        _queue.Enqueue(command);
+    }
+
+    public void RunNext()
+    {
+        if (_queue.Count > 0)
+        {
+            var command = _queue.Dequeue();
+            command.Execute();
+        }
+    }
+}
+
+var queue = new JobQueue();
+var emailService = new EmailService();
+
+queue.Add(new SendEmailCommand(emailService, "team@example.com", "Build passed"));
+queue.Add(new SendEmailCommand(emailService, "ops@example.com", "Deploy started"));
+
+queue.RunNext();
+queue.RunNext();`,
+    explanation:
+      "The C# version stores command objects in a queue so work can be invoked later, keeping scheduling separate from the email-sending logic.",
+  },
+  {
+    language: ".NET",
+    code: `using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+
+public interface ICommand
+{
+    void Execute();
+}
+
+public class EmailService
+{
+    public void Send(string to, string body)
+    {
+        Console.WriteLine($"Email sent to {to}: {body}");
+    }
+}
+
+public class SendEmailCommand : ICommand
+{
+    private readonly EmailService _emailService;
+    private readonly string _to;
+    private readonly string _body;
+
+    public SendEmailCommand(EmailService emailService, string to, string body)
+    {
+        _emailService = emailService;
+        _to = to;
+        _body = body;
+    }
+
+    public void Execute()
+    {
+        _emailService.Send(_to, _body);
+    }
+}
+
+public class JobQueue
+{
+    private readonly Queue<ICommand> _queue = new();
+
+    public void Add(ICommand command)
+    {
+        _queue.Enqueue(command);
+    }
+
+    public void RunNext()
+    {
+        if (_queue.Count > 0)
+        {
+            var command = _queue.Dequeue();
+            command.Execute();
+        }
+    }
+}
+
+var services = new ServiceCollection();
+services.AddSingleton<EmailService>();
+services.AddSingleton<JobQueue>();
+
+var provider = services.BuildServiceProvider();
+var queue = provider.GetRequiredService<JobQueue>();
+var emailService = provider.GetRequiredService<EmailService>();
+
+queue.Add(new SendEmailCommand(emailService, "team@example.com", "Build passed"));
+queue.Add(new SendEmailCommand(emailService, "ops@example.com", "Deploy started"));
+
+queue.RunNext();
+queue.RunNext();`,
+    explanation:
+      "The .NET version uses dependency injection with command objects in a queue, letting the application defer execution while keeping the receiver isolated.",
+  },
 ];
