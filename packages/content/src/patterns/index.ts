@@ -10,10 +10,12 @@ import { BuilderPattern } from "./BuilderPattern";
 import { AbstractFactoryPattern } from "./AbstractFactoryPattern";
 import { PrototypePattern } from "./PrototypePattern";
 import { SingletonPattern } from "./SingletonPattern";
+import { BridgePattern } from "./BridgePattern";
 
 export {
   AbstractFactoryPattern,
   AdapterPattern,
+  BridgePattern,
   BuilderPattern,
   DecoratorPattern,
   StrategyPattern,
@@ -28,6 +30,7 @@ export {
 export const patterns: PatternRecord[] = [
   AbstractFactoryPattern,
   AdapterPattern,
+  BridgePattern,
   BuilderPattern,
   StrategyPattern,
   DecoratorPattern,
