@@ -12,6 +12,7 @@ import { PrototypePattern } from "./PrototypePattern";
 import { SingletonPattern } from "./SingletonPattern";
 import { BridgePattern } from "./BridgePattern";
 import { CompositePattern } from "./CompositePattern";
+import { FlyweightPattern } from "./FlyweightPattern";
 
 export {
   AbstractFactoryPattern,
@@ -20,6 +21,7 @@ export {
   BuilderPattern,
   CompositePattern,
   DecoratorPattern,
+  FlyweightPattern,
   StrategyPattern,
   ObserverPattern,
   FacadePattern,
@@ -37,6 +39,7 @@ export const patterns: PatternRecord[] = [
   CompositePattern,
   StrategyPattern,
   DecoratorPattern,
+  FlyweightPattern,
   ObserverPattern,
   FacadePattern,
   CommandPattern,
