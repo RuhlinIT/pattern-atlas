@@ -8,6 +8,7 @@ import { CommandPattern } from "./CommandPattern";
 import { FactoryMethodPattern } from "./FactoryMethodPattern";
 import { BuilderPattern } from "./BuilderPattern";
 import { AbstractFactoryPattern } from "./AbstractFactoryPattern";
+import { PrototypePattern } from "./PrototypePattern";
 
 export {
   AbstractFactoryPattern,
@@ -19,6 +20,7 @@ export {
   FacadePattern,
   CommandPattern,
   FactoryMethodPattern,
+  PrototypePattern,
 }
 
 export const patterns: PatternRecord[] = [
@@ -30,5 +32,6 @@ export const patterns: PatternRecord[] = [
   ObserverPattern,
   FacadePattern,
   CommandPattern,
-  FactoryMethodPattern
+  FactoryMethodPattern,
+  PrototypePattern,
 ];
