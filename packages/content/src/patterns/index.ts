@@ -1,3 +1,4 @@
+import { InterpreterPattern } from './InterpreterPattern';
 import type { PatternRecord } from "@atlas-patterns/schemas";
 import { DecoratorPattern } from "./DecoratorPattern";
 import { StrategyPattern } from "./StrategyPattern";
@@ -28,6 +29,7 @@ export {
   FacadePattern,
   FactoryMethodPattern,
   FlyweightPattern,
+  InterpreterPattern,
   ObserverPattern,
   PrototypePattern,
   ProxyPattern,
@@ -47,6 +49,7 @@ export const patterns: PatternRecord[] = [
   FacadePattern,
   FactoryMethodPattern,
   FlyweightPattern,
+  InterpreterPattern,
   ObserverPattern,
   PrototypePattern,
   ProxyPattern,
