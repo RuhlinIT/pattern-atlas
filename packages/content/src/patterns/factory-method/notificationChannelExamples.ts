@@ -203,4 +203,253 @@ export const notificationChannelExamples: PatternLanguageExample[] = [
     explanation:
       "The Angular service defines the notification workflow, while concrete services use the factory method to select the delivery implementation.",
   },
+  {
+    language: "React",
+    code: `import React, { useMemo } from "react";
+
+interface NotificationSender {
+  send(recipient: string, message: string): void;
+}
+
+class EmailSender implements NotificationSender {
+  send(recipient: string, message: string): void {
+    console.log(\`Email to \${recipient}: \${message}\`);
+  }
+}
+
+class SmsSender implements NotificationSender {
+  send(recipient: string, message: string): void {
+    console.log(\`SMS to \${recipient}: \${message}\`);
+  }
+}
+
+abstract class NotificationService {
+  abstract createSender(): NotificationSender;
+
+  notify(recipient: string, message: string): void {
+    const sender = this.createSender();
+    sender.send(recipient, message);
+  }
+}
+
+class EmailNotificationService extends NotificationService {
+  createSender(): NotificationSender {
+    return new EmailSender();
+  }
+}
+
+class SmsNotificationService extends NotificationService {
+  createSender(): NotificationSender {
+    return new SmsSender();
+  }
+}
+
+function NotifyButton({ service }: { service: NotificationService }) {
+  return (
+    <button onClick={() => service.notify("alex@example.com", "Your report is ready.")}>
+      Send notification
+    </button>
+  );
+}
+
+export function App() {
+  const service = useMemo(() => new EmailNotificationService(), []);
+
+  return (
+    <main>
+      <h1>Notification Channel</h1>
+      <NotifyButton service={service} />
+    </main>
+  );
+}`,
+    explanation:
+      "The React example keeps the notification workflow in the base service while concrete services choose which sender object the factory method creates.",
+  },
+  {
+    language: "React_Native",
+    code: `import React, { useMemo } from "react";
+import { Pressable, SafeAreaView, Text, View } from "react-native";
+
+interface NotificationSender {
+  send(recipient: string, message: string): void;
+}
+
+class EmailSender implements NotificationSender {
+  send(recipient: string, message: string): void {
+    console.log(\`Email to \${recipient}: \${message}\`);
+  }
+}
+
+class SmsSender implements NotificationSender {
+  send(recipient: string, message: string): void {
+    console.log(\`SMS to \${recipient}: \${message}\`);
+  }
+}
+
+abstract class NotificationService {
+  abstract createSender(): NotificationSender;
+
+  notify(recipient: string, message: string): void {
+    const sender = this.createSender();
+    sender.send(recipient, message);
+  }
+}
+
+class EmailNotificationService extends NotificationService {
+  createSender(): NotificationSender {
+    return new EmailSender();
+  }
+}
+
+class SmsNotificationService extends NotificationService {
+  createSender(): NotificationSender {
+    return new SmsSender();
+  }
+}
+
+function NotifyButton({ service }: { service: NotificationService }) {
+  return (
+    <Pressable
+      onPress={() => service.notify("alex@example.com", "Your report is ready.")}
+      style={{ padding: 12, backgroundColor: "#111827", borderRadius: 8 }}
+    >
+      <Text style={{ color: "#fff", textAlign: "center" }}>Send notification</Text>
+    </Pressable>
+  );
+}
+
+export function App() {
+  const service = useMemo(() => new EmailNotificationService(), []);
+
+  return (
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+      <View style={{ gap: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: "600" }}>Notification Channel</Text>
+        <NotifyButton service={service} />
+      </View>
+    </SafeAreaView>
+  );
+}`,
+    explanation:
+      "The React Native version uses the same factory method structure, but exposes the notification action through a mobile-friendly pressable control.",
+  },
+  {
+    language: "C#",
+    code: `using System;
+
+public interface INotificationSender
+{
+    void Send(string recipient, string message);
+}
+
+public class EmailSender : INotificationSender
+{
+    public void Send(string recipient, string message)
+    {
+        Console.WriteLine($"Email to {recipient}: {message}");
+    }
+}
+
+public class SmsSender : INotificationSender
+{
+    public void Send(string recipient, string message)
+    {
+        Console.WriteLine($"SMS to {recipient}: {message}");
+    }
+}
+
+public abstract class NotificationService
+{
+    public abstract INotificationSender CreateSender();
+
+    public void Notify(string recipient, string message)
+    {
+        var sender = CreateSender();
+        sender.Send(recipient, message);
+    }
+}
+
+public class EmailNotificationService : NotificationService
+{
+    public override INotificationSender CreateSender()
+    {
+        return new EmailSender();
+    }
+}
+
+public class SmsNotificationService : NotificationService
+{
+    public override INotificationSender CreateSender()
+    {
+        return new SmsSender();
+    }
+}
+
+NotificationService service = new EmailNotificationService();
+service.Notify("alex@example.com", "Your report is ready.");`,
+    explanation:
+      "The C# example keeps the notification workflow fixed in the creator while subclasses use the factory method to choose the delivery channel.",
+  },
+  {
+    language: ".NET",
+    code: `using System;
+using Microsoft.Extensions.DependencyInjection;
+
+public interface INotificationSender
+{
+    void Send(string recipient, string message);
+}
+
+public class EmailSender : INotificationSender
+{
+    public void Send(string recipient, string message)
+    {
+        Console.WriteLine($"Email to {recipient}: {message}");
+    }
+}
+
+public class SmsSender : INotificationSender
+{
+    public void Send(string recipient, string message)
+    {
+        Console.WriteLine($"SMS to {recipient}: {message}");
+    }
+}
+
+public abstract class NotificationService
+{
+    public abstract INotificationSender CreateSender();
+
+    public void Notify(string recipient, string message)
+    {
+        var sender = CreateSender();
+        sender.Send(recipient, message);
+    }
+}
+
+public class EmailNotificationService : NotificationService
+{
+    public override INotificationSender CreateSender()
+    {
+        return new EmailSender();
+    }
+}
+
+public class SmsNotificationService : NotificationService
+{
+    public override INotificationSender CreateSender()
+    {
+        return new SmsSender();
+    }
+}
+
+var services = new ServiceCollection();
+services.AddSingleton<NotificationService, EmailNotificationService>();
+
+var provider = services.BuildServiceProvider();
+var service = provider.GetRequiredService<NotificationService>();
+service.Notify("alex@example.com", "Your report is ready.");`,
+    explanation:
+      "The .NET version shows the same factory method pattern with dependency injection, so the notification workflow stays stable while the concrete sender is selected by the subclass.",
+  },
 ];

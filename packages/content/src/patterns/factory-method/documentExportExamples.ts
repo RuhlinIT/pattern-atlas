@@ -203,4 +203,249 @@ export const documentExportExamples: PatternLanguageExample[] = [
     explanation:
       "The Angular service keeps the export workflow in one place while concrete exporters choose which document implementation to create.",
   },
+  {
+    language: "React",
+    code: `import React, { useMemo } from "react";
+
+interface DocumentFile {
+  export(): void;
+}
+
+class PdfDocument implements DocumentFile {
+  export(): void {
+    console.log("Exporting PDF document");
+  }
+}
+
+class CsvDocument implements DocumentFile {
+  export(): void {
+    console.log("Exporting CSV document");
+  }
+}
+
+abstract class DocumentExporter {
+  abstract createDocument(): DocumentFile;
+
+  runExport(): void {
+    const document = this.createDocument();
+    document.export();
+  }
+}
+
+class PdfExporter extends DocumentExporter {
+  createDocument(): DocumentFile {
+    return new PdfDocument();
+  }
+}
+
+class CsvExporter extends DocumentExporter {
+  createDocument(): DocumentFile {
+    return new CsvDocument();
+  }
+}
+
+function ExportButton({ exporter }: { exporter: DocumentExporter }) {
+  return <button onClick={() => exporter.runExport()}>Run export</button>;
+}
+
+export function App() {
+  const exporter = useMemo(() => new PdfExporter(), []);
+
+  return (
+    <main>
+      <h1>Document Export</h1>
+      <ExportButton exporter={exporter} />
+    </main>
+  );
+}`,
+    explanation:
+      "The React example keeps the export workflow in the creator class while the concrete exporter decides which document gets instantiated.",
+  },
+  {
+    language: "React_Native",
+    code: `import React, { useMemo } from "react";
+import { Pressable, SafeAreaView, Text, View } from "react-native";
+
+interface DocumentFile {
+  export(): void;
+}
+
+class PdfDocument implements DocumentFile {
+  export(): void {
+    console.log("Exporting PDF document");
+  }
+}
+
+class CsvDocument implements DocumentFile {
+  export(): void {
+    console.log("Exporting CSV document");
+  }
+}
+
+abstract class DocumentExporter {
+  abstract createDocument(): DocumentFile;
+
+  runExport(): void {
+    const document = this.createDocument();
+    document.export();
+  }
+}
+
+class PdfExporter extends DocumentExporter {
+  createDocument(): DocumentFile {
+    return new PdfDocument();
+  }
+}
+
+class CsvExporter extends DocumentExporter {
+  createDocument(): DocumentFile {
+    return new CsvDocument();
+  }
+}
+
+function ExportButton({ exporter }: { exporter: DocumentExporter }) {
+  return (
+    <Pressable
+      onPress={() => exporter.runExport()}
+      style={{ padding: 12, backgroundColor: "#111827", borderRadius: 8 }}
+    >
+      <Text style={{ color: "#fff", textAlign: "center" }}>Run export</Text>
+    </Pressable>
+  );
+}
+
+export function App() {
+  const exporter = useMemo(() => new PdfExporter(), []);
+
+  return (
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+      <View style={{ gap: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: "600" }}>Document Export</Text>
+        <ExportButton exporter={exporter} />
+      </View>
+    </SafeAreaView>
+  );
+}`,
+    explanation:
+      "The React Native version uses the same factory method structure, but triggers the export from a mobile-friendly pressable control.",
+  },
+  {
+    language: "C#",
+    code: `using System;
+
+public interface IDocumentFile
+{
+    void Export();
+}
+
+public class PdfDocument : IDocumentFile
+{
+    public void Export()
+    {
+        Console.WriteLine("Exporting PDF document");
+    }
+}
+
+public class CsvDocument : IDocumentFile
+{
+    public void Export()
+    {
+        Console.WriteLine("Exporting CSV document");
+    }
+}
+
+public abstract class DocumentExporter
+{
+    public abstract IDocumentFile CreateDocument();
+
+    public void RunExport()
+    {
+        var document = CreateDocument();
+        document.Export();
+    }
+}
+
+public class PdfExporter : DocumentExporter
+{
+    public override IDocumentFile CreateDocument()
+    {
+        return new PdfDocument();
+    }
+}
+
+public class CsvExporter : DocumentExporter
+{
+    public override IDocumentFile CreateDocument()
+    {
+        return new CsvDocument();
+    }
+}
+
+DocumentExporter exporter = new PdfExporter();
+exporter.RunExport();`,
+    explanation:
+      "The C# example keeps the export workflow in the base creator while subclasses decide which concrete document type to instantiate.",
+  },
+  {
+    language: ".NET",
+    code: `using System;
+using Microsoft.Extensions.DependencyInjection;
+
+public interface IDocumentFile
+{
+    void Export();
+}
+
+public class PdfDocument : IDocumentFile
+{
+    public void Export()
+    {
+        Console.WriteLine("Exporting PDF document");
+    }
+}
+
+public class CsvDocument : IDocumentFile
+{
+    public void Export()
+    {
+        Console.WriteLine("Exporting CSV document");
+    }
+}
+
+public abstract class DocumentExporter
+{
+    public abstract IDocumentFile CreateDocument();
+
+    public void RunExport()
+    {
+        var document = CreateDocument();
+        document.Export();
+    }
+}
+
+public class PdfExporter : DocumentExporter
+{
+    public override IDocumentFile CreateDocument()
+    {
+        return new PdfDocument();
+    }
+}
+
+public class CsvExporter : DocumentExporter
+{
+    public override IDocumentFile CreateDocument()
+    {
+        return new CsvDocument();
+    }
+}
+
+var services = new ServiceCollection();
+services.AddSingleton<DocumentExporter, PdfExporter>();
+
+var provider = services.BuildServiceProvider();
+var exporter = provider.GetRequiredService<DocumentExporter>();
+exporter.RunExport();`,
+    explanation:
+      "The .NET version shows the same factory method pattern with dependency injection, so the export workflow stays stable while the concrete exporter is selected externally.",
+  },
 ];
