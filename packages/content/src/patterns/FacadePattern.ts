@@ -15,7 +15,7 @@ export const FacadePattern: PatternRecord = {
     "Can become a dumping ground if boundaries are unclear",
     "May obscure useful lower-level capabilities from advanced consumers",
   ],
-  languages: ["TypeScript", "Java", "Python", "Angular"],
+  languages: ["TypeScript", "Java", "Python", "Angular", "React", "React_Native", "C#", ".NET"],
   platforms: ["Applications", "APIs", "Service layers"],
   integrationNotes:
     "Facades are useful when exposing a stable boundary over a multi-service or mixed-language backend.",
