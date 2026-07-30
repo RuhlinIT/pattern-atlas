@@ -19,6 +19,9 @@ const languageMap: Record<string, string> = {
   Go: "go",
   Kotlin: "kotlin",
   Angular: "typescript",
+  React: "typescript",
+  React_Native: "typescript",
+  ".NET": "csharp",
 };
 
 function getSyntaxLanguage(language: string) {

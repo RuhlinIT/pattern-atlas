@@ -15,7 +15,7 @@ export const AdapterPattern: PatternRecord = {
     "Adds an extra layer that can hide important service-specific behavior",
     "Too many adapters can make integration code harder to navigate",
   ],
-  languages: ["TypeScript", "Java", "Python", "Angular"],
+  languages: ["TypeScript", "Java", "Python", "Angular", "React", "React_Native", "C#", ".NET"],
   platforms: ["Web", "Backend", "Integrations"],
   integrationNotes:
     "Adapters are especially useful when integrating legacy services, vendor SDKs, or mixed data formats behind a stable internal contract.",

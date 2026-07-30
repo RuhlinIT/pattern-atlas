@@ -166,4 +166,246 @@ class AlertService {
     explanation:
       "The Angular adapter service translates the app's notifier contract into the legacy messenger's payload-based API while keeping alert logic unchanged.",
   },
+  {
+    language: "React",
+    code: `import React, { useMemo } from "react";
+
+interface Notifier {
+  send(message: string): void;
+}
+
+class LegacyMessenger {
+  deliver(payload: { body: string }): void {
+    console.log(\`Legacy messenger sent: \${payload.body}\`);
+  }
+}
+
+class NotificationAdapter implements Notifier {
+  constructor(private messenger: LegacyMessenger) {}
+
+  send(message: string): void {
+    this.messenger.deliver({ body: message });
+  }
+}
+
+class AlertService {
+  constructor(private notifier: Notifier) {}
+
+  triggerAlert(message: string): void {
+    this.notifier.send(message);
+  }
+}
+
+function AlertButton({ alerts }: { alerts: AlertService }) {
+  return (
+    <button onClick={() => alerts.triggerAlert("CPU threshold exceeded")}>
+      Trigger alert
+    </button>
+  );
+}
+
+export function App() {
+  const notifier = useMemo(() => new NotificationAdapter(new LegacyMessenger()), []);
+  const alerts = useMemo(() => new AlertService(notifier), [notifier]);
+
+  return (
+    <main>
+      <h1>Alerts</h1>
+      <AlertButton alerts={alerts} />
+    </main>
+  );
+}`,
+    explanation:
+      "The React example keeps the alert service dependent on a simple notifier interface while the adapter translates that call into the legacy messenger's payload format.",
+  },
+  {
+    language: "React_Native",
+    code: `import React, { useMemo } from "react";
+import { Pressable, SafeAreaView, Text, View } from "react-native";
+
+interface Notifier {
+  send(message: string): void;
+}
+
+class LegacyMessenger {
+  deliver(payload: { body: string }): void {
+    console.log(\`Legacy messenger sent: \${payload.body}\`);
+  }
+}
+
+class NotificationAdapter implements Notifier {
+  constructor(private messenger: LegacyMessenger) {}
+
+  send(message: string): void {
+    this.messenger.deliver({ body: message });
+  }
+}
+
+class AlertService {
+  constructor(private notifier: Notifier) {}
+
+  triggerAlert(message: string): void {
+    this.notifier.send(message);
+  }
+}
+
+function AlertButton({ alerts }: { alerts: AlertService }) {
+  return (
+    <Pressable
+      onPress={() => alerts.triggerAlert("CPU threshold exceeded")}
+      style={{ padding: 12, backgroundColor: "#111827", borderRadius: 8 }}
+    >
+      <Text style={{ color: "#fff", textAlign: "center" }}>Trigger alert</Text>
+    </Pressable>
+  );
+}
+
+export function App() {
+  const notifier = useMemo(() => new NotificationAdapter(new LegacyMessenger()), []);
+  const alerts = useMemo(() => new AlertService(notifier), [notifier]);
+
+  return (
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+      <View style={{ gap: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: "600" }}>Alerts</Text>
+        <AlertButton alerts={alerts} />
+      </View>
+    </SafeAreaView>
+  );
+}`,
+    explanation:
+      "The React Native example uses the same adapter pattern, but wires the alert trigger into a mobile-friendly pressable UI instead of a web button.",
+  },
+  {
+    language: "C#",
+    code: `using System;
+
+public interface INotifier
+{
+    void Send(string message);
+}
+
+public class LegacyMessenger
+{
+    public void Deliver(MessagePayload payload)
+    {
+        Console.WriteLine($"Legacy messenger sent: {payload.Body}");
+    }
+}
+
+public class MessagePayload
+{
+    public string Body { get; }
+
+    public MessagePayload(string body)
+    {
+        Body = body;
+    }
+}
+
+public class NotificationAdapter : INotifier
+{
+    private readonly LegacyMessenger _messenger;
+
+    public NotificationAdapter(LegacyMessenger messenger)
+    {
+        _messenger = messenger;
+    }
+
+    public void Send(string message)
+    {
+        _messenger.Deliver(new MessagePayload(message));
+    }
+}
+
+public class AlertService
+{
+    private readonly INotifier _notifier;
+
+    public AlertService(INotifier notifier)
+    {
+        _notifier = notifier;
+    }
+
+    public void TriggerAlert(string message)
+    {
+        _notifier.Send(message);
+    }
+}
+
+var notifier = new NotificationAdapter(new LegacyMessenger());
+var alerts = new AlertService(notifier);
+alerts.TriggerAlert("CPU threshold exceeded");`,
+    explanation:
+      "The C# adapter converts the app's simple send contract into the legacy messenger's payload-based deliver call.",
+  },
+  {
+    language: ".NET",
+    code: `using System;
+using Microsoft.Extensions.DependencyInjection;
+
+public interface INotifier
+{
+    void Send(string message);
+}
+
+public class LegacyMessenger
+{
+    public void Deliver(MessagePayload payload)
+    {
+        Console.WriteLine($"Legacy messenger sent: {payload.Body}");
+    }
+}
+
+public class MessagePayload
+{
+    public string Body { get; }
+
+    public MessagePayload(string body)
+    {
+        Body = body;
+    }
+}
+
+public class NotificationAdapter : INotifier
+{
+    private readonly LegacyMessenger _messenger;
+
+    public NotificationAdapter(LegacyMessenger messenger)
+    {
+        _messenger = messenger;
+    }
+
+    public void Send(string message)
+    {
+        _messenger.Deliver(new MessagePayload(message));
+    }
+}
+
+public class AlertService
+{
+    private readonly INotifier _notifier;
+
+    public AlertService(INotifier notifier)
+    {
+        _notifier = notifier;
+    }
+
+    public void TriggerAlert(string message)
+    {
+        _notifier.Send(message);
+    }
+}
+
+var services = new ServiceCollection();
+services.AddSingleton<LegacyMessenger>();
+services.AddSingleton<INotifier, NotificationAdapter>();
+services.AddTransient<AlertService>();
+
+var provider = services.BuildServiceProvider();
+var alerts = provider.GetRequiredService<AlertService>();
+alerts.TriggerAlert("CPU threshold exceeded");`,
+    explanation:
+      "The .NET version shows the same adapter pattern with dependency injection, so the alert service stays decoupled from the legacy payload-based messenger.",
+  },
 ];

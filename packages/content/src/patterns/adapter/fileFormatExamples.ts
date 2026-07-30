@@ -150,4 +150,228 @@ print(directory.list_users())`,
     explanation:
       "The Angular adapter service converts CSV rows into the structured user records expected by the rest of the application.",
   },
+  {
+    language: "React",
+    code: `import React, { useMemo } from "react";
+
+type UserRecord = {
+  id: number;
+  name: string;
+};
+
+interface UserDirectory {
+  listUsers(): UserRecord[];
+}
+
+class CsvUserSource {
+  fetchRows(): string[] {
+    return ["1,Ada Lovelace", "2,Grace Hopper"];
+  }
+}
+
+class CsvUserAdapter implements UserDirectory {
+  constructor(private source: CsvUserSource) {}
+
+  listUsers(): UserRecord[] {
+    return this.source.fetchRows().map((row) => {
+      const [id, name] = row.split(",");
+      return { id: Number(id), name };
+    });
+  }
+}
+
+function UserList({ directory }: { directory: UserDirectory }) {
+  const users = useMemo(() => directory.listUsers(), [directory]);
+
+  return (
+    <ul>
+      {users.map((user) => (
+        <li key={user.id}>
+          {user.name} (#{user.id})
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export function App() {
+  const directory = useMemo(() => new CsvUserAdapter(new CsvUserSource()), []);
+
+  return (
+    <main>
+      <h1>User Directory</h1>
+      <UserList directory={directory} />
+    </main>
+  );
+}`,
+    explanation:
+      "The React component depends on a directory interface, while the adapter converts CSV rows into structured user records behind the scenes.",
+  },
+  {
+    language: "React_Native",
+    code: `import React, { useMemo } from "react";
+import { FlatList, SafeAreaView, Text, View } from "react-native";
+
+type UserRecord = {
+  id: number;
+  name: string;
+};
+
+interface UserDirectory {
+  listUsers(): UserRecord[];
+}
+
+class CsvUserSource {
+  fetchRows(): string[] {
+    return ["1,Ada Lovelace", "2,Grace Hopper"];
+  }
+}
+
+class CsvUserAdapter implements UserDirectory {
+  constructor(private source: CsvUserSource) {}
+
+  listUsers(): UserRecord[] {
+    return this.source.fetchRows().map((row) => {
+      const [id, name] = row.split(",");
+      return { id: Number(id), name };
+    });
+  }
+}
+
+function UserDirectoryList({ directory }: { directory: UserDirectory }) {
+  const users = useMemo(() => directory.listUsers(), [directory]);
+
+  return (
+    <FlatList
+      data={users}
+      keyExtractor={(item) => String(item.id)}
+      renderItem={({ item }) => (
+        <View style={{ paddingVertical: 8 }}>
+          <Text style={{ fontSize: 16 }}>{item.name}</Text>
+          <Text style={{ color: "#666" }}>ID: {item.id}</Text>
+        </View>
+      )}
+    />
+  );
+}
+
+export function App() {
+  const directory = useMemo(() => new CsvUserAdapter(new CsvUserSource()), []);
+
+  return (
+    <SafeAreaView style={{ flex: 1, padding: 16 }}>
+      <Text style={{ fontSize: 24, fontWeight: "600", marginBottom: 12 }}>
+        User Directory
+      </Text>
+      <UserDirectoryList directory={directory} />
+    </SafeAreaView>
+  );
+}`,
+    explanation:
+      "The React Native example uses the same adapter idea, but renders the adapted data with mobile-friendly components instead of HTML elements.",
+  },
+  {
+    language: "C#",
+    code: `using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public interface IUserDirectory
+{
+    List<UserRecord> ListUsers();
+}
+
+public class CsvUserSource
+{
+    public List<string> FetchRows()
+    {
+        return new List<string> { "1,Ada Lovelace", "2,Grace Hopper" };
+    }
+}
+
+public class UserRecord
+{
+    public int Id { get; }
+    public string Name { get; }
+
+    public UserRecord(int id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
+}
+
+public class CsvUserAdapter : IUserDirectory
+{
+    private readonly CsvUserSource _source;
+
+    public CsvUserAdapter(CsvUserSource source)
+    {
+        _source = source;
+    }
+
+    public List<UserRecord> ListUsers()
+    {
+        return _source.FetchRows()
+            .Select(row =>
+            {
+                var parts = row.Split(',');
+                return new UserRecord(int.Parse(parts[0]), parts[1]);
+            })
+            .ToList();
+    }
+}
+
+var directory = new CsvUserAdapter(new CsvUserSource());
+Console.WriteLine(directory.ListUsers().Count);`,
+    explanation:
+      "The C# adapter converts raw CSV rows into structured user records that the rest of the application can consume through a clean interface.",
+  },
+  {
+    language: ".NET",
+    code: `using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public interface IUserDirectory
+{
+    List<UserRecord> ListUsers();
+}
+
+public class CsvUserSource
+{
+    public List<string> FetchRows()
+    {
+        return new List<string> { "1,Ada Lovelace", "2,Grace Hopper" };
+    }
+}
+
+public record UserRecord(int Id, string Name);
+
+public class CsvUserAdapter : IUserDirectory
+{
+    private readonly CsvUserSource _source;
+
+    public CsvUserAdapter(CsvUserSource source)
+    {
+        _source = source;
+    }
+
+    public List<UserRecord> ListUsers()
+    {
+        return _source.FetchRows()
+            .Select(row =>
+            {
+                var parts = row.Split(',');
+                return new UserRecord(int.Parse(parts[0]), parts[1]);
+            })
+            .ToList();
+    }
+}
+
+IUserDirectory directory = new CsvUserAdapter(new CsvUserSource());
+Console.WriteLine(string.Join(", ", directory.ListUsers().Select(u => u.Name)));`,
+    explanation:
+      "The .NET version uses a record for the user model and an adapter to translate legacy CSV data into the structured interface expected by application code.",
+  },
 ];
