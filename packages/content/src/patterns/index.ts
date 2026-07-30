@@ -20,6 +20,7 @@ import { FlyweightPattern } from "./FlyweightPattern";
 import { ProxyPattern } from "./ProxyPattern";
 import { ChainOfResponsibilityPattern } from "./ChainOfResponsibilityPattern";
 import { MementoPattern } from './MementoPattern';
+import { TemplateMethodPattern } from './TemplateMethodPattern';
 
 export {
   AbstractFactoryPattern,
@@ -43,6 +44,7 @@ export {
   SingletonPattern,
   StatePattern,
   StrategyPattern,
+  TemplateMethodPattern,
 }
 
 export const patterns: PatternRecord[] = [
@@ -67,4 +69,5 @@ export const patterns: PatternRecord[] = [
   SingletonPattern,
   StatePattern,
   StrategyPattern,
+  TemplateMethodPattern,
 ];
