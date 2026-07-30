@@ -222,4 +222,301 @@ console.log(formatted.render());`,
     explanation:
       "Formatting decorators wrap the same Text contract, so Angular code can combine styles dynamically without hardcoding every rendering combination.",
   },
+  {
+    language: "React",
+    code: `import React, { useMemo } from "react";
+
+interface Text {
+  render(): string;
+}
+
+class PlainText implements Text {
+  constructor(private value: string) {}
+
+  render(): string {
+    return this.value;
+  }
+}
+
+abstract class TextDecorator implements Text {
+  constructor(protected text: Text) {}
+
+  render(): string {
+    return this.text.render();
+  }
+}
+
+class BoldDecorator extends TextDecorator {
+  render(): string {
+    return \`<b>\${super.render()}</b>\`;
+  }
+}
+
+class ItalicDecorator extends TextDecorator {
+  render(): string {
+    return \`<i>\${super.render()}</i>\`;
+  }
+}
+
+class UnderlineDecorator extends TextDecorator {
+  render(): string {
+    return \`<u>\${super.render()}</u>\`;
+  }
+}
+
+function Preview({ text }: { text: Text }) {
+  return <div dangerouslySetInnerHTML={{ __html: text.render() }} />;
+}
+
+export function App() {
+  const formatted = useMemo(
+    () => new UnderlineDecorator(new ItalicDecorator(new BoldDecorator(new PlainText("Pattern Atlas")))),
+    []
+  );
+
+  return (
+    <main>
+      <h1>Text Formatting</h1>
+      <Preview text={formatted} />
+    </main>
+  );
+}`,
+    explanation:
+      "The React example layers formatting decorators around the same text object, so the UI can render combined styles without baking every combination into one component.",
+  },
+  {
+    language: "React_Native",
+    code: `import React, { useMemo } from "react";
+import { SafeAreaView, Text, View } from "react-native";
+
+interface TextValue {
+  render(): string;
+}
+
+class PlainText implements TextValue {
+  constructor(private value: string) {}
+
+  render(): string {
+    return this.value;
+  }
+}
+
+abstract class TextDecorator implements TextValue {
+  constructor(protected text: TextValue) {}
+
+  render(): string {
+    return this.text.render();
+  }
+}
+
+class BoldDecorator extends TextDecorator {
+  render(): string {
+    return \`<b>\${super.render()}</b>\`;
+  }
+}
+
+class ItalicDecorator extends TextDecorator {
+  render(): string {
+    return \`<i>\${super.render()}</i>\`;
+  }
+}
+
+class UnderlineDecorator extends TextDecorator {
+  render(): string {
+    return \`<u>\${super.render()}</u>\`;
+  }
+}
+
+function Preview({ text }: { text: TextValue }) {
+  return (
+    <View>
+      <Text>{text.render()}</Text>
+    </View>
+  );
+}
+
+export function App() {
+  const formatted = useMemo(
+    () => new UnderlineDecorator(new ItalicDecorator(new BoldDecorator(new PlainText("Pattern Atlas")))),
+    []
+  );
+
+  return (
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+      <View style={{ gap: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: "600" }}>Text Formatting</Text>
+        <Preview text={formatted} />
+      </View>
+    </SafeAreaView>
+  );
+}`,
+    explanation:
+      "The React Native version uses the same decorator chain, but displays the formatted text in a mobile-friendly layout.",
+  },
+  {
+    language: "C#",
+    code: `using System;
+
+public interface IText
+{
+    string Render();
+}
+
+public class PlainText : IText
+{
+    private readonly string _value;
+
+    public PlainText(string value)
+    {
+        _value = value;
+    }
+
+    public string Render()
+    {
+        return _value;
+    }
+}
+
+public abstract class TextDecorator : IText
+{
+    protected readonly IText Text;
+
+    protected TextDecorator(IText text)
+    {
+        Text = text;
+    }
+
+    public virtual string Render()
+    {
+        return Text.Render();
+    }
+}
+
+public class BoldDecorator : TextDecorator
+{
+    public BoldDecorator(IText text) : base(text) { }
+
+    public override string Render()
+    {
+        return $"<b>{base.Render()}</b>";
+    }
+}
+
+public class ItalicDecorator : TextDecorator
+{
+    public ItalicDecorator(IText text) : base(text) { }
+
+    public override string Render()
+    {
+        return $"<i>{base.Render()}</i>";
+    }
+}
+
+public class UnderlineDecorator : TextDecorator
+{
+    public UnderlineDecorator(IText text) : base(text) { }
+
+    public override string Render()
+    {
+        return $"<u>{base.Render()}</u>";
+    }
+}
+
+IText formatted =
+    new UnderlineDecorator(
+        new ItalicDecorator(
+            new BoldDecorator(new PlainText("Pattern Atlas"))
+        )
+    );
+
+Console.WriteLine(formatted.Render());`,
+    explanation:
+      "The C# example keeps the render contract stable while each decorator adds one formatting layer around the base text.",
+  },
+  {
+    language: ".NET",
+    code: `using System;
+using Microsoft.Extensions.DependencyInjection;
+
+public interface IText
+{
+    string Render();
+}
+
+public class PlainText : IText
+{
+    private readonly string _value;
+
+    public PlainText(string value)
+    {
+        _value = value;
+    }
+
+    public string Render()
+    {
+        return _value;
+    }
+}
+
+public abstract class TextDecorator : IText
+{
+    protected readonly IText Text;
+
+    protected TextDecorator(IText text)
+    {
+        Text = text;
+    }
+
+    public virtual string Render()
+    {
+        return Text.Render();
+    }
+}
+
+public class BoldDecorator : TextDecorator
+{
+    public BoldDecorator(IText text) : base(text) { }
+
+    public override string Render()
+    {
+        return $"<b>{base.Render()}</b>";
+    }
+}
+
+public class ItalicDecorator : TextDecorator
+{
+    public ItalicDecorator(IText text) : base(text) { }
+
+    public override string Render()
+    {
+        return $"<i>{base.Render()}</i>";
+    }
+}
+
+public class UnderlineDecorator : TextDecorator
+{
+    public UnderlineDecorator(IText text) : base(text) { }
+
+    public override string Render()
+    {
+        return $"<u>{base.Render()}</u>";
+    }
+}
+
+var services = new ServiceCollection();
+services.AddSingleton<IText>(
+    new UnderlineDecorator(
+        new ItalicDecorator(
+            new BoldDecorator(new PlainText("Pattern Atlas"))
+        )
+    )
+);
+
+var provider = services.BuildServiceProvider();
+var formatted = provider.GetRequiredService<IText>();
+
+Console.WriteLine(formatted.Render());`,
+    explanation:
+      "The .NET version shows the same layered formatter composition with dependency injection, so styles can be stacked without changing the plain text implementation.",
+  },
 ];

@@ -18,7 +18,7 @@ export const DecoratorPattern: PatternRecord = {
     "Can introduce many small wrapper classes that are harder to trace in debugging",
     "Ordering of decorators matters, so composition needs to be deliberate",
   ],
-  languages: ["TypeScript", "Java", "Python", "Angular"],
+  languages: ["TypeScript", "Java", "Python", "Angular", "React", "React_Native", "C#", ".NET"],
   platforms: ["Frontend", "Backend", "Services"],
   integrationNotes:
     "Decorators work well for cross-cutting concerns such as logging, retry, caching, compression, and telemetry because each layer keeps the same interface while adding one concern.",

@@ -218,4 +218,298 @@ console.log(client.get('/users'));`,
     explanation:
       "Caching and metrics remain independent wrapper layers around the same HttpClient contract, so Angular code can compose or remove them without changing callers.",
   },
+  {
+    language: "React",
+    code: `import React, { useMemo } from "react";
+
+interface HttpClient {
+  get(url: string): string;
+}
+
+class BaseHttpClient implements HttpClient {
+  get(url: string): string {
+    return \`response from \${url}\`;
+  }
+}
+
+abstract class HttpClientDecorator implements HttpClient {
+  constructor(protected wrappee: HttpClient) {}
+
+  get(url: string): string {
+    return this.wrappee.get(url);
+  }
+}
+
+class MetricsHttpClient extends HttpClientDecorator {
+  get(url: string): string {
+    console.log(\`Measuring request to \${url}\`);
+    return super.get(url);
+  }
+}
+
+class CachingHttpClient extends HttpClientDecorator {
+  private cache = new Map<string, string>();
+
+  get(url: string): string {
+    if (this.cache.has(url)) {
+      return this.cache.get(url)!;
+    }
+
+    const response = super.get(url);
+    this.cache.set(url, response);
+    return response;
+  }
+}
+
+function ClientDemo({ client }: { client: HttpClient }) {
+  const first = client.get("/users");
+  const second = client.get("/users");
+
+  return (
+    <section>
+      <p>First: {first}</p>
+      <p>Second: {second}</p>
+    </section>
+  );
+}
+
+export function App() {
+  const client = useMemo(
+    () => new CachingHttpClient(new MetricsHttpClient(new BaseHttpClient())),
+    []
+  );
+
+  return (
+    <main>
+      <h1>HTTP Client</h1>
+      <ClientDemo client={client} />
+    </main>
+  );
+}`,
+    explanation:
+      "The React example layers caching and metrics around the same client interface, so the UI can call get without knowing which cross-cutting behaviors are attached.",
+  },
+  {
+    language: "React_Native",
+    code: `import React, { useMemo } from "react";
+import { SafeAreaView, Text, View } from "react-native";
+
+interface HttpClient {
+  get(url: string): string;
+}
+
+class BaseHttpClient implements HttpClient {
+  get(url: string): string {
+    return \`response from \${url}\`;
+  }
+}
+
+abstract class HttpClientDecorator implements HttpClient {
+  constructor(protected wrappee: HttpClient) {}
+
+  get(url: string): string {
+    return this.wrappee.get(url);
+  }
+}
+
+class MetricsHttpClient extends HttpClientDecorator {
+  get(url: string): string {
+    console.log(\`Measuring request to \${url}\`);
+    return super.get(url);
+  }
+}
+
+class CachingHttpClient extends HttpClientDecorator {
+  private cache = new Map<string, string>();
+
+  get(url: string): string {
+    if (this.cache.has(url)) {
+      return this.cache.get(url)!;
+    }
+
+    const response = super.get(url);
+    this.cache.set(url, response);
+    return response;
+  }
+}
+
+function ClientDemo({ client }: { client: HttpClient }) {
+  const first = client.get("/users");
+  const second = client.get("/users");
+
+  return (
+    <View style={{ gap: 8 }}>
+      <Text>First: {first}</Text>
+      <Text>Second: {second}</Text>
+    </View>
+  );
+}
+
+export function App() {
+  const client = useMemo(
+    () => new CachingHttpClient(new MetricsHttpClient(new BaseHttpClient())),
+    []
+  );
+
+  return (
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+      <View style={{ gap: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: "600" }}>HTTP Client</Text>
+        <ClientDemo client={client} />
+      </View>
+    </SafeAreaView>
+  );
+}`,
+    explanation:
+      "The React Native version uses the same stacked decorators, but demonstrates the client behavior in a mobile-friendly layout.",
+  },
+  {
+    language: "C#",
+    code: `using System;
+using System.Collections.Generic;
+
+public interface IHttpClient
+{
+    string Get(string url);
+}
+
+public class BaseHttpClient : IHttpClient
+{
+    public string Get(string url)
+    {
+        return $"response from {url}";
+    }
+}
+
+public abstract class HttpClientDecorator : IHttpClient
+{
+    protected readonly IHttpClient Wrappee;
+
+    protected HttpClientDecorator(IHttpClient wrappee)
+    {
+        Wrappee = wrappee;
+    }
+
+    public virtual string Get(string url)
+    {
+        return Wrappee.Get(url);
+    }
+}
+
+public class MetricsHttpClient : HttpClientDecorator
+{
+    public MetricsHttpClient(IHttpClient wrappee) : base(wrappee) { }
+
+    public override string Get(string url)
+    {
+        Console.WriteLine($"Measuring request to {url}");
+        return base.Get(url);
+    }
+}
+
+public class CachingHttpClient : HttpClientDecorator
+{
+    private readonly Dictionary<string, string> _cache = new();
+
+    public CachingHttpClient(IHttpClient wrappee) : base(wrappee) { }
+
+    public override string Get(string url)
+    {
+        if (_cache.TryGetValue(url, out var cached))
+        {
+            return cached;
+        }
+
+        var response = base.Get(url);
+        _cache[url] = response;
+        return response;
+    }
+}
+
+IHttpClient client = new CachingHttpClient(
+    new MetricsHttpClient(new BaseHttpClient())
+);
+
+Console.WriteLine(client.Get("/users"));
+Console.WriteLine(client.Get("/users"));`,
+    explanation:
+      "The C# example preserves the same IHttpClient contract while decorators add caching and metrics behavior without changing consumers.",
+  },
+  {
+    language: ".NET",
+    code: `using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+
+public interface IHttpClient
+{
+    string Get(string url);
+}
+
+public class BaseHttpClient : IHttpClient
+{
+    public string Get(string url)
+    {
+        return $"response from {url}";
+    }
+}
+
+public abstract class HttpClientDecorator : IHttpClient
+{
+    protected readonly IHttpClient Wrappee;
+
+    protected HttpClientDecorator(IHttpClient wrappee)
+    {
+        Wrappee = wrappee;
+    }
+
+    public virtual string Get(string url)
+    {
+        return Wrappee.Get(url);
+    }
+}
+
+public class MetricsHttpClient : HttpClientDecorator
+{
+    public MetricsHttpClient(IHttpClient wrappee) : base(wrappee) { }
+
+    public override string Get(string url)
+    {
+        Console.WriteLine($"Measuring request to {url}");
+        return base.Get(url);
+    }
+}
+
+public class CachingHttpClient : HttpClientDecorator
+{
+    private readonly Dictionary<string, string> _cache = new();
+
+    public CachingHttpClient(IHttpClient wrappee) : base(wrappee) { }
+
+    public override string Get(string url)
+    {
+        if (_cache.TryGetValue(url, out var cached))
+        {
+            return cached;
+        }
+
+        var response = base.Get(url);
+        _cache[url] = response;
+        return response;
+    }
+}
+
+var services = new ServiceCollection();
+services.AddSingleton<IHttpClient>(_ =>
+    new CachingHttpClient(new MetricsHttpClient(new BaseHttpClient()))
+);
+
+var provider = services.BuildServiceProvider();
+var client = provider.GetRequiredService<IHttpClient>();
+
+Console.WriteLine(client.Get("/users"));
+Console.WriteLine(client.Get("/users"));`,
+    explanation:
+      "The .NET version shows the same decorator stack assembled through dependency injection, so caching and metrics remain pluggable around the base client.",
+  },
 ];
