@@ -190,4 +190,265 @@ publisher.publish('New design patterns article is live');`,
     explanation:
       "The Angular publisher service emits one headline stream, and each subscriber reacts independently by subscribing to the published updates.",
   },
+  {
+    language: "React",
+    code: `import React, { useMemo } from "react";
+
+interface Subscriber {
+  update(headline: string): void;
+}
+
+class NewsPublisher {
+  private subscribers: Subscriber[] = [];
+
+  subscribe(subscriber: Subscriber): void {
+    this.subscribers.push(subscriber);
+  }
+
+  publish(headline: string): void {
+    this.subscribers.forEach((subscriber) => subscriber.update(headline));
+  }
+}
+
+class MobileAppSubscriber implements Subscriber {
+  update(headline: string): void {
+    console.log(\`Mobile app received: \${headline}\`);
+  }
+}
+
+class EmailSubscriber implements Subscriber {
+  update(headline: string): void {
+    console.log(\`Email subscriber received: \${headline}\`);
+  }
+}
+
+class WebSubscriber implements Subscriber {
+  update(headline: string): void {
+    console.log(\`Web subscriber received: \${headline}\`);
+  }
+}
+
+function PublishButton({ publisher }: { publisher: NewsPublisher }) {
+  return (
+    <button onClick={() => publisher.publish("New design patterns article is live")}>
+      Publish headline
+    </button>
+  );
+}
+
+export function App() {
+  const publisher = useMemo(() => {
+    const instance = new NewsPublisher();
+    instance.subscribe(new MobileAppSubscriber());
+    instance.subscribe(new EmailSubscriber());
+    instance.subscribe(new WebSubscriber());
+    return instance;
+  }, []);
+
+  return (
+    <main>
+      <h1>News Publisher</h1>
+      <PublishButton publisher={publisher} />
+    </main>
+  );
+}`,
+    explanation:
+      "The React example keeps the publisher in charge of broadcasting while each subscriber updates its own channel independently when a headline is published.",
+  },
+  {
+    language: "React_Native",
+    code: `import React, { useMemo } from "react";
+import { Pressable, SafeAreaView, Text, View } from "react-native";
+
+interface Subscriber {
+  update(headline: string): void;
+}
+
+class NewsPublisher {
+  private subscribers: Subscriber[] = [];
+
+  subscribe(subscriber: Subscriber): void {
+    this.subscribers.push(subscriber);
+  }
+
+  publish(headline: string): void {
+    this.subscribers.forEach((subscriber) => subscriber.update(headline));
+  }
+}
+
+class MobileAppSubscriber implements Subscriber {
+  update(headline: string): void {
+    console.log(\`Mobile app received: \${headline}\`);
+  }
+}
+
+class EmailSubscriber implements Subscriber {
+  update(headline: string): void {
+    console.log(\`Email subscriber received: \${headline}\`);
+  }
+}
+
+class WebSubscriber implements Subscriber {
+  update(headline: string): void {
+    console.log(\`Web subscriber received: \${headline}\`);
+  }
+}
+
+function PublishButton({ publisher }: { publisher: NewsPublisher }) {
+  return (
+    <Pressable
+      onPress={() => publisher.publish("New design patterns article is live")}
+      style={{ padding: 12, backgroundColor: "#111827", borderRadius: 8 }}
+    >
+      <Text style={{ color: "#fff", textAlign: "center" }}>Publish headline</Text>
+    </Pressable>
+  );
+}
+
+export function App() {
+  const publisher = useMemo(() => {
+    const instance = new NewsPublisher();
+    instance.subscribe(new MobileAppSubscriber());
+    instance.subscribe(new EmailSubscriber());
+    instance.subscribe(new WebSubscriber());
+    return instance;
+  }, []);
+
+  return (
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+      <View style={{ gap: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: "600" }}>News Publisher</Text>
+        <PublishButton publisher={publisher} />
+      </View>
+    </SafeAreaView>
+  );
+}`,
+    explanation:
+      "The React Native version uses the same observer setup, but triggers publication through a mobile-friendly pressable control instead of a web button.",
+  },
+  {
+    language: "C#",
+    code: `using System;
+using System.Collections.Generic;
+
+public interface ISubscriber
+{
+    void Update(string headline);
+}
+
+public class NewsPublisher
+{
+    private readonly List<ISubscriber> _subscribers = new();
+
+    public void Subscribe(ISubscriber subscriber)
+    {
+        _subscribers.Add(subscriber);
+    }
+
+    public void Publish(string headline)
+    {
+        foreach (var subscriber in _subscribers)
+        {
+            subscriber.Update(headline);
+        }
+    }
+}
+
+public class MobileAppSubscriber : ISubscriber
+{
+    public void Update(string headline)
+    {
+        Console.WriteLine($"Mobile app received: {headline}");
+    }
+}
+
+public class EmailSubscriber : ISubscriber
+{
+    public void Update(string headline)
+    {
+        Console.WriteLine($"Email subscriber received: {headline}");
+    }
+}
+
+public class WebSubscriber : ISubscriber
+{
+    public void Update(string headline)
+    {
+        Console.WriteLine($"Web subscriber received: {headline}");
+    }
+}
+
+var publisher = new NewsPublisher();
+publisher.Subscribe(new MobileAppSubscriber());
+publisher.Subscribe(new EmailSubscriber());
+publisher.Subscribe(new WebSubscriber());
+publisher.Publish("New design patterns article is live");`,
+    explanation:
+      "The C# example models the publisher as the subject and the subscribers as observers, so each channel reacts when a new headline is broadcast.",
+  },
+  {
+    language: ".NET",
+    code: `using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+
+public interface ISubscriber
+{
+    void Update(string headline);
+}
+
+public class NewsPublisher
+{
+    private readonly List<ISubscriber> _subscribers = new();
+
+    public void Subscribe(ISubscriber subscriber)
+    {
+        _subscribers.Add(subscriber);
+    }
+
+    public void Publish(string headline)
+    {
+        foreach (var subscriber in _subscribers)
+        {
+            subscriber.Update(headline);
+        }
+    }
+}
+
+public class MobileAppSubscriber : ISubscriber
+{
+    public void Update(string headline)
+    {
+        Console.WriteLine($"Mobile app received: {headline}");
+    }
+}
+
+public class EmailSubscriber : ISubscriber
+{
+    public void Update(string headline)
+    {
+        Console.WriteLine($"Email subscriber received: {headline}");
+    }
+}
+
+public class WebSubscriber : ISubscriber
+{
+    public void Update(string headline)
+    {
+        Console.WriteLine($"Web subscriber received: {headline}");
+    }
+}
+
+var services = new ServiceCollection();
+services.AddSingleton<NewsPublisher>();
+
+var provider = services.BuildServiceProvider();
+var publisher = provider.GetRequiredService<NewsPublisher>();
+publisher.Subscribe(new MobileAppSubscriber());
+publisher.Subscribe(new EmailSubscriber());
+publisher.Subscribe(new WebSubscriber());
+publisher.Publish("New design patterns article is live");`,
+    explanation:
+      "The .NET version shows the same observer pattern with dependency injection available for the publisher, while subscribers remain decoupled from the broadcast logic.",
+  },
 ];

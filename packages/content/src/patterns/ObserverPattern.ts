@@ -15,7 +15,7 @@ export const ObserverPattern: PatternRecord = {
     "Notification flows can become hard to trace when many observers react to the same event",
     "Observers may receive updates they do not need unless subscriptions are carefully designed",
   ],
-  languages: ["TypeScript", "Java", "Python", "Angular"],
+  languages: ["TypeScript", "Java", "Python", "Angular", "React", "React_Native", "C#", ".NET"],
   platforms: ["Web", "Backend", "Event-driven systems"],
   integrationNotes:
     "Observers work well inside a single application boundary for UI events, domain events, and in-process notifications where subscribers change dynamically.",
