@@ -1,3 +1,4 @@
+import { StatePattern } from './StatePattern';
 import { MediatorPattern } from './MediatorPattern';
 import { IteratorPattern } from './IteratorPattern';
 import { InterpreterPattern } from './InterpreterPattern';
@@ -40,6 +41,7 @@ export {
   PrototypePattern,
   ProxyPattern,
   SingletonPattern,
+  StatePattern,
   StrategyPattern,
 }
 
@@ -63,5 +65,6 @@ export const patterns: PatternRecord[] = [
   PrototypePattern,
   ProxyPattern,
   SingletonPattern,
+  StatePattern,
   StrategyPattern,
 ];
