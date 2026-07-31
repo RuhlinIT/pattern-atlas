@@ -2,13 +2,21 @@
 
 import { useId, useMemo, useState, type KeyboardEvent } from "react";
 import type {
+  PatternLanguage,
   PatternLanguageExample,
   PatternScenario,
 } from "@atlas-patterns/schemas";
-import { CodeBlock, Tag } from "@atlas-patterns/ui";
+import { CodeBlock, prettyLanguageLabels, Tag } from "@atlas-patterns/ui";
+
+type LegacyScenarioWithExamples = PatternScenario & {
+  languageExamples?: PatternLanguageExample[];
+};
 
 type PatternExamplesTabsProps = {
-  scenarios: PatternScenario[];
+  scenarios: readonly (PatternScenario | LegacyScenarioWithExamples)[];
+  scenarioExamples?: Partial<
+    Record<string, Partial<Record<PatternLanguage, PatternLanguageExample>>>
+  >;
 };
 
 function getNextIndex(current: number, total: number) {
@@ -19,7 +27,34 @@ function getPreviousIndex(current: number, total: number) {
   return current === 0 ? total - 1 : current - 1;
 }
 
-export function PatternExamplesTabs({ scenarios }: PatternExamplesTabsProps) {
+function getPrettyLabel(language: string) {
+  return prettyLanguageLabels[language as keyof typeof prettyLanguageLabels] ?? language;
+}
+
+function hasLegacyExamples (
+  scenario: PatternScenario | LegacyScenarioWithExamples,
+): scenario is LegacyScenarioWithExamples {
+  return "languageExamples" in scenario;
+}
+
+function normalizeExamples(
+  scenario: PatternScenario | LegacyScenarioWithExamples,
+  scenarioExamples?: Partial<
+    Record<string, Partial<Record<PatternLanguage, PatternLanguageExample>>>
+  >,
+): PatternLanguageExample[] {
+  if (hasLegacyExamples(scenario) && scenario.languageExamples?.length) {
+    return scenario.languageExamples;
+  }
+
+  const next = scenarioExamples?.[scenario.slug] ?? {};
+  return Object.values(next).filter(Boolean) as PatternLanguageExample[];
+}
+
+export function PatternExamplesTabs({
+  scenarios,
+  scenarioExamples,
+}: PatternExamplesTabsProps) {
   const baseId = useId();
   const orderedScenarios = useMemo(() => scenarios, [scenarios]);
 
@@ -36,7 +71,7 @@ export function PatternExamplesTabs({ scenarios }: PatternExamplesTabsProps) {
     return <p>No scenarios yet.</p>;
   }
 
-  const languageExamples = activeScenario.languageExamples;
+  const languageExamples = normalizeExamples(activeScenario, scenarioExamples);
   const activeLanguageExample: PatternLanguageExample | undefined =
     languageExamples[activeLanguageIndex] ?? languageExamples[0];
 
@@ -204,7 +239,7 @@ export function PatternExamplesTabs({ scenarios }: PatternExamplesTabsProps) {
                     className={`tab-button${isActive ? " active" : ""}`}
                     onClick={() => setActiveLanguageIndex(index)}
                   >
-                    {example.language}
+                    {getPrettyLabel(example.language)}
                   </button>
                 );
               })}

@@ -2,7 +2,7 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 
 export const documentVisitorExamples: PatternLanguageExample[] = [
   {
-    language: "TypeScript",
+    language: "typescript",
     code: `interface DocumentVisitor {
   visitParagraph(paragraph: Paragraph): string;
   visitHeading(heading: Heading): string;
@@ -65,7 +65,7 @@ console.log(html);`,
       "The document visitor exports nodes to HTML without embedding export logic inside the node classes.",
   },
   {
-    language: "Java",
+    language: "java",
     code: `interface DocumentVisitor {
     String visitParagraph(Paragraph paragraph);
     String visitHeading(Heading heading);
@@ -140,7 +140,7 @@ System.out.println(html.toString());`,
       "The Java document visitor separates HTML export behavior from the document node classes.",
   },
   {
-    language: "Python",
+    language: "python",
     code: `from abc import ABC, abstractmethod
 
 

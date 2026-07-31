@@ -2,7 +2,8 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 
 export const shapeVisitorExamples: PatternLanguageExample[] = [
   {
-    language: "TypeScript",
+    title: "typescript",
+    language: "typescript",
     code: `interface ShapeVisitor {
   visitCircle(circle: Circle): void;
   visitRectangle(rectangle: Rectangle): void;

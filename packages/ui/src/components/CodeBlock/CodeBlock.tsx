@@ -2,6 +2,7 @@
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { prettyLanguageLabels } from "../../constants/languageLabels";
 import styles from "./CodeBlock.module.css";
 
 type CodeBlockProps = {
@@ -9,32 +10,39 @@ type CodeBlockProps = {
   language: string;
 };
 
-const languageMap: Record<string, string> = {
-  TypeScript: "typescript",
-  JavaScript: "javascript",
-  Python: "python",
-  Java: "java",
-  "C#": "csharp",
-  PHP: "php",
-  Go: "go",
-  Kotlin: "kotlin",
-  Angular: "typescript",
-  React: "typescript",
-  React_Native: "typescript",
-  ".NET": "csharp",
+const syntaxLanguageMap: Record<string, string> = {
+  typescript: "typescript",
+  javascript: "javascript",
+  python: "python",
+  java: "java",
+  csharp: "csharp",
+  dotnet: "csharp",
+  angular: "typescript",
+  react: "tsx",
+  "react-native": "tsx",
+  jsx: "jsx",
+  tsx: "tsx",
+  php: "php",
+  go: "go",
+  kotlin: "kotlin",
 };
 
+function getDisplayLabel(language: string) {
+  return prettyLanguageLabels[language as keyof typeof prettyLanguageLabels] ?? language;
+}
+
 function getSyntaxLanguage(language: string) {
-  return languageMap[language] ?? "text";
+  return syntaxLanguageMap[language] ?? "text";
 }
 
 export function CodeBlock({ code, language }: CodeBlockProps) {
+  const displayLabel = getDisplayLabel(language);
   const syntaxLanguage = getSyntaxLanguage(language);
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <span className={styles.label}>{language}</span>
+        <span className={styles.label}>{displayLabel}</span>
       </div>
 
       <SyntaxHighlighter

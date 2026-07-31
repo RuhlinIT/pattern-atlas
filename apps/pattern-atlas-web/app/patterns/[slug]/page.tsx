@@ -68,7 +68,7 @@ export default async function PatternDetailPage({
 
       <SectionCard title="Tradeoffs">
         <ul className="list">
-          {pattern.tradeoffs.map((tradeoff) => (
+          {(pattern.tradeoffs ?? []).map((tradeoff) => (
             <li key={tradeoff}>{tradeoff}</li>
           ))}
         </ul>
@@ -80,20 +80,23 @@ export default async function PatternDetailPage({
         </SectionCard>
 
         <SectionCard title="Platforms">
-          <p>{pattern.platforms.join(", ")}</p>
+          <p>{(pattern.platforms ?? []).join(", ")}</p>
         </SectionCard>
       </div>
 
       <SectionCard title="Scenarios">
-        <PatternExamplesTabs scenarios={pattern.scenarios} />
+        <PatternExamplesTabs
+          scenarios={pattern.scenarios}
+          {...(pattern.scenarioExamples ? { scenarioExamples: pattern.scenarioExamples } : {})}
+        />
       </SectionCard>
 
       <SectionCard title="Real-world examples">
-        {pattern.realWorldExamples.length === 0 ? (
+        {(pattern.realWorldExamples ?? []).length === 0 ? (
           <p>No real-world examples yet.</p>
         ) : (
           <ul className="list">
-            {pattern.realWorldExamples.map((example) => (
+            {(pattern.realWorldExamples ?? []).map((example) => (
               <li key={example.title}>
                 <strong>{example.title}:</strong> {example.description}
               </li>
