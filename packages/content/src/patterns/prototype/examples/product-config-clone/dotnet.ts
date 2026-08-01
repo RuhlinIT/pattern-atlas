@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const dotnet: PatternLanguageExample = {
+  language: "dotnet",
+  title: "Product config clone",
+  code: "using System;\nusing System.Collections.Generic;\nusing Microsoft.Extensions.DependencyInjection;\n\n\npublic interface IProductPrototype\n{\n    IProductPrototype Clone();\n    string Summary();\n}\n\n\npublic class ProductConfig : IProductPrototype\n{\n    public string Name { get; set; }\n    public int Price { get; set; }\n    public List<string> Options { get; set; }\n\n\n    public ProductConfig(string name, int price, List<string> options)\n    {\n        Name = name;\n        Price = price;\n        Options = options;\n    }\n\n\n    public IProductPrototype Clone()\n    {\n        return new ProductConfig(Name, Price, new List<string>(Options));\n    }\n\n\n    public string Summary()\n    {\n        return \"${Name} at ${Price}: ${string.Join(\", \", Options)}\";\n    }\n}\n\n\nvar services = new ServiceCollection();\nservices.AddSingleton(new ProductConfig(\"Starter Pack\", 49, new List<string> { \"Basic Support\", \"Email Access\" }));\n\nvar provider = services.BuildServiceProvider();\nvar baseProduct = provider.GetRequiredService<ProductConfig>();\nvar premiumProduct = (ProductConfig)baseProduct.Clone();\npremiumProduct.Name = \"Premium Pack\";\npremiumProduct.Price = 99;\npremiumProduct.Options.Add(\"Priority Support\");\n\n\nConsole.WriteLine(baseProduct.Summary());\nConsole.WriteLine(premiumProduct.Summary());",
+  explanation: "The .NET version registers a product prototype in dependency injection so the app can clone and adapt a base offer for new catalog variants.",
+};

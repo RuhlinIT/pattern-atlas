@@ -14,7 +14,7 @@ import { factoryMethodPattern } from "./factory-method";
 import { builderPattern } from "./builder";
 // import { AbstractFactoryPattern } from "./AbstractFactoryPattern";
 import { abstractFactoryPattern } from './abstract-factory';
-import { PrototypePattern } from "./PrototypePattern";
+import { prototypePattern } from "./prototype";
 import { SingletonPattern } from "./SingletonPattern";
 import { bridgePattern } from "./bridge";
 import { compositePattern } from "./composite";
@@ -41,7 +41,7 @@ export {
   mediatorPattern,
   mementoPattern,
   observerPattern,
-  PrototypePattern,
+  prototypePattern,
   ProxyPattern,
   SingletonPattern,
   StatePattern,
@@ -67,7 +67,7 @@ export const patterns: PatternRecord[] = [
   mediatorPattern,
   mementoPattern,
   observerPattern,
-  PrototypePattern,
+  prototypePattern,
   ProxyPattern,
   SingletonPattern,
   StatePattern,

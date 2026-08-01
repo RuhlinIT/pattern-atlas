@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const dotnet: PatternLanguageExample = {
+  language: "dotnet",
+  title: "Game character clone",
+  code: "using System;\nusing System.Collections.Generic;\nusing Microsoft.Extensions.DependencyInjection;\n\n\npublic interface ICharacterPrototype\n{\n    ICharacterPrototype Clone();\n    string Describe();\n}\n\n\npublic class EnemyCharacter : ICharacterPrototype\n{\n    public string Name { get; set; }\n    public int Health { get; set; }\n    public List<string> Abilities { get; set; }\n\n\n    public EnemyCharacter(string name, int health, List<string> abilities)\n    {\n        Name = name;\n        Health = health;\n        Abilities = abilities;\n    }\n\n\n    public ICharacterPrototype Clone()\n    {\n        return new EnemyCharacter(Name, Health, new List<string>(Abilities));\n    }\n\n\n    public string Describe()\n    {\n        return $\"{Name} with {Health} health and abilities: {string.Join(\", \", Abilities)}\";\n    }\n}\n\n\nvar services = new ServiceCollection();\nservices.AddSingleton(new EnemyCharacter(\"Guardian\", 100, new List<string> { \"Slash\", \"Block\" }));\n\nvar provider = services.BuildServiceProvider();\nvar baseEnemy = provider.GetRequiredService<EnemyCharacter>();\nvar eliteEnemy = (EnemyCharacter)baseEnemy.Clone();\neliteEnemy.Name = \"Elite Guardian\";\neliteEnemy.Health = 150;\neliteEnemy.Abilities.Add(\"Counter\");\n\n\nConsole.WriteLine(baseEnemy.Describe());\nConsole.WriteLine(eliteEnemy.Describe());",
+  explanation: "The .NET version registers a prototype in dependency injection so the app can clone and adapt a base character cleanly.",
+};

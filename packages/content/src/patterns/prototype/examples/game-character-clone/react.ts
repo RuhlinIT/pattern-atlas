@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Game character clone",
+  code: "import React, { useMemo } from \"react\";\n\n\ninterface CharacterPrototype {\n  clone(): CharacterPrototype;\n  describe(): string;\n}\n\n\nclass EnemyCharacter implements CharacterPrototype {\n  constructor(\n    public name: string,\n    public health: number,\n    public abilities: string[],\n  ) {}\n\n\n  clone(): CharacterPrototype {\n    return new EnemyCharacter(this.name, this.health, [...this.abilities]);\n  }\n\n\n  describe(): string {\n    return `${this.name} with ${this.health} health and abilities: ${this.abilities.join(\", \")}`;\n  }\n}\n\n\nfunction CharacterPreview({ character }: { character: CharacterPrototype }) {\n  return <p>{character.describe()}</p>;\n}\n\n\nexport function App() {\n  const baseEnemy = useMemo(\n    () => new EnemyCharacter(\"Guardian\", 100, [\"Slash\", \"Block\"]),\n    [],\n  );\n\n\n  const eliteEnemy = useMemo(() => {\n    const cloned = baseEnemy.clone() as EnemyCharacter;\n    cloned.name = \"Elite Guardian\";\n    cloned.health = 150;\n    cloned.abilities.push(\"Counter\");\n    return cloned;\n  }, [baseEnemy]);\n\n\n  return (\n    <main>\n      <h1>Game Character Clone</h1>\n      <CharacterPreview character={baseEnemy} />\n      <CharacterPreview character={eliteEnemy} />\n    </main>\n  );\n}",
+  explanation: "The React example clones a base enemy prototype so the UI can display both the original and a customized variant without rebuilding the object graph.",
+};
