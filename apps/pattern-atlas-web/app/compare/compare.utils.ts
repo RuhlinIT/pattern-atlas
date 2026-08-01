@@ -11,9 +11,9 @@ import type {
 } from "./compare.types";
 
 const patternCategories = [
-  "Behavioral",
-  "Structural",
-  "Creational",
+  "behavioral",
+  "structural",
+  "creational",
 ] as const satisfies readonly PatternCategory[];
 
 const MAX_COMPARE_SELECTIONS = 3;
@@ -111,22 +111,28 @@ export function buildCompareRows(
       values: toValueMap(selectedPatterns, (pattern) => pattern.category),
     },
     {
+      key: "summary",
+      label: "Summary",
+      group: "basics",
+      values: toValueMap(selectedPatterns, (pattern) => pattern.summary),
+    },
+    {
       key: "intent",
       label: "Intent",
       group: "basics",
-      values: toValueMap(selectedPatterns, (pattern) => pattern.intent),
+      values: toValueMap(selectedPatterns, (pattern) => pattern.intent ?? null),
     },
     {
       key: "problem",
       label: "Problem",
       group: "decision",
-      values: toValueMap(selectedPatterns, (pattern) => pattern.problem),
+      values: toValueMap(selectedPatterns, (pattern) => pattern.problem ?? null),
     },
     {
       key: "tradeoffs",
       label: "Tradeoffs",
       group: "decision",
-      values: toValueMap(selectedPatterns, (pattern) => pattern.tradeoffs),
+      values: toValueMap(selectedPatterns, (pattern) => pattern.tradeoffs ?? null),
     },
     {
       key: "languages",

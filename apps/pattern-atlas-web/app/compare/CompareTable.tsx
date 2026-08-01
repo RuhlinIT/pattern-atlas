@@ -55,22 +55,6 @@ function MotionRow({
   );
 }
 
-// function renderRow(row: CompareRow, patternSlugs: string[]) {
-//   return (
-//     <tr key={row.key}>
-//       <th scope="row" className="compare-table__row-header">
-//         {row.label}
-//       </th>
-
-//       {patternSlugs.map((slug) => (
-//         <td key={slug} className="compare-table__cell">
-//           {renderValue(row.values[slug] ?? null)}
-//         </td>
-//       ))}
-//     </tr>
-//   );
-// }
-
 export function CompareTable({
   patterns,
   rows,
@@ -96,10 +80,12 @@ export function CompareTable({
   const patternSlugs = patterns.map((pattern) => pattern.slug);
 
   return (
-    <motion.section className="compare-table" aria-labelledby="compare-table-title"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+    <motion.section
+      className="compare-table"
+      aria-labelledby="compare-table-title"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
     >
       <div className="compare-table__header">
         <div>
@@ -156,9 +142,9 @@ export function CompareTable({
                   <th colSpan={patterns.length + 1}>Basics</th>
                 </tr>
                 <AnimatePresence initial={false}>
-                    {groupedRows.basics.map((row) => (
-                        <MotionRow key={row.key} row={row} patternSlugs={patternSlugs}/>
-                    ))}
+                  {groupedRows.basics.map((row) => (
+                    <MotionRow key={row.key} row={row} patternSlugs={patternSlugs} />
+                  ))}
                 </AnimatePresence>
               </>
             ) : null}
@@ -169,9 +155,9 @@ export function CompareTable({
                   <th colSpan={patterns.length + 1}>Decision factors</th>
                 </tr>
                 <AnimatePresence initial={false}>
-                    {groupedRows.decision.map((row) => (
-                    <MotionRow key={row.key} row={row} patternSlugs={patternSlugs}/>
-                    ))}
+                  {groupedRows.decision.map((row) => (
+                    <MotionRow key={row.key} row={row} patternSlugs={patternSlugs} />
+                  ))}
                 </AnimatePresence>
               </>
             ) : null}
@@ -182,9 +168,9 @@ export function CompareTable({
                   <th colSpan={patterns.length + 1}>Practical fit</th>
                 </tr>
                 <AnimatePresence initial={false}>
-                    {groupedRows.practical.map((row) => (
-                        <MotionRow key={row.key} row={row} patternSlugs={patternSlugs}/>
-                    ))}
+                  {groupedRows.practical.map((row) => (
+                    <MotionRow key={row.key} row={row} patternSlugs={patternSlugs} />
+                  ))}
                 </AnimatePresence>
               </>
             ) : null}

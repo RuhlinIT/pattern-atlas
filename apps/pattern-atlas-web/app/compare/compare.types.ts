@@ -5,6 +5,7 @@ export type CompareablePattern = Pick<
   | "slug"
   | "name"
   | "category"
+  | "summary"
   | "intent"
   | "problem"
   | "tradeoffs"
@@ -13,9 +14,11 @@ export type CompareablePattern = Pick<
   | "integrationNotes"
 >;
 
+export type ComparePattern = CompareablePattern;
+
 export type CompareRowGroup = "basics" | "decision" | "practical";
 
-export type CompareRowValue = string | string[] | null;
+export type CompareRowValue = string | readonly string[] | null;
 
 export type CompareRow = {
   key: string;
@@ -73,4 +76,17 @@ export type CompareTableProps = {
 
 export type ComparePageProps = {
   searchParams?: Promise<ComparePageSearchParams>;
+};
+
+export type CompareSelection = {
+  left: string | undefined;
+  right: string | undefined;
+  third: string | undefined;
+};
+
+export type CompareColumn = {
+  slug: string;
+  name: string;
+  category: string;
+  difficulty: string;
 };

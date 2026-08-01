@@ -18,7 +18,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
     slug: pattern.slug,
     name: pattern.name,
     category: pattern.category,
-    summary: pattern.intent,
+    summary: pattern.summary,
   }));
 
   const selectedPatterns = patterns.filter((pattern) =>

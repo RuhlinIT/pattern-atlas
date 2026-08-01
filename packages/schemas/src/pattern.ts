@@ -38,6 +38,74 @@ export const patternLanguageSchema = z.enum([
 
 export type PatternLanguage = z.infer<typeof patternLanguageSchema>;
 
+export const exampleRuntimeSchema = z.enum(["frontend", "backend"]);
+export type ExampleRuntime = z.infer<typeof exampleRuntimeSchema>;
+
+export interface PatternMeta {
+  slug: string;
+  name: string;
+  category: PatternCategory;
+  summary: string;
+  intent: string;
+  difficulty: PatternDifficulty;
+  tags: readonly string[];
+  relatedPatterns?: readonly string[];
+  aliases?: readonly string[];
+  order?: number;
+  icon?: string;
+  prerequisites?: readonly string[];
+  bestFor?: readonly string[];
+  languages: readonly PatternLanguage[];
+}
+
+export interface PatternScenario {
+  slug: string;
+  title: string;
+  summary: string;
+  context?: string;
+  problem?: string;
+  solution?: string;
+  runtime?: ExampleRuntime;
+}
+
+export interface PatternLanguageExample {
+  language: PatternLanguage;
+  label?: string;
+  title?: string;
+  code: string;
+  explanation?: string;
+  runtime?: ExampleRuntime;
+}
+
+export interface PatternUseCase {
+  title: string;
+  description: string;
+  runtime?: ExampleRuntime;
+}
+
+export type PatternExampleMap = Partial<
+  Record<PatternLanguage, PatternLanguageExample>
+>;
+
+export type PatternScenarioExamples = Partial<Record<string, PatternExampleMap>>;
+
+export interface LegacyPatternScenario extends PatternScenario {
+  languageExamples?: readonly PatternLanguageExample[];
+}
+
+export interface PatternRecord extends PatternMeta {
+  problem?: string;
+  tradeoffs?: readonly string[];
+  platforms?: readonly string[];
+  integrationNotes?: string;
+  scenarios: readonly PatternScenario[] | readonly LegacyPatternScenario[];
+  scenarioExamples?: PatternScenarioExamples;
+  realWorldExamples?: readonly PatternUseCase[];
+  whenToUse?: readonly string[];
+  flexibility?: PatternDifficulty;
+  antiPatterns?: readonly string[];
+}
+
 export const patternScenarioSchema = z.object({
   slug: z.string(),
   title: z.string(),
@@ -45,9 +113,8 @@ export const patternScenarioSchema = z.object({
   context: z.string().optional(),
   problem: z.string().optional(),
   solution: z.string().optional(),
+  runtime: exampleRuntimeSchema.optional(),
 });
-
-export type PatternScenario = z.infer<typeof patternScenarioSchema>;
 
 export const patternLanguageExampleSchema = z.object({
   language: patternLanguageSchema,
@@ -55,36 +122,28 @@ export const patternLanguageExampleSchema = z.object({
   title: z.string().optional(),
   code: z.string(),
   explanation: z.string().optional(),
+  runtime: exampleRuntimeSchema.optional(),
 });
-
-export type PatternLanguageExample = z.infer<typeof patternLanguageExampleSchema>;
 
 export const patternUseCaseSchema = z.object({
   title: z.string(),
   description: z.string(),
+  runtime: exampleRuntimeSchema.optional(),
 });
-
-export type PatternUseCase = z.infer<typeof patternUseCaseSchema>;
 
 export const patternExampleMapSchema = z.record(
   patternLanguageSchema,
   patternLanguageExampleSchema
 );
 
-export type PatternExampleMap = z.infer<typeof patternExampleMapSchema>;
-
 export const patternScenarioExamplesSchema = z.record(
   z.string(),
   patternExampleMapSchema
 );
 
-export type PatternScenarioExamples = z.infer<typeof patternScenarioExamplesSchema>;
-
 export const legacyPatternScenarioSchema = patternScenarioSchema.extend({
   languageExamples: z.array(patternLanguageExampleSchema).optional(),
 });
-
-export type LegacyPatternScenario = z.infer<typeof legacyPatternScenarioSchema>;
 
 export const patternRecordSchema = z.object({
   slug: z.string(),
@@ -116,8 +175,5 @@ export const patternRecordSchema = z.object({
   antiPatterns: z.array(z.string()).optional(),
 });
 
-export type PatternRecord = z.infer<typeof patternRecordSchema>;
-
 export const patternsSchema = z.array(patternRecordSchema);
-
 export type Patterns = z.infer<typeof patternsSchema>;
