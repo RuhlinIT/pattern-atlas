@@ -1,11 +1,12 @@
 import { patterns } from "@atlas-patterns/content";
-import type { PatternCategory } from "@atlas-patterns/schemas";
+import type { PatternCategory, PatternVariant } from "@atlas-patterns/schemas";
 import type {
   BuildCompareHrefOptions,
   ComparePageSearchParams,
   CompareRow,
   CompareRowGroup,
   CompareRowValue,
+  CompareVariantFilter,
   CompareablePattern,
   ParsedCompareState,
 } from "./compare.types";
@@ -18,10 +19,29 @@ const patternCategories = [
 
 const MAX_COMPARE_SELECTIONS = 3;
 
+function parseVariantFilter(params?: ComparePageSearchParams): CompareVariantFilter {
+  const layer = params?.layer?.trim();
+  const language = params?.language?.trim();
+  const runtime = params?.runtime?.trim();
+
+  return {
+    ...(layer && layer !== "all" ? { layer: layer as CompareVariantFilter["layer"] } : { layer: "all" }),
+    ...(language && language !== "all" ? { language: language as CompareVariantFilter["language"] } : { language: "all" }),
+    ...(runtime && runtime !== "all" ? { runtime: runtime as CompareVariantFilter["runtime"] } : { runtime: "all" }),
+  };
+}
+
+function setIfMeaningful(params: URLSearchParams, key: string, value?: string | null) {
+  if (value && value !== "all") {
+    params.set(key, value);
+  }
+}
+
 export function buildCompareHref({
   selectedSlugs,
   category,
   differencesOnly = false,
+  variantFilter,
 }: BuildCompareHrefOptions): string {
   const params = new URLSearchParams();
 
@@ -36,6 +56,10 @@ export function buildCompareHref({
   if (differencesOnly) {
     params.set("differences", "true");
   }
+
+  setIfMeaningful(params, "layer", variantFilter?.layer);
+  setIfMeaningful(params, "language", variantFilter?.language);
+  setIfMeaningful(params, "runtime", variantFilter?.runtime);
 
   const queryString = params.toString();
   return queryString ? `/compare?${queryString}` : "/compare";
@@ -87,6 +111,7 @@ export function parseCompareSearchParams(
   return {
     selectedSlugs: parsePatternSlugs(params?.patterns),
     differencesOnly: parseBooleanParam(params?.differences),
+    variantFilter: parseVariantFilter(params),
     ...(category ? { category } : {}),
   };
 }
@@ -172,6 +197,21 @@ function areValuesEqual(values: CompareRowValue[]): boolean {
 
 export function filterDifferenceRows(rows: CompareRow[]): CompareRow[] {
   return rows.filter((row) => !areValuesEqual(Object.values(row.values)));
+}
+
+export function getMatchingVariants(
+  pattern: CompareablePattern & { variants?: readonly PatternVariant[] },
+  filter: CompareVariantFilter,
+) {
+  return (pattern.variants ?? []).filter((variant) => {
+    const layerOk =
+      filter.layer === "all" || !filter.layer || variant.layer === filter.layer;
+    const languageOk =
+      filter.language === "all" ||
+      !filter.language ||
+      variant.language === filter.language;
+    return layerOk && languageOk;
+  });
 }
 
 export function groupCompareRows(

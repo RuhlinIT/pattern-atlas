@@ -53,7 +53,10 @@ function MotionRow({
       </th>
 
       {patternSlugs.map((slug) => (
-        <td key={slug} className="compare-table__cell px-4 py-3 align-top text-sm text-slate-200">
+        <td
+          key={slug}
+          className="compare-table__cell px-4 py-3 align-top text-sm text-slate-200"
+        >
           {renderValue(row.values[slug] ?? null)}
         </td>
       ))}
@@ -96,7 +99,10 @@ export function CompareTable({
       <div className="compare-table__header flex flex-col gap-2">
         <div>
           <p className="eyebrow text-slate-400">Analysis</p>
-          <h2 id="compare-table-title" className="text-lg font-semibold text-slate-50">
+          <h2
+            id="compare-table-title"
+            className="text-lg font-semibold text-slate-50"
+          >
             Pattern comparison
           </h2>
           <p className="compare-table__description mt-1 text-sm text-slate-300">
@@ -159,7 +165,11 @@ export function CompareTable({
                 </tr>
                 <AnimatePresence initial={false}>
                   {groupedRows.basics.map((row) => (
-                    <MotionRow key={row.key} row={row} patternSlugs={patternSlugs} />
+                    <MotionRow
+                      key={row.key}
+                      row={row}
+                      patternSlugs={patternSlugs}
+                    />
                   ))}
                 </AnimatePresence>
               </>
@@ -177,7 +187,11 @@ export function CompareTable({
                 </tr>
                 <AnimatePresence initial={false}>
                   {groupedRows.decision.map((row) => (
-                    <MotionRow key={row.key} row={row} patternSlugs={patternSlugs} />
+                    <MotionRow
+                      key={row.key}
+                      row={row}
+                      patternSlugs={patternSlugs}
+                    />
                   ))}
                 </AnimatePresence>
               </>
@@ -195,7 +209,11 @@ export function CompareTable({
                 </tr>
                 <AnimatePresence initial={false}>
                   {groupedRows.practical.map((row) => (
-                    <MotionRow key={row.key} row={row} patternSlugs={patternSlugs} />
+                    <MotionRow
+                      key={row.key}
+                      row={row}
+                      patternSlugs={patternSlugs}
+                    />
                   ))}
                 </AnimatePresence>
               </>

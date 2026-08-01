@@ -36,10 +36,37 @@ export const patternLanguageSchema = z.enum([
   "php",
 ]);
 
+export const patternVariantLanguageSchema = z.enum([
+  "typescript",
+  "javascript",
+  "tsx",
+  "jsx",
+  "python",
+  "java",
+  "go",
+  "php",
+  "csharp",
+  "dotnet",
+  "kotlin",
+  "react",
+  "react-native",
+  "angular",
+]);
+
+export type PatternVariantLanguage = z.infer<typeof patternVariantLanguageSchema>;
+
 export type PatternLanguage = z.infer<typeof patternLanguageSchema>;
 
 export const exampleRuntimeSchema = z.enum(["frontend", "backend"]);
 export type ExampleRuntime = z.infer<typeof exampleRuntimeSchema>;
+
+export const patternLayerSchema = z.enum([
+  "frontend",
+  "backend",
+  "integration",
+]);
+
+export type PatternLayer = z.infer<typeof patternLayerSchema>;
 
 export interface PatternMeta {
   slug: string;
@@ -104,6 +131,7 @@ export interface PatternRecord extends PatternMeta {
   whenToUse?: readonly string[];
   flexibility?: PatternDifficulty;
   antiPatterns?: readonly string[];
+  variants?: readonly PatternVariant[];
 }
 
 export const patternScenarioSchema = z.object({
@@ -114,6 +142,21 @@ export const patternScenarioSchema = z.object({
   problem: z.string().optional(),
   solution: z.string().optional(),
   runtime: exampleRuntimeSchema.optional(),
+});
+
+export const patternVariantSchema = z.object({
+  slug: z.string(),
+  title: z.string(),
+  layer: patternLayerSchema,
+  language: patternVariantLanguageSchema,
+  summary: z.string(),
+  intent: z.string().optional(),
+  problem: z.string().optional(),
+  solution: z.string().optional(),
+  dependencies: z.array(z.string()).optional(),
+  relatedVariants: z.array(z.string()).optional(),
+  examplePatternSlugs: z.array(z.string()).optional(),
+  notes: z.string().optional(),
 });
 
 export const patternLanguageExampleSchema = z.object({
@@ -173,7 +216,10 @@ export const patternRecordSchema = z.object({
   whenToUse: z.array(z.string()).optional(),
   flexibility: patternDifficultySchema.optional(),
   antiPatterns: z.array(z.string()).optional(),
+  variants: z.array(patternVariantSchema).optional(),
 });
 
 export const patternsSchema = z.array(patternRecordSchema);
 export type Patterns = z.infer<typeof patternsSchema>;
+
+export type PatternVariant = z.infer<typeof patternVariantSchema>;

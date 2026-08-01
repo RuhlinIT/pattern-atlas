@@ -23,7 +23,10 @@ export function CompareSelectedSummary({
         <div className="compare-summary__header">
           <div>
             <p className="eyebrow text-slate-400">Current selection</p>
-            <h2 id="compare-summary-title" className="text-lg font-semibold text-slate-50">
+            <h2
+              id="compare-summary-title"
+              className="text-lg font-semibold text-slate-50"
+            >
               No patterns selected yet
             </h2>
             <p className="compare-summary__description mt-1 text-sm text-slate-300">
@@ -47,7 +50,10 @@ export function CompareSelectedSummary({
       <div className="compare-summary__header flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
           <p className="eyebrow text-slate-400">Current selection</p>
-          <h2 id="compare-summary-title" className="text-lg font-semibold text-slate-50">
+          <h2
+            id="compare-summary-title"
+            className="text-lg font-semibold text-slate-50"
+          >
             {patterns.length} of {maxSelections} selected
           </h2>
           <p className="compare-summary__description mt-1 text-sm text-slate-300">
@@ -67,7 +73,11 @@ export function CompareSelectedSummary({
         </div>
       </div>
 
-      <motion.ul className="compare-summary__list mt-4 flex flex-wrap gap-2" role="list" layout>
+      <motion.ul
+        className="compare-summary__list mt-4 flex flex-wrap gap-2"
+        role="list"
+        layout
+      >
         <AnimatePresence initial={false}>
           {patterns.map((pattern) => {
             const nextSelectedSlugs = patterns

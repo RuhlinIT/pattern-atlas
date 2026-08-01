@@ -1,4 +1,9 @@
-import type { PatternCategory, PatternRecord } from "@atlas-patterns/schemas";
+import type {
+  PatternCategory,
+  PatternLayer,
+  PatternRecord,
+  PatternVariantLanguage,
+} from "@atlas-patterns/schemas";
 
 export type CompareablePattern = Pick<
   PatternRecord,
@@ -12,6 +17,7 @@ export type CompareablePattern = Pick<
   | "languages"
   | "platforms"
   | "integrationNotes"
+  | "variants"
 >;
 
 export type ComparePattern = CompareablePattern;
@@ -34,22 +40,33 @@ export type ComparePickerItem = {
   summary: string;
 };
 
+export type CompareVariantFilter = {
+  layer?: PatternLayer | "all" | undefined;
+  language?: PatternVariantLanguage | "all" | undefined;
+  runtime?: "frontend" | "backend" | "all" | undefined;
+};
+
 export type ComparePageSearchParams = {
   patterns?: string;
   category?: string;
   differences?: string;
+  layer?: string;
+  language?: string;
+  runtime?: string;
 };
 
 export type ParsedCompareState = {
   selectedSlugs: string[];
   category?: PatternCategory;
   differencesOnly: boolean;
+  variantFilter: CompareVariantFilter;
 };
 
 export type BuildCompareHrefOptions = {
   selectedSlugs: string[];
   category?: PatternCategory | "All";
   differencesOnly?: boolean;
+  variantFilter?: CompareVariantFilter;
 };
 
 export type ComparePickerProps = {
@@ -58,6 +75,7 @@ export type ComparePickerProps = {
   maxSelections?: number;
   activeCategory?: PatternCategory | "All";
   differencesOnly?: boolean;
+  variantFilter?: CompareVariantFilter;
 };
 
 export type CompareSelectedSummaryProps = {
@@ -65,6 +83,7 @@ export type CompareSelectedSummaryProps = {
   category?: PatternCategory | "All";
   differencesOnly?: boolean;
   maxSelections?: number;
+  variantFilter?: CompareVariantFilter;
 };
 
 export type CompareTableProps = {
@@ -72,6 +91,7 @@ export type CompareTableProps = {
   rows: CompareRow[];
   differencesOnly?: boolean;
   emptyMessage?: string;
+  variantFilter?: CompareVariantFilter;
 };
 
 export type ComparePageProps = {
