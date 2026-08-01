@@ -1,22 +1,21 @@
-import type { PatternLanguage, PatternLanguageExample } from "@atlas-patterns/schemas";
-import { normalizeExamples } from "../../normalize-examples";
+import { normalizeExamples } from "../../../normalize-examples";
 
-import { angular } from "./angular";
-import { csharp } from "./csharp";
-import { dotnet } from "./dotnet";
+import { typescript } from "./typescript";
 import { java } from "./java";
 import { python } from "./python";
-import { reactNative } from "./react-native";
+import { angular } from "./angular";
 import { react } from "./react";
-import { typescript } from "./typescript";
+import { reactNative } from "./react-native";
+import { csharp } from "./csharp";
+import { dotnet } from "./dotnet";
 
 export const paymentGatewayIntegrationExamples = normalizeExamples({
-  angular,
-  csharp,
-  dotnet,
-  java,
-  python,
+  "typescript": typescript,
+  "java": java,
+  "python": python,
+  "angular": angular,
+  "react": react,
   "react-native": reactNative,
-  react,
-  typescript,
+  "csharp": csharp,
+  "dotnet": dotnet,
 });

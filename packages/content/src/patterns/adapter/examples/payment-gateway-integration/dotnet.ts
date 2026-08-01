@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const dotnet: PatternLanguageExample = {
+  language: "dotnet",
+  title: "Payment gateway integration",
+  code: "using System;\nusing Microsoft.Extensions.DependencyInjection;\n\npublic interface IPaymentProcessor\n{\n    void Pay(double amount);\n}\n\npublic class LegacyPaymentGateway\n{\n    public void MakePayment(int totalInCents)\n    {\n        Console.WriteLine($\"Legacy gateway charged {totalInCents} cents\");\n    }\n}\n\npublic class PaymentGatewayAdapter : IPaymentProcessor\n{\n    private readonly LegacyPaymentGateway _gateway;\n\n    public PaymentGatewayAdapter(LegacyPaymentGateway gateway)\n    {\n        _gateway = gateway;\n    }\n\n    public void Pay(double amount)\n    {\n        var totalInCents = (int)Math.Round(amount * 100);\n        _gateway.MakePayment(totalInCents);\n    }\n}\n\npublic class CheckoutService\n{\n    private readonly IPaymentProcessor _processor;\n\n    public CheckoutService(IPaymentProcessor processor)\n    {\n        _processor = processor;\n    }\n\n    public void Checkout(double amount)\n    {\n        _processor.Pay(amount);\n    }\n}\n\nvar services = new ServiceCollection();\nservices.AddSingleton<LegacyPaymentGateway>();\nservices.AddSingleton<IPaymentProcessor, PaymentGatewayAdapter>();\nservices.AddTransient<CheckoutService>();\n\nvar provider = services.BuildServiceProvider();\nvar checkout = provider.GetRequiredService<CheckoutService>();\ncheckout.Checkout(49.99);",
+  explanation: "The .NET version shows the same adapter with dependency injection, keeping checkout code isolated from the legacy gateway's implementation details.",
+};

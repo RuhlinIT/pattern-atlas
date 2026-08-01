@@ -8,7 +8,7 @@ import { DecoratorPattern } from "./DecoratorPattern";
 import { StrategyPattern } from "./StrategyPattern";
 import { ObserverPattern } from "./ObserverPattern";
 import { FacadePattern } from "./FacadePattern";
-import { AdapterPattern } from "./AdapterPattern";
+import { adapterPattern } from "./adapter";
 import { CommandPattern } from "./CommandPattern";
 import { FactoryMethodPattern } from "./FactoryMethodPattern";
 import { BuilderPattern } from "./BuilderPattern";
@@ -26,7 +26,7 @@ import { TemplateMethodPattern } from './TemplateMethodPattern';
 
 export {
   abstractFactoryPattern,
-  AdapterPattern,
+  adapterPattern,
   bridgePattern,
   BuilderPattern,
   ChainOfResponsibilityPattern,
@@ -52,7 +52,7 @@ export {
 
 export const patterns: PatternRecord[] = [
   abstractFactoryPattern,
-  AdapterPattern,
+  adapterPattern,
   bridgePattern,
   BuilderPattern,
   ChainOfResponsibilityPattern,
