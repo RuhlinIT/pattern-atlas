@@ -7,44 +7,69 @@ type CategoryFilterProps = {
   activeCategory: string;
 };
 
-export function CategoryFilter({ categories, activeCategory }: CategoryFilterProps) {
+function normalizeCategoryKey(category: string) {
+  return category.toLowerCase();
+}
+
+function formatCategoryLabel(category: string) {
+  const lower = category.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
+
+export function CategoryFilter({
+  categories,
+  activeCategory,
+}: CategoryFilterProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   function setCategory(category: string) {
     const params = new URLSearchParams(searchParams.toString());
+    const key = normalizeCategoryKey(category);
 
-    if (category === "All") {
+    if (key === "all") {
       params.delete("category");
     } else {
-      params.set("category", category);
+      params.set("category", key);
     }
 
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname);
   }
 
+  const normalizedActiveCategory = normalizeCategoryKey(activeCategory);
+
   return (
     <div className="filter-row" aria-label="Filter patterns by category">
       <button
         type="button"
-        className={activeCategory === "All" ? "filter-chip active" : "filter-chip"}
+        className={
+          normalizedActiveCategory === "all"
+            ? "filter-chip active"
+            : "filter-chip"
+        }
         onClick={() => setCategory("All")}
       >
         All
       </button>
 
-      {categories.map((category) => (
-        <button
-          key={category}
-          type="button"
-          className={activeCategory === category ? "filter-chip active" : "filter-chip"}
-          onClick={() => setCategory(category)}
-        >
-          {category}
-        </button>
-      ))}
+      {Array.from(new Set(categories.map(normalizeCategoryKey))).map(
+        (category) => (
+          <button
+            key={category}
+            type="button"
+            className={
+              normalizedActiveCategory === category
+                ? "filter-chip active"
+                : "filter-chip"
+            }
+            onClick={() => setCategory(category)}
+          >
+            {formatCategoryLabel(category)}
+          </button>
+        ),
+      )}
     </div>
   );
 }

@@ -25,7 +25,7 @@ function resolveDeclarationInitializer(
       return decl.initializer;
     }
 
-    if (ts.isBindingElement(decl) && decl.name && ts.isIdentifier(decl.name)) {
+    if (ts.isBindingElement(decl) && ts.isIdentifier(decl.name)) {
       const nested = checker.getSymbolAtLocation(decl.name);
       if (nested) {
         const init = resolveDeclarationInitializer(nested, checker, visited);
@@ -41,13 +41,17 @@ function resolveDeclarationInitializer(
       }
     }
 
-    if (ts.isImportSpecifier(decl) || ts.isNamespaceImport(decl) || ts.isImportClause(decl)) {
-      const importId =
-        ts.isImportSpecifier(decl)
+    if (
+      ts.isImportSpecifier(decl) ||
+      ts.isNamespaceImport(decl) ||
+      ts.isImportClause(decl)
+    ) {
+      const importId = ts.isImportSpecifier(decl)
+        ? decl.name
+        : ts.isNamespaceImport(decl)
           ? decl.name
-          : ts.isNamespaceImport(decl)
-            ? decl.name
-            : decl.name;
+          : decl.name;
+
       if (importId) {
         const imported = checker.getSymbolAtLocation(importId);
         if (imported) {

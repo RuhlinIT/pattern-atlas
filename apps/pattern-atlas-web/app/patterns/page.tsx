@@ -9,13 +9,22 @@ export const metadata: Metadata = {
 };
 
 const patternCategories = [
-  "Behavioral",
-  "Structural",
-  "Creational",
+  "behavioral",
+  "structural",
+  "creational",
 ] as const satisfies readonly PatternCategory[];
 
 function isPatternCategory(value: string): value is PatternCategory {
-  return (patternCategories as readonly string[]).includes(value);
+  return (patternCategories as readonly string[]).includes(value.toLowerCase() as PatternCategory);
+}
+
+function normalizeCategoryKey(category: string) {
+  return category.toLowerCase();
+}
+
+function formatCategoryLabel(category: string) {
+  const lower = category.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
 }
 
 type PatternsPageProps = {
@@ -29,20 +38,24 @@ export default async function PatternsPage({
 }: PatternsPageProps) {
   const params = await searchParams;
 
-  const availableCategories: PatternCategory[] = Array.from(
-    new Set(patterns.map((pattern) => pattern.category)),
+  const availableCategories: string[] = Array.from(
+    new Set(patterns.map((pattern) => normalizeCategoryKey(pattern.category))),
   ).sort();
 
   const requestedCategory = params?.category ?? "";
-  const activeCategory: PatternCategory | undefined = isPatternCategory(
-    requestedCategory,
-  )
-    ? requestedCategory
-    : undefined;
+  const activeCategoryKey = normalizeCategoryKey(requestedCategory);
 
-  const filteredPatterns = activeCategory
-    ? patterns.filter((pattern) => pattern.category === activeCategory)
-    : patterns;
+  const activeCategory = isPatternCategory(activeCategoryKey)
+    ? formatCategoryLabel(activeCategoryKey)
+    : "All";
+
+  const filteredPatterns =
+    activeCategory === "All"
+      ? patterns
+      : patterns.filter(
+          (pattern) =>
+            normalizeCategoryKey(pattern.category) === activeCategoryKey,
+        );
 
   return (
     <section className="page">
@@ -60,7 +73,7 @@ export default async function PatternsPage({
 
       <CategoryFilter
         categories={availableCategories}
-        activeCategory={activeCategory ?? "All"}
+        activeCategory={activeCategory}
       />
 
       <p className="results-meta">
@@ -72,7 +85,7 @@ export default async function PatternsPage({
         {filteredPatterns.map((pattern) => (
           <SectionCard key={pattern.slug} title={pattern.name}>
             <div className="panel-meta">
-              <Tag>{pattern.category}</Tag>
+              <Tag>{formatCategoryLabel(pattern.category)}</Tag>
             </div>
 
             <p>{pattern.intent}</p>

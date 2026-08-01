@@ -1,28 +1,42 @@
-export type PatternCategory =
-  | 'creational'
-  | 'structural'
-  | 'behavioral'
-  | 'architectural'
-  | 'integration'
-  | 'other';
+import { z } from "zod";
 
-export type PatternDifficulty = 'beginner' | 'intermediate' | 'advanced';
+export const patternCategorySchema = z.enum([
+  "creational",
+  "structural",
+  "behavioral",
+  "architectural",
+  "integration",
+  "other",
+]);
 
-export type PatternLanguage =
-  | 'typescript'
-  | 'java'
-  | 'python'
-  | 'angular'
-  | 'react'
-  | 'react-native'
-  | 'csharp'
-  | 'dotnet'
-  | 'kotlin'
-  | 'jsx'
-  | 'javascript'
-  | 'tsx'
-  | 'go'
-  | 'php';
+export type PatternCategory = z.infer<typeof patternCategorySchema>;
+
+export const patternDifficultySchema = z.enum([
+  "beginner",
+  "intermediate",
+  "advanced",
+]);
+
+export type PatternDifficulty = z.infer<typeof patternDifficultySchema>;
+
+export const patternLanguageSchema = z.enum([
+  "typescript",
+  "java",
+  "python",
+  "angular",
+  "react",
+  "react-native",
+  "csharp",
+  "dotnet",
+  "kotlin",
+  "jsx",
+  "javascript",
+  "tsx",
+  "go",
+  "php",
+]);
+
+export type PatternLanguage = z.infer<typeof patternLanguageSchema>;
 
 export interface PatternMeta {
   slug: string;

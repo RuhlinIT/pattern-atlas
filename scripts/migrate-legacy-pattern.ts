@@ -28,7 +28,18 @@ type LegacyPattern = {
   integrationNotes?: string;
   scenarios?: LegacyScenario[];
   realWorldExamples?: { title: string; description: string }[];
+  relatedPatterns?: string[];
+  aliases?: string[];
+  order?: number;
+  icon?: string;
+  prerequisites?: string[];
+  bestFor?: string[];
+  difficulty?: "beginner" | "intermediate" | "advanced";
 };
+
+function normalizeCategory(category: string): string {
+  return category.toLowerCase();
+}
 
 function normalizeLanguage(language: string): string {
   const map: Record<string, string> = {
@@ -91,6 +102,7 @@ if (!fs.existsSync(legacyPath)) {
 }
 
 const fileStem = path.basename(legacyPath, path.extname(legacyPath));
+
 const legacy = readLegacyExport(legacyPath, [
   exportNameArg ?? "",
   "legacyPattern",
@@ -126,6 +138,7 @@ for (const scenario of legacy.scenarios ?? []) {
   for (const ex of normalized) {
     const fileName = `${ex.language}.ts`;
     const exportConst = ex.language === "react-native" ? "reactNative" : ex.language;
+
     writeFileIfMissing(
       path.join(scenarioDir, fileName),
       `import type { PatternLanguageExample } from "@atlas-patterns/schemas";
@@ -173,11 +186,17 @@ writeFileIfMissing(
 export const meta: PatternMeta = {
   slug: ${JSON.stringify(legacy.slug)},
   name: ${JSON.stringify(legacy.name)},
-  category: ${JSON.stringify(String(legacy.category).toLowerCase())},
+  category: ${JSON.stringify(normalizeCategory(String(legacy.category)))},
   summary: ${JSON.stringify(legacy.summary ?? "")},
   intent: ${JSON.stringify(legacy.intent ?? "")},
-  difficulty: "intermediate",
+  difficulty: ${JSON.stringify(legacy.difficulty ?? "intermediate")},
   tags: [],
+  relatedPatterns: ${JSON.stringify(legacy.relatedPatterns ?? [])},
+  aliases: ${JSON.stringify(legacy.aliases ?? [])},
+  order: ${JSON.stringify(legacy.order ?? 0)},
+  icon: ${JSON.stringify(legacy.icon ?? "")},
+  prerequisites: ${JSON.stringify(legacy.prerequisites ?? [])},
+  bestFor: ${JSON.stringify(legacy.bestFor ?? [])},
   languages: ${JSON.stringify(
     Array.from(
       new Set((legacy.languages ?? []).map((l) => normalizeLanguage(l))),
