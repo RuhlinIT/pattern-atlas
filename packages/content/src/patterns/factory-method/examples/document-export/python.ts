@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Document export",
+  code: "from abc import ABC, abstractmethod\n\n\n                    class DocumentFile(ABC):\n                        @abstractmethod\n                        def export(self) -> None:\n                            pass\n\n\n                    class PdfDocument(DocumentFile):\n                        def export(self) -> None:\n                            print(\"Exporting PDF document\")\n\n\n                    class CsvDocument(DocumentFile):\n                        def export(self) -> None:\n                            print(\"Exporting CSV document\")\n\n\n                    class DocumentExporter(ABC):\n                        @abstractmethod\n                        def create_document(self) -> DocumentFile:\n                            pass\n\n\n                        def run_export(self) -> None:\n                            document = self.create_document()\n                            document.export()\n\n\n                    class PdfExporter(DocumentExporter):\n                        def create_document(self) -> DocumentFile:\n                            return PdfDocument()\n\n\n                    class CsvExporter(DocumentExporter):\n                        def create_document(self) -> DocumentFile:\n                            return CsvDocument()\n\n\n                    exporter: DocumentExporter = PdfExporter()\n                    exporter.run_export()",
+  explanation: "The export flow stays stable in the creator, while subclasses customize which concrete document gets produced.",
+};

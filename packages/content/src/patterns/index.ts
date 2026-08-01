@@ -10,7 +10,7 @@ import { ObserverPattern } from "./ObserverPattern";
 import { facadePattern } from "./facade";
 import { adapterPattern } from "./adapter";
 import { commandPattern } from "./command";
-import { FactoryMethodPattern } from "./FactoryMethodPattern";
+import { factoryMethodPattern } from "./factory-method";
 import { builderPattern } from "./builder";
 // import { AbstractFactoryPattern } from "./AbstractFactoryPattern";
 import { abstractFactoryPattern } from './abstract-factory';
@@ -34,7 +34,7 @@ export {
   compositePattern,
   decoratorPattern,
   facadePattern,
-  FactoryMethodPattern,
+  factoryMethodPattern,
   FlyweightPattern,
   InterpreterPattern,
   IteratorPattern,
@@ -60,7 +60,7 @@ export const patterns: PatternRecord[] = [
   compositePattern,
   decoratorPattern,
   facadePattern,
-  FactoryMethodPattern,
+  factoryMethodPattern,
   FlyweightPattern,
   InterpreterPattern,
   IteratorPattern,

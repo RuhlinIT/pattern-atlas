@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const dotnet: PatternLanguageExample = {
+  language: "dotnet",
+  title: "Logger transport",
+  code: "using System;\nusing Microsoft.Extensions.DependencyInjection;\n\npublic interface ILoggerTransport\n{\n    void Write(string message);\n}\n\npublic class ConsoleTransport : ILoggerTransport\n{\n    public void Write(string message)\n    {\n        Console.WriteLine($\"[console] {message}\");\n    }\n}\n\npublic class FileTransport : ILoggerTransport\n{\n    public void Write(string message)\n    {\n        Console.WriteLine($\"[file] {message}\");\n    }\n}\n\npublic abstract class Logger\n{\n    public abstract ILoggerTransport CreateTransport();\n\n    public void Log(string message)\n    {\n        var transport = CreateTransport();\n        transport.Write(message);\n    }\n}\n\npublic class DevelopmentLogger : Logger\n{\n    public override ILoggerTransport CreateTransport()\n    {\n        return new ConsoleTransport();\n    }\n}\n\npublic class BatchJobLogger : Logger\n{\n    public override ILoggerTransport CreateTransport()\n    {\n        return new FileTransport();\n    }\n}\n\nvar services = new ServiceCollection();\nservices.AddSingleton<Logger, DevelopmentLogger>();\n\nvar provider = services.BuildServiceProvider();\nvar logger = provider.GetRequiredService<Logger>();\nlogger.Log(\"Application started\");",
+  explanation: "The .NET version shows the same factory method pattern with dependency injection, so the logging workflow stays consistent while the transport choice is deferred to the concrete logger.",
+};
