@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const java: PatternLanguageExample = {
+  language: "java",
+  title: "Chat room mediator",
+  code: "interface ChatMediator {\n    void sendMessage(String message, User user);\n    void registerUser(User user);\n}\n\n\nclass User {\n    private final String name;\n    private final ChatMediator mediator;\n\n\n    public User(String name, ChatMediator mediator) {\n        this.name = name;\n        this.mediator = mediator;\n    }\n\n\n    public String getName() {\n        return name;\n    }\n\n\n    public void send(String message) {\n        mediator.sendMessage(message, this);\n    }\n\n\n    public void receive(String message) {\n        System.out.println(name + \" received: \" + message);\n    }\n}\n\n\nclass ChatRoom implements ChatMediator {\n    private final java.util.List<User> users = new java.util.ArrayList<>();\n\n\n    public void registerUser(User user) {\n        users.add(user);\n    }\n\n\n    public void sendMessage(String message, User user) {\n        for (User participant : users) {\n            if (participant != user) {\n                participant.receive(user.getName() + \": \" + message);\n            }\n        }\n    }\n}\n\n\nChatRoom chatRoom = new ChatRoom();\nUser alice = new User(\"Alice\", chatRoom);\nUser bob = new User(\"Bob\", chatRoom);\nUser clara = new User(\"Clara\", chatRoom);\n\n\nchatRoom.registerUser(alice);\nchatRoom.registerUser(bob);\nchatRoom.registerUser(clara);\n\n\nalice.send(\"Hello everyone!\");\nbob.send(\"Hi Alice!\");",
+  explanation: "The Java chat room mediator centralizes message delivery and keeps users decoupled from one another.",
+};

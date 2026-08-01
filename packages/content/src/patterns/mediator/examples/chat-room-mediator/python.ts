@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Chat room mediator",
+  code: "from abc import ABC, abstractmethod\n\n\nclass ChatMediator(ABC):\n    @abstractmethod\n    def send_message(self, message: str, user: \"User\") -> None:\n        pass\n\n\n    @abstractmethod\n    def register_user(self, user: \"User\") -> None:\n        pass\n\n\nclass User:\n    def __init__(self, name: str, mediator: ChatMediator) -> None:\n        self.name = name\n        self.mediator = mediator\n\n\n    def send(self, message: str) -> None:\n        self.mediator.send_message(message, self)\n\n\n    def receive(self, message: str) -> None:\n        print(f\"{self.name} received: {message}\")\n\n\nclass ChatRoom(ChatMediator):\n    def __init__(self) -> None:\n        self.users: list[User] = []\n\n\n    def register_user(self, user: User) -> None:\n        self.users.append(user)\n\n\n    def send_message(self, message: str, user: User) -> None:\n        for participant in self.users:\n            if participant != user:\n                participant.receive(f\"{user.name}: {message}\")\n\n\nchat_room = ChatRoom()\nalice = User(\"Alice\", chat_room)\nbob = User(\"Bob\", chat_room)\nclara = User(\"Clara\", chat_room)\n\n\nchat_room.register_user(alice)\nchat_room.register_user(bob)\nchat_room.register_user(clara)\n\n\nalice.send(\"Hello everyone!\")\nbob.send(\"Hi Alice!\")",
+  explanation: "The Python chat room mediator handles message fan-out so participants only know about the mediator.",
+};

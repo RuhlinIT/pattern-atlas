@@ -82,6 +82,30 @@ function writeFileIfMissing(filePath: string, content: string) {
   }
 }
 
+function removeFileIfExists(filePath: string) {
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+}
+
+function legacyExampleFilePath(
+  patternDir: string,
+  scenario: LegacyScenario,
+): string {
+  const candidates = [
+    `${scenario.slug}Examples.ts`,
+    `${pascalCase(scenario.slug)}Examples.ts`,
+    `${scenario.slug}.ts`,
+  ];
+
+  for (const candidate of candidates) {
+    const full = path.join(patternDir, candidate);
+    if (fs.existsSync(full)) return full;
+  }
+
+  return path.join(patternDir, `${scenario.slug}Examples.ts`);
+}
+
 const rootDir = process.cwd();
 const legacyFile = process.argv[2];
 const exportNameArg = process.argv[3];
@@ -124,6 +148,7 @@ ensureDir(patternDir);
 ensureDir(path.join(patternDir, "examples"));
 
 const scenarioExportNames = new Map<string, string>();
+const filesToRemove = new Set<string>();
 
 for (const scenario of legacy.scenarios ?? []) {
   const scenarioDir = path.join(patternDir, "examples", scenario.slug);
@@ -177,6 +202,9 @@ ${normalized
 });
 `,
   );
+
+  const oldExampleFile = legacyExampleFilePath(patternDir, scenario);
+  filesToRemove.add(oldExampleFile);
 }
 
 writeFileIfMissing(
@@ -254,5 +282,11 @@ ${[...scenarioExportNames.entries()]
 };
 `,
 );
+
+for (const filePath of filesToRemove) {
+  removeFileIfExists(filePath);
+}
+
+removeFileIfExists(legacyPath);
 
 console.log(`Migrated ${legacy.slug} from ${legacyPath}`);

@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const csharp: PatternLanguageExample = {
+  language: "csharp",
+  title: "Chat room mediator",
+  code: "using System;\nusing System.Collections.Generic;\n\n\npublic interface IChatMediator\n{\n    void SendMessage(string message, User user);\n    void RegisterUser(User user);\n}\n\n\npublic class User\n{\n    public string Name { get; }\n    private readonly IChatMediator _mediator;\n\n\n    public User(string name, IChatMediator mediator)\n    {\n        Name = name;\n        _mediator = mediator;\n    }\n\n\n    public void Send(string message)\n    {\n        _mediator.SendMessage(message, this);\n    }\n\n\n    public void Receive(string message)\n    {\n        Console.WriteLine($\"{Name} received: {message}\");\n    }\n}\n\n\npublic class ChatRoom : IChatMediator\n{\n    private readonly List<User> _users = new List<User>();\n\n\n    public void RegisterUser(User user)\n    {\n        _users.Add(user);\n    }\n\n\n    public void SendMessage(string message, User user)\n    {\n        foreach (var participant in _users)\n        {\n            if (participant != user)\n            {\n                participant.Receive($\"{user.Name}: {message}\");\n            }\n        }\n    }\n}\n\n\nvar chatRoom = new ChatRoom();\nvar alice = new User(\"Alice\", chatRoom);\nvar bob = new User(\"Bob\", chatRoom);\nvar clara = new User(\"Clara\", chatRoom);\n\n\nchatRoom.RegisterUser(alice);\nchatRoom.RegisterUser(bob);\nchatRoom.RegisterUser(clara);\n\n\nalice.Send(\"Hello everyone!\");\nbob.Send(\"Hi Alice!\");",
+  explanation: "The C# chat room mediator routes messages through a single coordination object instead of direct user references.",
+};
