@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const dotnet: PatternLanguageExample = {
+  language: "dotnet",
+  title: "Payment processing",
+  code: "using System;\nusing Microsoft.Extensions.DependencyInjection;\n\npublic interface IPaymentStrategy\n{\n    void Pay(decimal amount);\n}\n\npublic class CreditCardPayment : IPaymentStrategy\n{\n    public void Pay(decimal amount)\n    {\n        Console.WriteLine($\"Paid {amount} with credit card\");\n    }\n}\n\npublic class PayPalPayment : IPaymentStrategy\n{\n    public void Pay(decimal amount)\n    {\n        Console.WriteLine($\"Paid {amount} with PayPal\");\n    }\n}\n\npublic class CheckoutService\n{\n    private IPaymentStrategy _strategy;\n\n    public CheckoutService(IPaymentStrategy strategy)\n    {\n        _strategy = strategy;\n    }\n\n    public void SetStrategy(IPaymentStrategy strategy)\n    {\n        _strategy = strategy;\n    }\n\n    public void Checkout(decimal amount)\n    {\n        _strategy.Pay(amount);\n    }\n}\n\nvar services = new ServiceCollection();\nservices.AddSingleton<CreditCardPayment>();\nservices.AddSingleton<PayPalPayment>();\nservices.AddSingleton<CheckoutService>(provider =>\n    new CheckoutService(provider.GetRequiredService<PayPalPayment>())\n);\n\nvar provider = services.BuildServiceProvider();\nvar checkout = provider.GetRequiredService<CheckoutService>();\ncheckout.Checkout(250m);",
+  explanation: "The .NET version shows the same strategy pattern with dependency injection available, so the checkout context can swap payment behavior without changing callers.",
+};

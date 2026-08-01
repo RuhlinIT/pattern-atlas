@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const dotnet: PatternLanguageExample = {
+  language: "dotnet",
+  title: "Shipping cost calculation",
+  code: "using System;\nusing Microsoft.Extensions.DependencyInjection;\n\npublic interface IShippingStrategy\n{\n    decimal Calculate(decimal weight);\n}\n\npublic class StandardShipping : IShippingStrategy\n{\n    public decimal Calculate(decimal weight)\n    {\n        return 5m + weight * 0.5m;\n    }\n}\n\npublic class ExpressShipping : IShippingStrategy\n{\n    public decimal Calculate(decimal weight)\n    {\n        return 15m + weight * 1.25m;\n    }\n}\n\npublic class ShippingService\n{\n    private IShippingStrategy _strategy;\n\n    public ShippingService(IShippingStrategy strategy)\n    {\n        _strategy = strategy;\n    }\n\n    public void SetStrategy(IShippingStrategy strategy)\n    {\n        _strategy = strategy;\n    }\n\n    public decimal GetCost(decimal weight)\n    {\n        return _strategy.Calculate(weight);\n    }\n}\n\nvar services = new ServiceCollection();\nservices.AddSingleton<StandardShipping>();\nservices.AddSingleton<ExpressShipping>();\nservices.AddSingleton<ShippingService>(provider =>\n    new ShippingService(provider.GetRequiredService<ExpressShipping>())\n);\n\nvar provider = services.BuildServiceProvider();\nvar shipping = provider.GetRequiredService<ShippingService>();\nConsole.WriteLine(shipping.GetCost(8m));",
+  explanation: "The .NET version shows the same strategy pattern with dependency injection available, so the shipping context can swap pricing behavior without changing callers.",
+};

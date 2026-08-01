@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const dotnet: PatternLanguageExample = {
+  language: "dotnet",
+  title: "Notification delivery",
+  code: "using System;\nusing Microsoft.Extensions.DependencyInjection;\n\npublic interface INotificationStrategy\n{\n    void Send(string message);\n}\n\npublic class EmailNotification : INotificationStrategy\n{\n    public void Send(string message)\n    {\n        Console.WriteLine($\"Email: {message}\");\n    }\n}\n\npublic class SmsNotification : INotificationStrategy\n{\n    public void Send(string message)\n    {\n        Console.WriteLine($\"SMS: {message}\");\n    }\n}\n\npublic class NotificationService\n{\n    private INotificationStrategy _strategy;\n\n    public NotificationService(INotificationStrategy strategy)\n    {\n        _strategy = strategy;\n    }\n\n    public void SetStrategy(INotificationStrategy strategy)\n    {\n        _strategy = strategy;\n    }\n\n    public void Notify(string message)\n    {\n        _strategy.Send(message);\n    }\n}\n\nvar services = new ServiceCollection();\nservices.AddSingleton<EmailNotification>();\nservices.AddSingleton<SmsNotification>();\nservices.AddSingleton<NotificationService>(provider =>\n    new NotificationService(provider.GetRequiredService<SmsNotification>())\n);\n\nvar provider = services.BuildServiceProvider();\nvar notifier = provider.GetRequiredService<NotificationService>();\nnotifier.Notify(\"Deployment completed\");",
+  explanation: "The .NET version shows the same strategy pattern with dependency injection available, so the notification context can swap delivery behavior without changing callers.",
+};

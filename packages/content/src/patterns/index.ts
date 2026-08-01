@@ -10,7 +10,7 @@ import { iteratorPattern } from './iterator';
 import { mediatorPattern } from './mediator';
 import { observerPattern } from "./observer";
 import { statePattern } from './state';
-import { StrategyPattern } from "./StrategyPattern";
+import { strategyPattern } from "./strategy";
 import { VisitorPattern } from './VisitorPattern';
 // import { AbstractFactoryPattern } from "./AbstractFactoryPattern";
 import { abstractFactoryPattern } from './abstract-factory';
@@ -45,7 +45,7 @@ export {
   proxyPattern,
   singletonPattern,
   statePattern,
-  StrategyPattern,
+  strategyPattern,
   TemplateMethodPattern,
   VisitorPattern
 };
@@ -71,7 +71,7 @@ export const patterns: PatternRecord[] = [
   proxyPattern,
   singletonPattern,
   statePattern,
-  StrategyPattern,
+  strategyPattern,
   TemplateMethodPattern,
   VisitorPattern,
 ];
