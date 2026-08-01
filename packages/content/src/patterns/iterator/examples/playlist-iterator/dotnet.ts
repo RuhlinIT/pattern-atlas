@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const dotnet: PatternLanguageExample = {
+  language: "dotnet",
+  title: "Playlist iterator",
+  code: "using System;\nusing System.Collections.Generic;\nusing Microsoft.Extensions.DependencyInjection;\n\n\npublic interface IPlaylistIterator\n{\n    string Next();\n    bool HasNext();\n}\n\n\npublic class PlaylistIterator : IPlaylistIterator\n{\n    private readonly List<string> _songs;\n    private int _index = 0;\n\n\n    public PlaylistIterator(List<string> songs)\n    {\n        _songs = songs;\n    }\n\n\n    public string Next()\n    {\n        if (!HasNext())\n        {\n            return null;\n        }\n\n\n        return _songs[_index++];\n    }\n\n\n    public bool HasNext()\n    {\n        return _index < _songs.Count;\n    }\n}\n\n\npublic class Playlist\n{\n    private readonly List<string> _songs;\n\n\n    public Playlist(List<string> songs)\n    {\n        _songs = songs;\n    }\n\n\n    public IPlaylistIterator CreateIterator()\n    {\n        return new PlaylistIterator(_songs);\n    }\n}\n\n\nvar services = new ServiceCollection();\nservices.AddSingleton(new Playlist(new List<string> { \"Intro\", \"First Song\", \"Second Song\" }));\n\nvar provider = services.BuildServiceProvider();\nvar playlist = provider.GetRequiredService<Playlist>();\nvar iterator = playlist.CreateIterator();\n\n\nwhile (iterator.HasNext())\n{\n    Console.WriteLine(iterator.Next());\n}",
+  explanation: "The .NET example wires the playlist into dependency injection, then uses an iterator to traverse the songs without exposing storage details.",
+};

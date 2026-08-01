@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const csharp: PatternLanguageExample = {
+  language: "csharp",
+  title: "Tree traversal iterator",
+  code: "using System;\nusing System.Collections.Generic;\n\n\npublic class TreeNode\n{\n    public string Value { get; }\n    public TreeNode Left { get; }\n    public TreeNode Right { get; }\n\n\n    public TreeNode(string value, TreeNode left = null, TreeNode right = null)\n    {\n        Value = value;\n        Left = left;\n        Right = right;\n    }\n}\n\n\npublic class InOrderIterator\n{\n    private readonly Stack<TreeNode> _stack = new Stack<TreeNode>();\n\n\n    public InOrderIterator(TreeNode root)\n    {\n        PushLeft(root);\n    }\n\n\n    private void PushLeft(TreeNode node)\n    {\n        while (node != null)\n        {\n            _stack.Push(node);\n            node = node.Left;\n        }\n    }\n\n\n    public string Next()\n    {\n        if (!HasNext())\n        {\n            return null;\n        }\n\n\n        var node = _stack.Pop();\n        PushLeft(node.Right);\n        return node.Value;\n    }\n\n\n    public bool HasNext()\n    {\n        return _stack.Count > 0;\n    }\n}\n\n\nvar root = new TreeNode(\n    \"A\",\n    new TreeNode(\"B\", new TreeNode(\"D\"), new TreeNode(\"E\")),\n    new TreeNode(\"C\", null, new TreeNode(\"F\"))\n);\n\n\nvar iterator = new InOrderIterator(root);\n\n\nwhile (iterator.HasNext())\n{\n    Console.WriteLine(iterator.Next());\n}",
+  explanation: "The C# example encapsulates in-order tree traversal in an iterator so client code does not need to know the tree's structure.",
+};

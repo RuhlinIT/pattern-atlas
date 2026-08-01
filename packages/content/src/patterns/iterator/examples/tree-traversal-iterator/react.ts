@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Tree traversal iterator",
+  code: "import React, { useMemo } from \"react\";\n\n\nclass TreeNode {\n  constructor(\n    public value: string,\n    public left: TreeNode | null = null,\n    public right: TreeNode | null = null\n  ) {}\n}\n\n\nclass InOrderIterator {\n  private stack: TreeNode[] = [];\n\n\n  constructor(root: TreeNode | null) {\n    this.pushLeft(root);\n  }\n\n\n  private pushLeft(node: TreeNode | null): void {\n    while (node) {\n      this.stack.push(node);\n      node = node.left;\n    }\n  }\n\n\n  next(): string | null {\n    if (!this.hasNext()) {\n      return null;\n    }\n\n\n    const node = this.stack.pop()!;\n    this.pushLeft(node.right);\n    return node.value;\n  }\n\n\n  hasNext(): boolean {\n    return this.stack.length > 0;\n  }\n}\n\n\nfunction TreeView({ iterator }: { iterator: InOrderIterator }) {\n  const values: string[] = [];\n  while (iterator.hasNext()) {\n    const value = iterator.next();\n    if (value) values.push(value);\n  }\n\n\n  return <p>{values.join(\", \")}</p>;\n}\n\n\nexport function App() {\n  const iterator = useMemo(() => {\n    const root = new TreeNode(\n      \"A\",\n      new TreeNode(\"B\", new TreeNode(\"D\"), new TreeNode(\"E\")),\n      new TreeNode(\"C\", null, new TreeNode(\"F\"))\n    );\n    return new InOrderIterator(root);\n  }, []);\n\n\n  return (\n    <main>\n      <h1>Tree Traversal Iterator</h1>\n      <TreeView iterator={iterator} />\n    </main>\n  );\n}",
+  explanation: "The React example uses an in-order iterator so the UI can render tree values without knowing how traversal works.",
+};
