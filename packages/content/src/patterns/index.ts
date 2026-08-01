@@ -19,7 +19,7 @@ import { SingletonPattern } from "./SingletonPattern";
 import { bridgePattern } from "./bridge";
 import { compositePattern } from "./composite";
 import { flyweightPattern } from "./flyweight";
-import { ProxyPattern } from "./ProxyPattern";
+import { proxyPattern } from "./proxy";
 import { chainOfResponsibilityPattern } from "./chain-of-responsibility";
 import { mementoPattern } from './memento';
 import { TemplateMethodPattern } from './TemplateMethodPattern';
@@ -42,7 +42,7 @@ export {
   mementoPattern,
   observerPattern,
   prototypePattern,
-  ProxyPattern,
+  proxyPattern,
   SingletonPattern,
   StatePattern,
   StrategyPattern,
@@ -68,7 +68,7 @@ export const patterns: PatternRecord[] = [
   mementoPattern,
   observerPattern,
   prototypePattern,
-  ProxyPattern,
+  proxyPattern,
   SingletonPattern,
   StatePattern,
   StrategyPattern,
