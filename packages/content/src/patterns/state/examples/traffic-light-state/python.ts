@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Traffic light state",
+  code: "from abc import ABC, abstractmethod\n\n\nclass TrafficLightState(ABC):\n    @abstractmethod\n    def next(self, light: \"TrafficLight\") -> None:\n        pass\n\n\n    @abstractmethod\n    def name(self) -> str:\n        pass\n\n\nclass TrafficLight:\n    def __init__(self) -> None:\n        self.state: TrafficLightState = RedState()\n\n\n    def set_state(self, state: TrafficLightState) -> None:\n        self.state = state\n\n\n    def change(self) -> None:\n        self.state.next(self)\n\n\n    def get_state_name(self) -> str:\n        return self.state.name()\n\n\nclass RedState(TrafficLightState):\n    def next(self, light: TrafficLight) -> None:\n        light.set_state(GreenState())\n\n\n    def name(self) -> str:\n        return \"Red\"\n\n\nclass GreenState(TrafficLightState):\n    def next(self, light: TrafficLight) -> None:\n        light.set_state(YellowState())\n\n\n    def name(self) -> str:\n        return \"Green\"\n\n\nclass YellowState(TrafficLightState):\n    def next(self, light: TrafficLight) -> None:\n        light.set_state(RedState())\n\n\n    def name(self) -> str:\n        return \"Yellow\"\n\n\nlight = TrafficLight()\nprint(light.get_state_name())\nlight.change()\nprint(light.get_state_name())\nlight.change()\nprint(light.get_state_name())\nlight.change()\nprint(light.get_state_name())",
+  explanation: "The Python traffic light example keeps each phase in a dedicated state class and rotates through them in order.",
+};

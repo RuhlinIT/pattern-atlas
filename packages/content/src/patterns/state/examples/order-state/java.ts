@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const java: PatternLanguageExample = {
+  language: "java",
+  title: "Order state",
+  code: "interface OrderState {\n    void next(Order order);\n    String name();\n}\n\n\nclass Order {\n    private OrderState state;\n\n\n    public Order() {\n        this.state = new PendingState();\n    }\n\n\n    public void setState(OrderState state) {\n        this.state = state;\n    }\n\n\n    public void proceed() {\n        this.state.next(this);\n    }\n\n\n    public String getStateName() {\n        return this.state.name();\n    }\n}\n\n\nclass PendingState implements OrderState {\n    public void next(Order order) {\n        order.setState(new ProcessingState());\n    }\n\n\n    public String name() {\n        return \"Pending\";\n    }\n}\n\n\nclass ProcessingState implements OrderState {\n    public void next(Order order) {\n        order.setState(new ShippedState());\n    }\n\n\n    public String name() {\n        return \"Processing\";\n    }\n}\n\n\nclass ShippedState implements OrderState {\n    public void next(Order order) {\n        System.out.println(\"Order already shipped\");\n    }\n\n\n    public String name() {\n        return \"Shipped\";\n    }\n}\n\n\nOrder order = new Order();\nSystem.out.println(order.getStateName());\norder.proceed();\nSystem.out.println(order.getStateName());\norder.proceed();\nSystem.out.println(order.getStateName());\norder.proceed();",
+  explanation: "The Java order example uses state objects to encapsulate transition logic instead of large conditional blocks.",
+};

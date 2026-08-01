@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const java: PatternLanguageExample = {
+  language: "java",
+  title: "Traffic light state",
+  code: "interface TrafficLightState {\n    void next(TrafficLight light);\n    String name();\n}\n\n\nclass TrafficLight {\n    private TrafficLightState state;\n\n\n    public TrafficLight() {\n        this.state = new RedState();\n    }\n\n\n    public void setState(TrafficLightState state) {\n        this.state = state;\n    }\n\n\n    public void change() {\n        this.state.next(this);\n    }\n\n\n    public String getStateName() {\n        return this.state.name();\n    }\n}\n\n\nclass RedState implements TrafficLightState {\n    public void next(TrafficLight light) {\n        light.setState(new GreenState());\n    }\n\n\n    public String name() {\n        return \"Red\";\n    }\n}\n\n\nclass GreenState implements TrafficLightState {\n    public void next(TrafficLight light) {\n        light.setState(new YellowState());\n    }\n\n\n    public String name() {\n        return \"Green\";\n    }\n}\n\n\nclass YellowState implements TrafficLightState {\n    public void next(TrafficLight light) {\n        light.setState(new RedState());\n    }\n\n\n    public String name() {\n        return \"Yellow\";\n    }\n}\n\n\nTrafficLight light = new TrafficLight();\nSystem.out.println(light.getStateName());\nlight.change();\nSystem.out.println(light.getStateName());\nlight.change();\nSystem.out.println(light.getStateName());\nlight.change();\nSystem.out.println(light.getStateName());",
+  explanation: "The Java traffic light example models each color as a separate state class and lets the context delegate transitions to it.",
+};

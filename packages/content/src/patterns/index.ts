@@ -9,7 +9,7 @@ import { interpreterPattern } from './interpreter';
 import { iteratorPattern } from './iterator';
 import { mediatorPattern } from './mediator';
 import { observerPattern } from "./observer";
-import { StatePattern } from './StatePattern';
+import { statePattern } from './state';
 import { StrategyPattern } from "./StrategyPattern";
 import { VisitorPattern } from './VisitorPattern';
 // import { AbstractFactoryPattern } from "./AbstractFactoryPattern";
@@ -44,7 +44,7 @@ export {
   prototypePattern,
   proxyPattern,
   singletonPattern,
-  StatePattern,
+  statePattern,
   StrategyPattern,
   TemplateMethodPattern,
   VisitorPattern
@@ -70,7 +70,7 @@ export const patterns: PatternRecord[] = [
   prototypePattern,
   proxyPattern,
   singletonPattern,
-  StatePattern,
+  statePattern,
   StrategyPattern,
   TemplateMethodPattern,
   VisitorPattern,

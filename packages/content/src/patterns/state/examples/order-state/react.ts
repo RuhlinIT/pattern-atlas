@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Order state",
+  code: "import React, { useMemo } from \"react\";\n\n\ninterface OrderState {\n  next(order: Order): void;\n  name(): string;\n}\n\n\nclass Order {\n  private state: OrderState;\n\n\n  constructor() {\n    this.state = new PendingState();\n  }\n\n\n  setState(state: OrderState): void {\n    this.state = state;\n  }\n\n\n  proceed(): void {\n    this.state.next(this);\n  }\n\n\n  getStateName(): string {\n    return this.state.name();\n  }\n}\n\n\nclass PendingState implements OrderState {\n  next(order: Order): void {\n    order.setState(new ProcessingState());\n  }\n\n\n  name(): string {\n    return \"Pending\";\n  }\n}\n\n\nclass ProcessingState implements OrderState {\n  next(order: Order): void {\n    order.setState(new ShippedState());\n  }\n\n\n  name(): string {\n    return \"Processing\";\n  }\n}\n\n\nclass ShippedState implements OrderState {\n  next(order: Order): void {\n    console.log(\"Order already shipped\");\n  }\n\n\n  name(): string {\n    return \"Shipped\";\n  }\n}\n\n\nfunction OrderPreview({ order }: { order: Order }) {\n  return <p>{order.getStateName()}</p>;\n}\n\n\nexport function App() {\n  const order = useMemo(() => new Order(), []);\n\n\n  useMemo(() => {\n    order.proceed();\n  }, [order]);\n\n\n  return (\n    <main>\n      <h1>Order State</h1>\n      <OrderPreview order={order} />\n    </main>\n  );\n}",
+  explanation: "The React example models state-specific behavior with separate classes while the UI only reads the current state name.",
+};
