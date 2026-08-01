@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Notification channels",
+  code: "import React, { useMemo } from \"react\";\n\ninterface Notifier {\n  send(message: string): string;\n}\n\nclass BasicNotifier implements Notifier {\n  send(message: string): string {\n    return `In-app: ${message}`;\n  }\n}\n\nabstract class NotifierDecorator implements Notifier {\n  constructor(protected notifier: Notifier) {}\n\n  send(message: string): string {\n    return this.notifier.send(message);\n  }\n}\n\nclass EmailDecorator extends NotifierDecorator {\n  send(message: string): string {\n    return `${super.send(message)} | Email: ${message}`;\n  }\n}\n\nclass SmsDecorator extends NotifierDecorator {\n  send(message: string): string {\n    return `${super.send(message)} | SMS: ${message}`;\n  }\n}\n\nclass SlackDecorator extends NotifierDecorator {\n  send(message: string): string {\n    return `${super.send(message)} | Slack: ${message}`;\n  }\n}\n\nfunction NotificationPanel({ notifier }: { notifier: Notifier }) {\n  return <p>{notifier.send(\"Build completed\")}</p>;\n}\n\nexport function App() {\n  const notifier = useMemo(\n    () => new SlackDecorator(new SmsDecorator(new EmailDecorator(new BasicNotifier()))),\n    []\n  );\n\n  return (\n    <main>\n      <h1>Notification Channels</h1>\n      <NotificationPanel notifier={notifier} />\n    </main>\n  );\n}",
+  explanation: "The React example composes notification channels by wrapping the base notifier, so the UI can combine delivery behaviors without changing the core notifier class.",
+};

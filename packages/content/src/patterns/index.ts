@@ -4,7 +4,7 @@ import { MediatorPattern } from './MediatorPattern';
 import { IteratorPattern } from './IteratorPattern';
 import { InterpreterPattern } from './InterpreterPattern';
 import type { PatternRecord } from "@atlas-patterns/schemas";
-import { DecoratorPattern } from "./DecoratorPattern";
+import { decoratorPattern } from "./decorator";
 import { StrategyPattern } from "./StrategyPattern";
 import { ObserverPattern } from "./ObserverPattern";
 import { FacadePattern } from "./FacadePattern";
@@ -32,7 +32,7 @@ export {
   chainOfResponsibilityPattern,
   commandPattern,
   compositePattern,
-  DecoratorPattern,
+  decoratorPattern,
   FacadePattern,
   FactoryMethodPattern,
   FlyweightPattern,
@@ -58,7 +58,7 @@ export const patterns: PatternRecord[] = [
   chainOfResponsibilityPattern,
   commandPattern,
   compositePattern,
-  DecoratorPattern,
+  decoratorPattern,
   FacadePattern,
   FactoryMethodPattern,
   FlyweightPattern,

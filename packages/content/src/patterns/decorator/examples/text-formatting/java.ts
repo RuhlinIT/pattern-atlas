@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const java: PatternLanguageExample = {
+  language: "java",
+  title: "Text formatting",
+  code: "interface Text {\n    String render();\n}\n\nclass PlainText implements Text {\n    private final String value;\n\n    public PlainText(String value) {\n        this.value = value;\n    }\n\n    public String render() {\n        return value;\n    }\n}\n\nabstract class TextDecorator implements Text {\n    protected final Text text;\n\n    public TextDecorator(Text text) {\n        this.text = text;\n    }\n\n    public String render() {\n        return text.render();\n    }\n}\n\nclass BoldDecorator extends TextDecorator {\n    public BoldDecorator(Text text) {\n        super(text);\n    }\n\n    public String render() {\n        return \"<b>\" + super.render() + \"</b>\";\n    }\n}\n\nclass ItalicDecorator extends TextDecorator {\n    public ItalicDecorator(Text text) {\n        super(text);\n    }\n\n    public String render() {\n        return \"<i>\" + super.render() + \"</i>\";\n    }\n}\n\nclass UnderlineDecorator extends TextDecorator {\n    public UnderlineDecorator(Text text) {\n        super(text);\n    }\n\n    public String render() {\n        return \"<u>\" + super.render() + \"</u>\";\n    }\n}\n\nText formatted =\n    new UnderlineDecorator(\n        new ItalicDecorator(\n            new BoldDecorator(new PlainText(\"Pattern Atlas\"))\n        )\n    );\n\nSystem.out.println(formatted.render());",
+  explanation: "Each decorator adds a formatting concern while preserving the same render contract as the base text component.",
+};

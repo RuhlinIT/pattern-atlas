@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Coffee customization",
+  code: "from abc import ABC, abstractmethod\n\nclass Coffee(ABC):\n    @abstractmethod\n    def get_description(self) -> str:\n        pass\n\n    @abstractmethod\n    def get_cost(self) -> int:\n        pass\n\nclass SimpleCoffee(Coffee):\n    def get_description(self) -> str:\n        return \"Simple coffee\"\n\n    def get_cost(self) -> int:\n        return 3\n\nclass CoffeeDecorator(Coffee):\n    def __init__(self, coffee: Coffee) -> None:\n        self.coffee = coffee\n\n    def get_description(self) -> str:\n        return self.coffee.get_description()\n\n    def get_cost(self) -> int:\n        return self.coffee.get_cost()\n\nclass MilkDecorator(CoffeeDecorator):\n    def get_description(self) -> str:\n        return f\"{super().get_description()}, milk\"\n\n    def get_cost(self) -> int:\n        return super().get_cost() + 1\n\nclass MochaDecorator(CoffeeDecorator):\n    def get_description(self) -> str:\n        return f\"{super().get_description()}, mocha\"\n\n    def get_cost(self) -> int:\n        return super().get_cost() + 2\n\nclass WhipDecorator(CoffeeDecorator):\n    def get_description(self) -> str:\n        return f\"{super().get_description()}, whip\"\n\n    def get_cost(self) -> int:\n        return super().get_cost() + 1\n\norder = WhipDecorator(\n    MochaDecorator(\n        MilkDecorator(SimpleCoffee())\n    )\n)\n\nprint(order.get_description())\nprint(order.get_cost())",
+  explanation: "Decorators extend both description and cost behavior in layers while keeping the same Coffee abstraction.",
+};
