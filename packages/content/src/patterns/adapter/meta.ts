@@ -1,27 +1,30 @@
 import type { PatternMeta } from "@atlas-patterns/schemas";
 
-export const meta: PatternMeta = {
+export const adapterMeta: PatternMeta = {
   slug: "adapter",
   name: "Adapter",
   category: "structural",
-  summary: "",
-  intent: "Convert the interface of an existing class into one that the client can use without changing the original implementation.",
+  summary:
+    "Convert the interface of a class or module into another interface clients expect.",
+  intent:
+    "Allow incompatible interfaces to work together without changing the consuming code.",
   difficulty: "intermediate",
-  tags: [],
-  relatedPatterns: [],
-  aliases: [],
-  order: 0,
-  icon: "",
-  prerequisites: [],
-  bestFor: [],
+  tags: ["interface", "translation", "legacy", "integration", "mapping"],
+  relatedPatterns: ["facade", "proxy", "bridge"],
+  aliases: ["wrapper"],
+  order: 10,
+  icon: "🔌",
+  prerequisites: ["solid interface boundaries", "basic dependency inversion"],
+  bestFor: ["legacy integration", "API normalization", "service isolation"],
   languages: [
-  "typescript",
-  "java",
-  "python",
-  "angular",
-  "react",
-  "react-native",
-  "csharp",
-  "dotnet"
-],
+    "typescript",
+    "java",
+    "python",
+    "go",
+    "csharp",
+    "dotnet",
+    "react",
+    "angular",
+    "react-native",
+  ],
 };

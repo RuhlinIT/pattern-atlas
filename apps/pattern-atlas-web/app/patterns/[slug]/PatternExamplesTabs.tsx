@@ -1,266 +1,253 @@
 "use client";
 
-import { useId, useMemo, useState, type KeyboardEvent } from "react";
+import { useMemo, useState } from "react";
 import type {
-  PatternLanguage,
   PatternLanguageExample,
+  PatternRecord,
   PatternScenario,
+  PatternScenarioExamples,
 } from "@atlas-patterns/schemas";
-import { CodeBlock, prettyLanguageLabels, Tag } from "@atlas-patterns/ui";
+import { CodeBlock, SectionCard, Tag } from "@atlas-patterns/ui";
 
-type LegacyScenarioWithExamples = PatternScenario & {
-  languageExamples?: PatternLanguageExample[];
-};
+type ScenarioRuntimeFilter = "all" | "frontend" | "backend";
 
 type PatternExamplesTabsProps = {
-  scenarios: readonly (PatternScenario | LegacyScenarioWithExamples)[];
-  scenarioExamples?: Partial<
-    Record<string, Partial<Record<PatternLanguage, PatternLanguageExample>>>
-  >;
+  scenarios: PatternRecord["scenarios"];
+  scenarioExamples?: PatternScenarioExamples;
 };
 
-function getNextIndex(current: number, total: number) {
-  return (current + 1) % total;
-}
-
-function getPreviousIndex(current: number, total: number) {
-  return current === 0 ? total - 1 : current - 1;
-}
-
-function getPrettyLabel(language: string) {
-  return prettyLanguageLabels[language as keyof typeof prettyLanguageLabels] ?? language;
-}
-
-function hasLegacyExamples (
-  scenario: PatternScenario | LegacyScenarioWithExamples,
-): scenario is LegacyScenarioWithExamples {
-  return "languageExamples" in scenario;
-}
-
-function normalizeExamples(
-  scenario: PatternScenario | LegacyScenarioWithExamples,
-  scenarioExamples?: Partial<
-    Record<string, Partial<Record<PatternLanguage, PatternLanguageExample>>>
-  >,
+function getScenarioExampleLanguages(
+  scenarioSlug: string,
+  scenarioExamples?: PatternScenarioExamples,
 ): PatternLanguageExample[] {
-  if (hasLegacyExamples(scenario) && scenario.languageExamples?.length) {
-    return scenario.languageExamples;
+  const exampleMap = scenarioExamples?.[scenarioSlug];
+  if (!exampleMap) {
+    return [];
   }
 
-  const next = scenarioExamples?.[scenario.slug] ?? {};
-  return Object.values(next).filter(Boolean) as PatternLanguageExample[];
+  return Object.values(exampleMap);
+}
+
+function ExampleCodeBlock({ example }: { example: PatternLanguageExample }) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <Tag>{example.language}</Tag>
+        {example.title ? <Tag>{example.title}</Tag> : null}
+      </div>
+
+      {example.explanation ? <p>{example.explanation}</p> : null}
+
+      <CodeBlock code={example.code} language={example.language} />
+    </div>
+  );
 }
 
 export function PatternExamplesTabs({
   scenarios,
   scenarioExamples,
 }: PatternExamplesTabsProps) {
-  const baseId = useId();
-  const orderedScenarios = useMemo(() => scenarios, [scenarios]);
+  const scenarioList = useMemo(
+    () => scenarios as PatternScenario[],
+    [scenarios],
+  );
+  const [runtimeFilter, setRuntimeFilter] =
+    useState<ScenarioRuntimeFilter>("all");
+  const [activeScenarioSlug, setActiveScenarioSlug] = useState(
+    scenarioList[0]?.slug ?? "",
+  );
+  const [activeLanguage, setActiveLanguage] = useState("");
 
-  const [activeScenarioIndex, setActiveScenarioIndex] = useState(0);
-  const [activeLanguageIndex, setActiveLanguageIndex] = useState(0);
+  const filteredScenarios = useMemo(() => {
+    if (runtimeFilter === "all") {
+      return scenarioList;
+    }
 
-  if (orderedScenarios.length === 0) {
-    return <p>No scenarios yet.</p>;
-  }
-
-  const activeScenario = orderedScenarios[activeScenarioIndex];
-
-  if (!activeScenario) {
-    return <p>No scenarios yet.</p>;
-  }
-
-  const languageExamples = normalizeExamples(activeScenario, scenarioExamples);
-  const activeLanguageExample: PatternLanguageExample | undefined =
-    languageExamples[activeLanguageIndex] ?? languageExamples[0];
-
-  if (!activeLanguageExample) {
-    return (
-      <div className="examples-tabs">
-        <div className="stack-sm">
-          <div className="panel-meta">
-            <Tag>{activeScenario.title}</Tag>
-          </div>
-          <p>{activeScenario.summary}</p>
-        </div>
-        <p>No language examples yet.</p>
-      </div>
+    return scenarioList.filter(
+      (scenario) => scenario.runtime === runtimeFilter,
     );
+  }, [scenarioList, runtimeFilter]);
+
+  const activeScenario =
+    filteredScenarios.find(
+      (scenario) => scenario.slug === activeScenarioSlug,
+    ) ?? filteredScenarios[0];
+
+  const activeExamples = activeScenario
+    ? getScenarioExampleLanguages(activeScenario.slug, scenarioExamples)
+    : [];
+
+  const activeExample =
+    activeExamples.find((example) => example.language === activeLanguage) ??
+    activeExamples[0];
+
+  function handleRuntimeFilterChange(nextFilter: ScenarioRuntimeFilter) {
+    setRuntimeFilter(nextFilter);
+
+    const nextFilteredScenarios =
+      nextFilter === "all"
+        ? scenarioList
+        : scenarioList.filter((scenario) => scenario.runtime === nextFilter);
+
+    const nextScenario = nextFilteredScenarios[0];
+    setActiveScenarioSlug(nextScenario?.slug ?? "");
+
+    const nextExamples = nextScenario
+      ? getScenarioExampleLanguages(nextScenario.slug, scenarioExamples)
+      : [];
+
+    setActiveLanguage(nextExamples[0]?.language ?? "");
   }
 
-  function handleScenarioSelect(index: number) {
-    setActiveScenarioIndex(index);
-    setActiveLanguageIndex(0);
+  function handleScenarioChange(nextScenarioSlug: string) {
+    setActiveScenarioSlug(nextScenarioSlug);
+
+    const nextExamples = getScenarioExampleLanguages(
+      nextScenarioSlug,
+      scenarioExamples,
+    );
+
+    setActiveLanguage(nextExamples[0]?.language ?? "");
   }
 
-  function handleScenarioKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (orderedScenarios.length <= 1) return;
-
-    switch (event.key) {
-      case "ArrowRight":
-        event.preventDefault();
-        setActiveScenarioIndex((current) =>
-          getNextIndex(current, orderedScenarios.length),
-        );
-        setActiveLanguageIndex(0);
-        break;
-      case "ArrowLeft":
-        event.preventDefault();
-        setActiveScenarioIndex((current) =>
-          getPreviousIndex(current, orderedScenarios.length),
-        );
-        setActiveLanguageIndex(0);
-        break;
-      case "Home":
-        event.preventDefault();
-        setActiveScenarioIndex(0);
-        setActiveLanguageIndex(0);
-        break;
-      case "End":
-        event.preventDefault();
-        setActiveScenarioIndex(orderedScenarios.length - 1);
-        setActiveLanguageIndex(0);
-        break;
-      default:
-        break;
-    }
+  if (scenarioList.length === 0) {
+    return <p>No scenarios yet.</p>;
   }
-
-  function handleLanguageKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (languageExamples.length <= 1) return;
-
-    switch (event.key) {
-      case "ArrowRight":
-        event.preventDefault();
-        setActiveLanguageIndex((current) =>
-          getNextIndex(current, languageExamples.length),
-        );
-        break;
-      case "ArrowLeft":
-        event.preventDefault();
-        setActiveLanguageIndex((current) =>
-          getPreviousIndex(current, languageExamples.length),
-        );
-        break;
-      case "Home":
-        event.preventDefault();
-        setActiveLanguageIndex(0);
-        break;
-      case "End":
-        event.preventDefault();
-        setActiveLanguageIndex(languageExamples.length - 1);
-        break;
-      default:
-        break;
-    }
-  }
-
-  const scenarioTabPanelId = `${baseId}-scenario-panel-${activeScenario.slug}`;
-  const scenarioTabId = `${baseId}-scenario-tab-${activeScenario.slug}`;
-
-  const languageTabPanelId = `${baseId}-language-panel-${activeScenario.slug}-${activeLanguageExample.language}`;
-  const languageTabId = `${baseId}-language-tab-${activeScenario.slug}-${activeLanguageExample.language}`;
 
   return (
-    <div className="examples-tabs">
-      <div className="stack-sm">
-        <p className="results-meta">Scenarios</p>
+    <div className="space-y-6">
+      <div
+        role="tablist"
+        aria-label="Scenario runtime filter"
+        className="flex flex-wrap gap-2 border-b border-slate-700"
+      >
+        {(["all", "frontend", "backend"] as const).map((filter) => {
+          const isActive = runtimeFilter === filter;
 
-        <div className="tabs-shell">
-          <div
-            className="tab-list"
-            role="tablist"
-            aria-label={`${activeScenario.title} scenarios`}
-            onKeyDown={handleScenarioKeyDown}
-          >
-            {orderedScenarios.map((scenario, index) => {
-              const isActive = index === activeScenarioIndex;
-              const tabId = `${baseId}-scenario-tab-${scenario.slug}`;
-              const panelId = `${baseId}-scenario-panel-${scenario.slug}`;
-
-              return (
-                <button
-                  key={scenario.slug}
-                  id={tabId}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  aria-controls={panelId}
-                  tabIndex={isActive ? 0 : -1}
-                  className={`tab-button${isActive ? " active" : ""}`}
-                  onClick={() => handleScenarioSelect(index)}
-                >
-                  {scenario.title}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+          return (
+            <button
+              key={filter}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => handleRuntimeFilterChange(filter)}
+              className={[
+                "relative -mb-px rounded-t-lg border px-4 py-3 text-sm transition-all",
+                isActive
+                  ? "border-sky-400 border-b-slate-950 bg-slate-950 text-sky-400 shadow-sm"
+                  : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
+              ].join(" ")}
+            >
+              {filter}
+            </button>
+          );
+        })}
       </div>
 
-      <section
-        id={scenarioTabPanelId}
-        role="tabpanel"
-        aria-labelledby={scenarioTabId}
-        tabIndex={0}
-        className="example-card"
-      >
-        <div className="stack-sm">
-          <div className="panel-meta">
-            <Tag>{activeScenario.title}</Tag>
-          </div>
-          <p>{activeScenario.summary}</p>
-        </div>
+      <div className="flex flex-wrap gap-2">
+        {filteredScenarios.map((scenario) => {
+          const isActive = scenario.slug === activeScenario?.slug;
 
-        <div className="stack-sm">
-          <p className="results-meta">Languages</p>
-          <div className="tabs-shell">
-            <div
-              className="tab-list"
-              role="tablist"
-              aria-label={`${activeScenario.title} languages`}
-              onKeyDown={handleLanguageKeyDown}
+          return (
+            <button
+              key={scenario.slug}
+              type="button"
+              onClick={() => handleScenarioChange(scenario.slug)}
+              className={[
+                "rounded-lg border px-4 py-3 text-sm transition-all",
+                isActive
+                  ? "border-sky-400 bg-slate-950 text-sky-400 shadow-sm translate-y-[-1px]"
+                  : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
+              ].join(" ")}
             >
-              {languageExamples.map((example, index) => {
-                const isActive = index === activeLanguageIndex;
-                const tabId = `${baseId}-language-tab-${activeScenario.slug}-${example.language}`;
-                const panelId = `${baseId}-language-panel-${activeScenario.slug}-${example.language}`;
+              {scenario.title}
+            </button>
+          );
+        })}
+      </div>
 
-                return (
-                  <button
-                    key={`${activeScenario.slug}-${example.language}`}
-                    id={tabId}
-                    type="button"
-                    role="tab"
-                    aria-selected={isActive}
-                    aria-controls={panelId}
-                    tabIndex={isActive ? 0 : -1}
-                    className={`tab-button${isActive ? " active" : ""}`}
-                    onClick={() => setActiveLanguageIndex(index)}
-                  >
-                    {getPrettyLabel(example.language)}
-                  </button>
-                );
-              })}
+      {activeScenario ? (
+        <div className="space-y-4">
+          <SectionCard title={activeScenario.title}>
+            <div className="space-y-3">
+              <p>{activeScenario.summary}</p>
+
+              {activeScenario.context ? (
+                <p>
+                  <strong>Context:</strong> {activeScenario.context}
+                </p>
+              ) : null}
+
+              {activeScenario.problem ? (
+                <p>
+                  <strong>Problem:</strong> {activeScenario.problem}
+                </p>
+              ) : null}
+
+              {activeScenario.solution ? (
+                <p>
+                  <strong>Solution:</strong> {activeScenario.solution}
+                </p>
+              ) : null}
+
+              {activeScenario.runtime ? (
+                <Tag>{activeScenario.runtime}</Tag>
+              ) : null}
             </div>
-          </div>
-        </div>
+          </SectionCard>
 
-        <section
-          id={languageTabPanelId}
-          role="tabpanel"
-          aria-labelledby={languageTabId}
-          tabIndex={0}
-          className="stack-sm"
-        >
-          <CodeBlock
-            code={activeLanguageExample.code}
-            language={activeLanguageExample.language}
-          />
-          <p>{activeLanguageExample.explanation}</p>
-        </section>
-      </section>
+          <SectionCard title="Language examples">
+            {activeExamples.length === 0 ? (
+              <p>No examples yet.</p>
+            ) : (
+              <div className="space-y-0">
+                <div
+                  role="tablist"
+                  aria-label="Language examples"
+                  className="flex flex-wrap gap-2 border-b border-slate-700"
+                >
+                  {activeExamples.map((example) => {
+                    const isActive = example.language === activeLanguage;
+
+                    return (
+                      <button
+                        key={example.language}
+                        type="button"
+                        role="tab"
+                        aria-selected={isActive}
+                        aria-controls={`language-panel-${example.language}`}
+                        id={`language-tab-${example.language}`}
+                        onClick={() => setActiveLanguage(example.language)}
+                        className={[
+                          "relative -mb-px rounded-t-lg border px-4 py-3 text-sm transition-all",
+                          isActive
+                            ? "border-sky-400 border-b-slate-950 bg-slate-950 text-sky-400 shadow-sm"
+                            : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
+                        ].join(" ")}
+                      >
+                        {example.language}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {activeExample ? (
+                  <div
+                    role="tabpanel"
+                    id={`language-panel-${activeExample.language}`}
+                    aria-labelledby={`language-tab-${activeExample.language}`}
+                    className="rounded-b-lg border border-t-0 border-slate-700 bg-slate-950 p-4"
+                  >
+                    <ExampleCodeBlock example={activeExample} />
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </SectionCard>
+        </div>
+      ) : (
+        <p>No scenarios match this filter.</p>
+      )}
     </div>
   );
 }

@@ -2,7 +2,8 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 
 export const typescript: PatternLanguageExample = {
   language: "typescript",
-  title: "Legacy notification service",
-  code: "interface Notifier {\n  send(message: string): void;\n}\n\nclass LegacyMessenger {\n  deliver(payload: { body: string }): void {\n    console.log(`Legacy messenger sent: ${payload.body}`);\n  }\n}\n\nclass NotificationAdapter implements Notifier {\n  constructor(private messenger: LegacyMessenger) {}\n\n  send(message: string): void {\n    this.messenger.deliver({ body: message });\n  }\n}\n\nclass AlertService {\n  constructor(private notifier: Notifier) {}\n\n  triggerAlert(message: string): void {\n    this.notifier.send(message);\n  }\n}\n\nconst notifier = new NotificationAdapter(new LegacyMessenger());\nconst alerts = new AlertService(notifier);\nalerts.triggerAlert(\"CPU threshold exceeded\");",
-  explanation: "The adapter converts the app's simple send contract into the older service's payload-based deliver call.",
+  title: "Legacy notification adapter",
+  code: "type NotificationMessage = {\n  to: string;\n  subject: string;\n  body: string;\n};\n\n\nexport interface Notifier {\n  send(message: NotificationMessage): Promise<void>;\n}\n\n\nexport class LegacyNotificationAdapter implements Notifier {\n  constructor(private readonly legacyService: LegacyMailService) {}\n\n\n  async send(message: NotificationMessage): Promise<void> {\n    await this.legacyService.deliver({\n      recipient: message.to,\n      headline: message.subject,\n      content: message.body,\n    });\n  }\n}",
+  explanation:
+    "The adapter hides the legacy notification payload shape behind a modern notifier interface.",
 };

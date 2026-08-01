@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getPatternBySlug, patterns } from "@atlas-patterns/content";
 import { PageHeader, SectionCard, Tag } from "@atlas-patterns/ui";
 import { PatternExamplesTabs } from "./PatternExamplesTabs";
+import { PatternVariantsSection } from "@components/patterns/PatternVariantsSection";
 
 type PatternDetailPageProps = {
   params: Promise<{
@@ -84,10 +85,16 @@ export default async function PatternDetailPage({
         </SectionCard>
       </div>
 
+      <SectionCard title="Variants">
+        <PatternVariantsSection pattern={pattern} />
+      </SectionCard>
+
       <SectionCard title="Scenarios">
         <PatternExamplesTabs
           scenarios={pattern.scenarios}
-          {...(pattern.scenarioExamples ? { scenarioExamples: pattern.scenarioExamples } : {})}
+          {...(pattern.scenarioExamples
+            ? { scenarioExamples: pattern.scenarioExamples }
+            : {})}
         />
       </SectionCard>
 

@@ -13,18 +13,18 @@ type CodeBlockProps = {
 const syntaxLanguageMap: Record<string, string> = {
   typescript: "typescript",
   javascript: "javascript",
+  tsx: "tsx",
+  jsx: "jsx",
   python: "python",
   java: "java",
+  go: "go",
+  php: "php",
   csharp: "csharp",
   dotnet: "csharp",
-  angular: "typescript",
+  kotlin: "kotlin",
   react: "tsx",
   "react-native": "tsx",
-  jsx: "jsx",
-  tsx: "tsx",
-  php: "php",
-  go: "go",
-  kotlin: "kotlin",
+  angular: "typescript",
 };
 
 function getDisplayLabel(language: string) {
