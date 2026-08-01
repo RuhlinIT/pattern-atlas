@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const typescript: PatternLanguageExample = {
+  language: "typescript",
+  title: "Tree rendering flyweight",
+  code: "interface TreeType {\n  render(x: number, y: number): string;\n}\n\n\nclass SharedTreeType implements TreeType {\n  constructor(\n    private name: string,\n    private color: string,\n    private texture: string,\n  ) {}\n\n\n  render(x: number, y: number): string {\n    return `Tree ${this.name} at (${x}, ${y}) with ${this.color} leaves and ${this.texture} texture`;\n  }\n}\n\n\nclass TreeTypeFactory {\n  private types = new Map<string, SharedTreeType>();\n\n\n  getTreeType(name: string, color: string, texture: string): SharedTreeType {\n    const key = `${name}|${color}|${texture}`;\n    if (!this.types.has(key)) {\n      this.types.set(key, new SharedTreeType(name, color, texture));\n    }\n\n\n    return this.types.get(key)!;\n  }\n}\n\n\nclass Tree {\n  constructor(\n    private x: number,\n    private y: number,\n    private type: TreeType,\n  ) {}\n\n\n  draw(): string {\n    return this.type.render(this.x, this.y);\n  }\n}\n\n\nconst factory = new TreeTypeFactory();\nconst pine = factory.getTreeType(\"Pine\", \"green\", \"rough\");\nconst oak = factory.getTreeType(\"Oak\", \"dark green\", \"bark\");\n\n\nconst forest = [\n  new Tree(10, 20, pine),\n  new Tree(15, 22, pine),\n  new Tree(30, 40, oak),\n];\n\n\nconsole.log(forest.map((tree) => tree.draw()).join(\"\\n\"));",
+  explanation: "The tree flyweight shares tree type data like color and texture, while each tree instance stores only its position in the forest.",
+};

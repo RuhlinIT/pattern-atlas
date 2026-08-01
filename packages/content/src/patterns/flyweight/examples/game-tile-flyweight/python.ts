@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Game tile flyweight",
+  code: "class SharedTileType:\n    def __init__(self, terrain: str, movement_cost: int, texture: str) -> None:\n        self.terrain = terrain\n        self.movement_cost = movement_cost\n        self.texture = texture\n\n\n    def render(self, x: int, y: int) -> str:\n        return f\"Tile {self.terrain} at ({x}, {y}) with cost {self.movement_cost} and {self.texture} texture\"\n\n\nclass TileTypeFactory:\n    def __init__(self) -> None:\n        self.types: dict[str, SharedTileType] = {}\n\n\n    def get_tile_type(self, terrain: str, movement_cost: int, texture: str) -> SharedTileType:\n        key = f\"{terrain}|{movement_cost}|{texture}\"\n        if key not in self.types:\n            self.types[key] = SharedTileType(terrain, movement_cost, texture)\n        return self.types[key]\n\n\nclass Tile:\n    def __init__(self, x: int, y: int, tile_type: SharedTileType) -> None:\n        self.x = x\n        self.y = y\n        self.tile_type = tile_type\n\n\n    def draw(self) -> str:\n        return self.tile_type.render(self.x, self.y)\n\n\nfactory = TileTypeFactory()\ngrass = factory.get_tile_type(\"Grass\", 1, \"green\")\nwater = factory.get_tile_type(\"Water\", 5, \"blue\")\n\n\nmap_tiles = [\n    Tile(0, 0, grass),\n    Tile(1, 0, grass),\n    Tile(2, 0, water),\n]\n\n\nfor tile in map_tiles:\n    print(tile.draw())",
+  explanation: "The game tile flyweight reuses shared terrain definitions so a large map can be represented without duplicating tile metadata.",
+};

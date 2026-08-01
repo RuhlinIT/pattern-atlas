@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Tree rendering flyweight",
+  code: "class SharedTreeType:\n    def __init__(self, name: str, color: str, texture: str) -> None:\n        self.name = name\n        self.color = color\n        self.texture = texture\n\n\n    def render(self, x: int, y: int) -> str:\n        return f\"Tree {self.name} at ({x}, {y}) with {self.color} leaves and {self.texture} texture\"\n\n\nclass TreeTypeFactory:\n    def __init__(self) -> None:\n        self.types: dict[str, SharedTreeType] = {}\n\n\n    def get_tree_type(self, name: str, color: str, texture: str) -> SharedTreeType:\n        key = f\"{name}|{color}|{texture}\"\n        if key not in self.types:\n            self.types[key] = SharedTreeType(name, color, texture)\n        return self.types[key]\n\n\nclass Tree:\n    def __init__(self, x: int, y: int, tree_type: SharedTreeType) -> None:\n        self.x = x\n        self.y = y\n        self.tree_type = tree_type\n\n\n    def draw(self) -> str:\n        return self.tree_type.render(self.x, self.y)\n\n\nfactory = TreeTypeFactory()\npine = factory.get_tree_type(\"Pine\", \"green\", \"rough\")\noak = factory.get_tree_type(\"Oak\", \"dark green\", \"bark\")\n\n\nforest = [\n    Tree(10, 20, pine),\n    Tree(15, 22, pine),\n    Tree(30, 40, oak),\n]\n\n\nfor tree in forest:\n    print(tree.draw())",
+  explanation: "The tree flyweight shares the common tree model so each tree instance only stores coordinates and other unique context.",
+};

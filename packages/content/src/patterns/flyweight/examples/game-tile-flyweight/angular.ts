@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const angular: PatternLanguageExample = {
+  language: "angular",
+  title: "Game tile flyweight",
+  code: "interface TileType {\n  render(x: number, y: number): string;\n}\n\n\nclass SharedTileType implements TileType {\n  constructor(\n    private terrain: string,\n    private movementCost: number,\n    private texture: string,\n  ) {}\n\n\n  render(x: number, y: number): string {\n    return `Tile ${this.terrain} at (${x}, ${y}) with cost ${this.movementCost} and ${this.texture} texture`;\n  }\n}\n\n\nclass TileTypeFactory {\n  private types = new Map<string, SharedTileType>();\n\n\n  getTileType(terrain: string, movementCost: number, texture: string): SharedTileType {\n    const key = `${terrain}|${movementCost}|${texture}`;\n    if (!this.types.has(key)) {\n      this.types.set(key, new SharedTileType(terrain, movementCost, texture));\n    }\n\n\n    return this.types.get(key)!;\n  }\n}\n\n\nclass Tile {\n  constructor(\n    private x: number,\n    private y: number,\n    private type: TileType,\n  ) {}\n\n\n  draw(): string {\n    return this.type.render(this.x, this.y);\n  }\n}\n\n\nconst factory = new TileTypeFactory();\nconst grass = factory.getTileType(\"Grass\", 1, \"green\");\nconst water = factory.getTileType(\"Water\", 5, \"blue\");\n\n\nconst map = [\n  new Tile(0, 0, grass),\n  new Tile(1, 0, grass),\n  new Tile(2, 0, water),\n];\n\n\nconsole.log(map.map((tile) => tile.draw()).join(\"\\n\"));",
+  explanation: "The Angular example shares tile types so large maps can be built from a small number of reusable terrain flyweights.",
+};
