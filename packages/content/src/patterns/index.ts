@@ -22,7 +22,7 @@ import { mementoPattern } from './memento';
 import { prototypePattern } from "./prototype";
 import { proxyPattern } from "./proxy";
 import { singletonPattern } from "./singleton";
-import { TemplateMethodPattern } from './TemplateMethodPattern';
+import { templateMethodPattern } from './template-method';
 
 export {
   abstractFactoryPattern,
@@ -46,7 +46,7 @@ export {
   singletonPattern,
   statePattern,
   strategyPattern,
-  TemplateMethodPattern,
+  templateMethodPattern,
   VisitorPattern
 };
 
@@ -72,6 +72,6 @@ export const patterns: PatternRecord[] = [
   singletonPattern,
   statePattern,
   strategyPattern,
-  TemplateMethodPattern,
+  templateMethodPattern,
   VisitorPattern,
 ];

@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Data import template",
+  code: "import React, { useMemo } from \"react\";\n\n\nabstract class DataImporter {\n  import(): void {\n    const raw = this.readSource();\n    const parsed = this.parse(raw);\n    this.validate(parsed);\n    this.save(parsed);\n  }\n\n\n  protected abstract readSource(): string;\n  protected abstract parse(raw: string): unknown;\n  protected validate(data: unknown): void {\n    console.log(\"Validating imported data\");\n  }\n\n\n  protected save(data: unknown): void {\n    console.log(\"Saving imported data\");\n  }\n}\n\n\nclass CsvImporter extends DataImporter {\n  protected readSource(): string {\n    return \"name,age\\nAlice,30\";\n  }\n\n\n  protected parse(raw: string): unknown {\n    return raw.split(\"\\n\").map((line) => line.split(\",\"));\n  }\n}\n\n\nclass JsonImporter extends DataImporter {\n  protected readSource(): string {\n    return '{\"name\":\"Alice\",\"age\":30}';\n  }\n\n\n  protected parse(raw: string): unknown {\n    return JSON.parse(raw);\n  }\n}\n\n\nfunction ImportPreview() {\n  return <p>Data importer ready</p>;\n}\n\n\nexport function App() {\n  const importer = useMemo(() => new CsvImporter(), []);\n\n\n  useMemo(() => {\n    importer.import();\n  }, [importer]);\n\n\n  return (\n    <main>\n      <h1>Data Import Template</h1>\n      <ImportPreview />\n    </main>\n  );\n}",
+  explanation: "The React example keeps the data import workflow in the base class while the concrete importer handles format-specific parsing.",
+};

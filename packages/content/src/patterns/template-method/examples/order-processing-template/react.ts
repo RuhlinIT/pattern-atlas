@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Order processing template",
+  code: "import React, { useMemo } from \"react\";\n\n\nabstract class OrderProcessor {\n  process(): void {\n    this.validateOrder();\n    this.chargePayment();\n    this.fulfillOrder();\n    this.sendConfirmation();\n  }\n\n\n  protected validateOrder(): void {\n    console.log(\"Validating order\");\n  }\n\n\n  protected abstract chargePayment(): void;\n  protected abstract fulfillOrder(): void;\n\n\n  protected sendConfirmation(): void {\n    console.log(\"Sending confirmation\");\n  }\n}\n\n\nclass PhysicalOrderProcessor extends OrderProcessor {\n  protected chargePayment(): void {\n    console.log(\"Charging payment for physical order\");\n  }\n\n\n  protected fulfillOrder(): void {\n    console.log(\"Shipping physical order\");\n  }\n}\n\n\nclass DigitalOrderProcessor extends OrderProcessor {\n  protected chargePayment(): void {\n    console.log(\"Charging payment for digital order\");\n  }\n\n\n  protected fulfillOrder(): void {\n    console.log(\"Delivering digital product\");\n  }\n}\n\n\nfunction OrderPreview({ processor }: { processor: OrderProcessor }) {\n  return <p>Order processor ready</p>;\n}\n\n\nexport function App() {\n  const processor = useMemo(() => new PhysicalOrderProcessor(), []);\n\n\n  useMemo(() => {\n    processor.process();\n  }, [processor]);\n\n\n  return (\n    <main>\n      <h1>Order Processing Template</h1>\n      <OrderPreview processor={processor} />\n    </main>\n  );\n}",
+  explanation: "The React example preserves the algorithm structure in the base class while the concrete processor subclasses customize the steps.",
+};
