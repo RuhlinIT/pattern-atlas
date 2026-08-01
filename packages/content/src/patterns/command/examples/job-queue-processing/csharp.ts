@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const csharp: PatternLanguageExample = {
+  language: "csharp",
+  title: "Job queue processing",
+  code: "using System;\nusing System.Collections.Generic;\n\npublic interface ICommand\n{\n    void Execute();\n}\n\npublic class EmailService\n{\n    public void Send(string to, string body)\n    {\n        Console.WriteLine($\"Email sent to {to}: {body}\");\n    }\n}\n\npublic class SendEmailCommand : ICommand\n{\n    private readonly EmailService _emailService;\n    private readonly string _to;\n    private readonly string _body;\n\n    public SendEmailCommand(EmailService emailService, string to, string body)\n    {\n        _emailService = emailService;\n        _to = to;\n        _body = body;\n    }\n\n    public void Execute()\n    {\n        _emailService.Send(_to, _body);\n    }\n}\n\npublic class JobQueue\n{\n    private readonly Queue<ICommand> _queue = new();\n\n    public void Add(ICommand command)\n    {\n        _queue.Enqueue(command);\n    }\n\n    public void RunNext()\n    {\n        if (_queue.Count > 0)\n        {\n            var command = _queue.Dequeue();\n            command.Execute();\n        }\n    }\n}\n\nvar queue = new JobQueue();\nvar emailService = new EmailService();\n\nqueue.Add(new SendEmailCommand(emailService, \"team@example.com\", \"Build passed\"));\nqueue.Add(new SendEmailCommand(emailService, \"ops@example.com\", \"Deploy started\"));\n\nqueue.RunNext();\nqueue.RunNext();",
+  explanation: "The C# version stores command objects in a queue so work can be invoked later, keeping scheduling separate from the email-sending logic.",
+};
