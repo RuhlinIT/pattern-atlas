@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Document visitor",
+  code: "from abc import ABC, abstractmethod\n\n\nclass DocumentVisitor(ABC):\n    @abstractmethod\n    def visit_paragraph(self, paragraph: \"Paragraph\") -> str:\n        pass\n\n\n    @abstractmethod\n    def visit_heading(self, heading: \"Heading\") -> str:\n        pass\n\n\nclass DocumentNode(ABC):\n    @abstractmethod\n    def accept(self, visitor: DocumentVisitor) -> str:\n        pass\n\n\nclass Paragraph(DocumentNode):\n    def __init__(self, text: str) -> None:\n        self.text = text\n\n\n    def accept(self, visitor: DocumentVisitor) -> str:\n        return visitor.visit_paragraph(self)\n\n\nclass Heading(DocumentNode):\n    def __init__(self, level: int, text: str) -> None:\n        self.level = level\n        self.text = text\n\n\n    def accept(self, visitor: DocumentVisitor) -> str:\n        return visitor.visit_heading(self)\n\n\nclass HtmlExportVisitor(DocumentVisitor):\n    def visit_paragraph(self, paragraph: Paragraph) -> str:\n        return f\"<p>{paragraph.text}</p>\"\n\n\n    def visit_heading(self, heading: Heading) -> str:\n        return f\"<h{heading.level}>{heading.text}</h{heading.level}>\"\n\n\ndocument = [\n    Heading(1, \"Report\"),\n    Paragraph(\"This is the first paragraph.\"),\n    Paragraph(\"This is the second paragraph.\"),\n]\n\n\nvisitor = HtmlExportVisitor()\nhtml = \"\\n\".join(node.accept(visitor) for node in document)\n\n\nprint(html)",
+  explanation: "The Python document visitor turns nodes into HTML while leaving the document element classes unchanged.",
+};

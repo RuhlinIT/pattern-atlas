@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Shape visitor",
+  code: "from abc import ABC, abstractmethod\nimport math\n\n\nclass ShapeVisitor(ABC):\n    @abstractmethod\n    def visit_circle(self, circle: \"Circle\") -> None:\n        pass\n\n\n    @abstractmethod\n    def visit_rectangle(self, rectangle: \"Rectangle\") -> None:\n        pass\n\n\nclass Shape(ABC):\n    @abstractmethod\n    def accept(self, visitor: ShapeVisitor) -> None:\n        pass\n\n\nclass Circle(Shape):\n    def __init__(self, radius: float) -> None:\n        self.radius = radius\n\n\n    def accept(self, visitor: ShapeVisitor) -> None:\n        visitor.visit_circle(self)\n\n\nclass Rectangle(Shape):\n    def __init__(self, width: float, height: float) -> None:\n        self.width = width\n        self.height = height\n\n\n    def accept(self, visitor: ShapeVisitor) -> None:\n        visitor.visit_rectangle(self)\n\n\nclass AreaVisitor(ShapeVisitor):\n    def __init__(self) -> None:\n        self.total = 0\n\n\n    def visit_circle(self, circle: Circle) -> None:\n        self.total += math.pi * circle.radius * circle.radius\n\n\n    def visit_rectangle(self, rectangle: Rectangle) -> None:\n        self.total += rectangle.width * rectangle.height\n\n\nshapes = [Circle(3), Rectangle(4, 5)]\n\n\nvisitor = AreaVisitor()\nfor shape in shapes:\n    shape.accept(visitor)\n\n\nprint(visitor.total)",
+  explanation: "The Python shape visitor lets you add area computation without changing the shape classes.",
+};

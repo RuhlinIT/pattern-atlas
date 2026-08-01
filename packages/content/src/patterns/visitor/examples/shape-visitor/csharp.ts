@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const csharp: PatternLanguageExample = {
+  language: "csharp",
+  title: "Shape visitor",
+  code: "using System;\nusing System.Collections.Generic;\n\n\npublic interface IShapeVisitor\n{\n    void VisitCircle(Circle circle);\n    void VisitRectangle(Rectangle rectangle);\n}\n\n\npublic interface IShape\n{\n    void Accept(IShapeVisitor visitor);\n}\n\n\npublic class Circle : IShape\n{\n    public double Radius { get; }\n\n\n    public Circle(double radius)\n    {\n        Radius = radius;\n    }\n\n\n    public void Accept(IShapeVisitor visitor)\n    {\n        visitor.VisitCircle(this);\n    }\n}\n\n\npublic class Rectangle : IShape\n{\n    public double Width { get; }\n    public double Height { get; }\n\n\n    public Rectangle(double width, double height)\n    {\n        Width = width;\n        Height = height;\n    }\n\n\n    public void Accept(IShapeVisitor visitor)\n    {\n        visitor.VisitRectangle(this);\n    }\n}\n\n\npublic class AreaVisitor : IShapeVisitor\n{\n    public double Total { get; private set; }\n\n\n    public void VisitCircle(Circle circle)\n    {\n        Total += Math.PI * circle.Radius * circle.Radius;\n    }\n\n\n    public void VisitRectangle(Rectangle rectangle)\n    {\n        Total += rectangle.Width * rectangle.Height;\n    }\n}\n\n\nvar shapes = new List<IShape>\n{\n    new Circle(3),\n    new Rectangle(4, 5)\n};\n\n\nvar visitor = new AreaVisitor();\nforeach (var shape in shapes)\n{\n    shape.Accept(visitor);\n}\n\n\nConsole.WriteLine(visitor.Total);",
+  explanation: "The C# shape visitor keeps the computation in a dedicated visitor and leaves the shapes focused on structure.",
+};

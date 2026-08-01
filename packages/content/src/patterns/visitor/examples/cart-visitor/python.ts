@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Cart visitor",
+  code: "from abc import ABC, abstractmethod\n\n\nclass CartVisitor(ABC):\n    @abstractmethod\n    def visit_book(self, book: \"Book\") -> int:\n        pass\n\n\n    @abstractmethod\n    def visit_fruit(self, fruit: \"Fruit\") -> int:\n        pass\n\n\nclass CartItem(ABC):\n    @abstractmethod\n    def accept(self, visitor: CartVisitor) -> int:\n        pass\n\n\nclass Book(CartItem):\n    def __init__(self, price: int, isbn: str) -> None:\n        self.price = price\n        self.isbn = isbn\n\n\n    def accept(self, visitor: CartVisitor) -> int:\n        return visitor.visit_book(self)\n\n\nclass Fruit(CartItem):\n    def __init__(self, price_per_kg: int, weight: int, name: str) -> None:\n        self.price_per_kg = price_per_kg\n        self.weight = weight\n        self.name = name\n\n\n    def accept(self, visitor: CartVisitor) -> int:\n        return visitor.visit_fruit(self)\n\n\nclass ShoppingCartVisitor(CartVisitor):\n    def visit_book(self, book: Book) -> int:\n        return book.price - 5 if book.price > 50 else book.price\n\n\n    def visit_fruit(self, fruit: Fruit) -> int:\n        return fruit.price_per_kg * fruit.weight\n\n\nitems = [\n    Book(20, \"1234\"),\n    Book(100, \"5678\"),\n    Fruit(10, 2, \"Banana\"),\n    Fruit(5, 5, \"Apple\"),\n]\n\n\nvisitor = ShoppingCartVisitor()\ntotal = sum(item.accept(visitor) for item in items)\n\n\nprint(total)",
+  explanation: "The Python cart visitor lets you add a new calculation without modifying the item classes.",
+};

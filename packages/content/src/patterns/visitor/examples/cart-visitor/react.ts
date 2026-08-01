@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Cart visitor",
+  code: "import React, { useMemo } from \"react\";\n\n\ninterface CartVisitor {\n  visitBook(book: Book): number;\n  visitFruit(fruit: Fruit): number;\n}\n\n\ninterface CartItem {\n  accept(visitor: CartVisitor): number;\n}\n\n\nclass Book implements CartItem {\n  constructor(\n    public price: number,\n    public isbn: string\n  ) {}\n\n\n  accept(visitor: CartVisitor): number {\n    return visitor.visitBook(this);\n  }\n}\n\n\nclass Fruit implements CartItem {\n  constructor(\n    public pricePerKg: number,\n    public weight: number,\n    public name: string\n  ) {}\n\n\n  accept(visitor: CartVisitor): number {\n    return visitor.visitFruit(this);\n  }\n}\n\n\nclass ShoppingCartVisitor implements CartVisitor {\n  visitBook(book: Book): number {\n    return book.price > 50 ? book.price - 5 : book.price;\n  }\n\n\n  visitFruit(fruit: Fruit): number {\n    return fruit.pricePerKg * fruit.weight;\n  }\n}\n\n\nfunction CartPreview() {\n  return <p>Cart visitor ready</p>;\n}\n\n\nexport function App() {\n  const total = useMemo(() => {\n    const visitor = new ShoppingCartVisitor();\n    const items: CartItem[] = [\n      new Book(20, \"1234\"),\n      new Book(100, \"5678\"),\n      new Fruit(10, 2, \"Banana\"),\n      new Fruit(5, 5, \"Apple\")\n    ];\n\n\n    return items.reduce((sum, item) => sum + item.accept(visitor), 0);\n  }, []);\n\n\n  return (\n    <main>\n      <h1>Cart Visitor</h1>\n      <CartPreview />\n      <p>{total}</p>\n    </main>\n  );\n}",
+  explanation: "The React example uses a visitor to compute cart totals while the UI simply renders the result.",
+};

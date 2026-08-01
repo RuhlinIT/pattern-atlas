@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const java: PatternLanguageExample = {
+  language: "java",
+  title: "Shape visitor",
+  code: "interface ShapeVisitor {\n    void visitCircle(Circle circle);\n    void visitRectangle(Rectangle rectangle);\n}\n\n\ninterface Shape {\n    void accept(ShapeVisitor visitor);\n}\n\n\nclass Circle implements Shape {\n    public final double radius;\n\n\n    public Circle(double radius) {\n        this.radius = radius;\n    }\n\n\n    public void accept(ShapeVisitor visitor) {\n        visitor.visitCircle(this);\n    }\n}\n\n\nclass Rectangle implements Shape {\n    public final double width;\n    public final double height;\n\n\n    public Rectangle(double width, double height) {\n        this.width = width;\n        this.height = height;\n    }\n\n\n    public void accept(ShapeVisitor visitor) {\n        visitor.visitRectangle(this);\n    }\n}\n\n\nclass AreaVisitor implements ShapeVisitor {\n    public double total = 0;\n\n\n    public void visitCircle(Circle circle) {\n        total += Math.PI * circle.radius * circle.radius;\n    }\n\n\n    public void visitRectangle(Rectangle rectangle) {\n        total += rectangle.width * rectangle.height;\n    }\n}\n\n\nShape[] shapes = new Shape[] {\n    new Circle(3),\n    new Rectangle(4, 5)\n};\n\n\nAreaVisitor visitor = new AreaVisitor();\nfor (Shape shape : shapes) {\n    shape.accept(visitor);\n}\n\n\nSystem.out.println(visitor.total);",
+  explanation: "The Java shape visitor centralizes area calculation in a visitor class while the shapes only expose accept().",
+};
