@@ -20,7 +20,7 @@ import { bridgePattern } from "./bridge";
 import { CompositePattern } from "./CompositePattern";
 import { FlyweightPattern } from "./FlyweightPattern";
 import { ProxyPattern } from "./ProxyPattern";
-import { ChainOfResponsibilityPattern } from "./ChainOfResponsibilityPattern";
+import { chainOfResponsibilityPattern } from "./chain-of-responsibility";
 import { MementoPattern } from './MementoPattern';
 import { TemplateMethodPattern } from './TemplateMethodPattern';
 
@@ -29,7 +29,7 @@ export {
   adapterPattern,
   bridgePattern,
   builderPattern,
-  ChainOfResponsibilityPattern,
+  chainOfResponsibilityPattern,
   CommandPattern,
   CompositePattern,
   DecoratorPattern,
@@ -55,7 +55,7 @@ export const patterns: PatternRecord[] = [
   adapterPattern,
   bridgePattern,
   builderPattern,
-  ChainOfResponsibilityPattern,
+  chainOfResponsibilityPattern,
   CommandPattern,
   CompositePattern,
   DecoratorPattern,
