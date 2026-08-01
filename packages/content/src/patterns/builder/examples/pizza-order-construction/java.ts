@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const java: PatternLanguageExample = {
+  language: "java",
+  title: "Pizza order construction",
+  code: "import java.util.ArrayList;\nimport java.util.List;\n\nclass Pizza {\n    public final String size;\n    public final String crust;\n    public final boolean cheese;\n    public final List<String> toppings;\n\n    public Pizza(String size, String crust, boolean cheese, List<String> toppings) {\n        this.size = size;\n        this.crust = crust;\n        this.cheese = cheese;\n        this.toppings = toppings;\n    }\n}\n\nclass PizzaBuilder {\n    private String size = \"medium\";\n    private String crust = \"regular\";\n    private boolean cheese = true;\n    private final List<String> toppings = new ArrayList<>();\n\n    public PizzaBuilder withSize(String size) {\n        this.size = size;\n        return this;\n    }\n\n    public PizzaBuilder withCrust(String crust) {\n        this.crust = crust;\n        return this;\n    }\n\n    public PizzaBuilder withCheese(boolean cheese) {\n        this.cheese = cheese;\n        return this;\n    }\n\n    public PizzaBuilder addTopping(String topping) {\n        toppings.add(topping);\n        return this;\n    }\n\n    public Pizza build() {\n        return new Pizza(size, crust, cheese, new ArrayList<>(toppings));\n    }\n}\n\nPizza pizza = new PizzaBuilder()\n    .withSize(\"large\")\n    .withCrust(\"thin\")\n    .addTopping(\"pepperoni\")\n    .addTopping(\"mushrooms\")\n    .build();\n\nSystem.out.println(pizza.size);",
+  explanation: "The pizza builder creates a finished object from a sequence of readable configuration steps, which keeps construction flexible.",
+};
