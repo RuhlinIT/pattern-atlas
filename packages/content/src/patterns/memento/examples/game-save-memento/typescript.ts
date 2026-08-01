@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const typescript: PatternLanguageExample = {
+  language: "typescript",
+  title: "Game save memento",
+  code: "class GameMemento {\n  constructor(\n    public readonly level: number,\n    public readonly score: number,\n    public readonly lives: number\n  ) {}\n}\n\n\nclass Game {\n  private level = 1;\n  private score = 0;\n  private lives = 3;\n\n\n  play(points: number): void {\n    this.score += points;\n  }\n\n\n  advanceLevel(): void {\n    this.level += 1;\n  }\n\n\n  loseLife(): void {\n    this.lives -= 1;\n  }\n\n\n  save(): GameMemento {\n    return new GameMemento(this.level, this.score, this.lives);\n  }\n\n\n  restore(memento: GameMemento): void {\n    this.level = memento.level;\n    this.score = memento.score;\n    this.lives = memento.lives;\n  }\n\n\n  status(): string {\n    return `Level ${this.level}, Score ${this.score}, Lives ${this.lives}`;\n  }\n}\n\n\nclass SaveManager {\n  private saves: GameMemento[] = [];\n\n\n  save(state: GameMemento): void {\n    this.saves.push(state);\n  }\n\n\n  load(index: number): GameMemento | null {\n    return this.saves[index] ?? null;\n  }\n}\n\n\nconst game = new Game();\nconst saveManager = new SaveManager();\n\n\ngame.play(100);\ngame.advanceLevel();\nsaveManager.save(game.save());\n\n\ngame.play(50);\ngame.loseLife();\nsaveManager.save(game.save());\n\n\nconsole.log(game.status());\n\n\nconst loaded = saveManager.load(0);\nif (loaded) {\n  game.restore(loaded);\n}\n\n\nconsole.log(game.status());",
+  explanation: "The game save memento stores level, score, and lives so the game can return to a previous checkpoint without exposing its internals.",
+};

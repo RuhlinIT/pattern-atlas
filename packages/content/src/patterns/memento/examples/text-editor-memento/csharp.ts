@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const csharp: PatternLanguageExample = {
+  language: "csharp",
+  title: "Text editor memento",
+  code: "using System;\nusing System.Collections.Generic;\n\n\npublic class TextEditorMemento\n{\n    public string Content { get; }\n\n\n    public TextEditorMemento(string content)\n    {\n        Content = content;\n    }\n}\n\n\npublic class TextEditor\n{\n    private string _content = \"\";\n\n\n    public void Type(string text)\n    {\n        _content += text;\n    }\n\n\n    public TextEditorMemento Save()\n    {\n        return new TextEditorMemento(_content);\n    }\n\n\n    public void Restore(TextEditorMemento memento)\n    {\n        _content = memento.Content;\n    }\n\n\n    public string GetContent()\n    {\n        return _content;\n    }\n}\n\n\npublic class History\n{\n    private readonly Stack<TextEditorMemento> _snapshots = new Stack<TextEditorMemento>();\n\n\n    public void Save(TextEditorMemento memento)\n    {\n        _snapshots.Push(memento);\n    }\n\n\n    public TextEditorMemento Undo()\n    {\n        return _snapshots.Count > 0 ? _snapshots.Pop() : null;\n    }\n}\n\n\nvar editor = new TextEditor();\nvar history = new History();\n\n\neditor.Type(\"Hello\");\nhistory.Save(editor.Save());\n\n\neditor.Type(\" World\");\nhistory.Save(editor.Save());\n\n\neditor.Type(\"!\");\nConsole.WriteLine(editor.GetContent());\n\n\nvar previous = history.Undo();\nif (previous != null)\n{\n    editor.Restore(previous);\n}\n\n\nConsole.WriteLine(editor.GetContent());",
+  explanation: "The C# text editor example stores snapshots in immutable mementos and uses a caretaker to manage undo history.",
+};

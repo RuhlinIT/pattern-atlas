@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const java: PatternLanguageExample = {
+  language: "java",
+  title: "Text editor memento",
+  code: "class TextEditorMemento {\n    private final String content;\n\n\n    public TextEditorMemento(String content) {\n        this.content = content;\n    }\n\n\n    public String getContent() {\n        return content;\n    }\n}\n\n\nclass TextEditor {\n    private String content = \"\";\n\n\n    public void type(String text) {\n        content += text;\n    }\n\n\n    public TextEditorMemento save() {\n        return new TextEditorMemento(content);\n    }\n\n\n    public void restore(TextEditorMemento memento) {\n        content = memento.getContent();\n    }\n\n\n    public String getContent() {\n        return content;\n    }\n}\n\n\nclass History {\n    private final java.util.Stack<TextEditorMemento> snapshots = new java.util.Stack<>();\n\n\n    public void save(TextEditorMemento memento) {\n        snapshots.push(memento);\n    }\n\n\n    public TextEditorMemento undo() {\n        return snapshots.isEmpty() ? null : snapshots.pop();\n    }\n}\n\n\nTextEditor editor = new TextEditor();\nHistory history = new History();\n\n\neditor.type(\"Hello\");\nhistory.save(editor.save());\n\n\neditor.type(\" World\");\nhistory.save(editor.save());\n\n\neditor.type(\"!\");\nSystem.out.println(editor.getContent());\n\n\nTextEditorMemento previous = history.undo();\nif (previous != null) {\n    editor.restore(previous);\n}\n\n\nSystem.out.println(editor.getContent());",
+  explanation: "The Java text editor uses a memento class to snapshot content and a history object to manage undo steps.",
+};

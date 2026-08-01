@@ -21,7 +21,7 @@ import { compositePattern } from "./composite";
 import { flyweightPattern } from "./flyweight";
 import { ProxyPattern } from "./ProxyPattern";
 import { chainOfResponsibilityPattern } from "./chain-of-responsibility";
-import { MementoPattern } from './MementoPattern';
+import { mementoPattern } from './memento';
 import { TemplateMethodPattern } from './TemplateMethodPattern';
 
 export {
@@ -39,7 +39,7 @@ export {
   interpreterPattern,
   iteratorPattern,
   mediatorPattern,
-  MementoPattern,
+  mementoPattern,
   ObserverPattern,
   PrototypePattern,
   ProxyPattern,
@@ -65,7 +65,7 @@ export const patterns: PatternRecord[] = [
   interpreterPattern,
   iteratorPattern,
   mediatorPattern,
-  MementoPattern,
+  mementoPattern,
   ObserverPattern,
   PrototypePattern,
   ProxyPattern,

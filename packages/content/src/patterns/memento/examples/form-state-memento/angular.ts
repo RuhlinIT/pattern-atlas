@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const angular: PatternLanguageExample = {
+  language: "angular",
+  title: "Form state memento",
+  code: "class FormMemento {\n  constructor(\n    public readonly name: string,\n    public readonly email: string,\n    public readonly step: number\n  ) {}\n}\n\n\nclass FormWizard {\n  private name = \"\";\n  private email = \"\";\n  private step = 1;\n\n\n  setName(name: string): void {\n    this.name = name;\n  }\n\n\n  setEmail(email: string): void {\n    this.email = email;\n  }\n\n\n  nextStep(): void {\n    this.step += 1;\n  }\n\n\n  save(): FormMemento {\n    return new FormMemento(this.name, this.email, this.step);\n  }\n\n\n  restore(memento: FormMemento): void {\n    this.name = memento.name;\n    this.email = memento.email;\n    this.step = memento.step;\n  }\n\n\n  summary(): string {\n    return `Name: ${this.name}, Email: ${this.email}, Step: ${this.step}`;\n  }\n}\n\n\nclass DraftStore {\n  private drafts: FormMemento[] = [];\n\n\n  save(draft: FormMemento): void {\n    this.drafts.push(draft);\n  }\n\n\n  load(index: number): FormMemento | null {\n    return this.drafts[index] ?? null;\n  }\n}\n\n\nconst wizard = new FormWizard();\nconst store = new DraftStore();\n\n\nwizard.setName(\"Ava\");\nwizard.setEmail(\"ava@example.com\");\nwizard.nextStep();\nstore.save(wizard.save());\n\n\nwizard.setEmail(\"ava.smith@example.com\");\nwizard.nextStep();\nstore.save(wizard.save());\n\n\nconsole.log(wizard.summary());\n\n\nconst draft = store.load(0);\nif (draft) {\n  wizard.restore(draft);\n}\n\n\nconsole.log(wizard.summary());",
+  explanation: "The Angular example stores multi-step form drafts as mementos so the wizard can be restored safely.",
+};
