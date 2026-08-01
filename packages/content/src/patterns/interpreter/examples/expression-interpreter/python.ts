@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Expression interpreter",
+  code: "from abc import ABC, abstractmethod\n\n\nclass Expression(ABC):\n    @abstractmethod\n    def interpret(self) -> int:\n        pass\n\n\nclass NumberExpression(Expression):\n    def __init__(self, value: int) -> None:\n        self.value = value\n\n\n    def interpret(self) -> int:\n        return self.value\n\n\nclass AddExpression(Expression):\n    def __init__(self, left: Expression, right: Expression) -> None:\n        self.left = left\n        self.right = right\n\n\n    def interpret(self) -> int:\n        return self.left.interpret() + self.right.interpret()\n\n\nclass SubtractExpression(Expression):\n    def __init__(self, left: Expression, right: Expression) -> None:\n        self.left = left\n        self.right = right\n\n\n    def interpret(self) -> int:\n        return self.left.interpret() - self.right.interpret()\n\n\nclass MultiplyExpression(Expression):\n    def __init__(self, left: Expression, right: Expression) -> None:\n        self.left = left\n        self.right = right\n\n\n    def interpret(self) -> int:\n        return self.left.interpret() * self.right.interpret()\n\n\nexpression = SubtractExpression(\n    AddExpression(NumberExpression(5), NumberExpression(3)),\n    MultiplyExpression(NumberExpression(2), NumberExpression(4))\n)\n\n\nprint(expression.interpret())",
+  explanation: "The Python example uses recursive interpretation, where each node evaluates itself and delegates to its children.",
+};

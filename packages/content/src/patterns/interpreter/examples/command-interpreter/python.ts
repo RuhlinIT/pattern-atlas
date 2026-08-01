@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const python: PatternLanguageExample = {
+  language: "python",
+  title: "Command interpreter",
+  code: "from abc import ABC, abstractmethod\n\n\nclass CommandExpression(ABC):\n    @abstractmethod\n    def interpret(self) -> str:\n        pass\n\n\nclass TextCommand(CommandExpression):\n    def __init__(self, value: str) -> None:\n        self.value = value\n\n\n    def interpret(self) -> str:\n        return self.value\n\n\nclass UppercaseCommand(CommandExpression):\n    def __init__(self, expression: CommandExpression) -> None:\n        self.expression = expression\n\n\n    def interpret(self) -> str:\n        return self.expression.interpret().upper()\n\n\nclass TrimCommand(CommandExpression):\n    def __init__(self, expression: CommandExpression) -> None:\n        self.expression = expression\n\n\n    def interpret(self) -> str:\n        return self.expression.interpret().strip()\n\n\nclass ReplaceCommand(CommandExpression):\n    def __init__(self, expression: CommandExpression, search_value: str, replace_value: str) -> None:\n        self.expression = expression\n        self.search_value = search_value\n        self.replace_value = replace_value\n\n\n    def interpret(self) -> str:\n        return self.expression.interpret().replace(self.search_value, self.replace_value)\n\n\ncommand = ReplaceCommand(\n    UppercaseCommand(TrimCommand(TextCommand(\"  hello world  \"))),\n    \"WORLD\",\n    \"TEAM\"\n)\n\n\nprint(command.interpret())",
+  explanation: "The Python command interpreter treats each text transformation as an expression that can be composed with others.",
+};

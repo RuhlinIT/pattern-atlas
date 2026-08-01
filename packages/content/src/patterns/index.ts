@@ -2,7 +2,7 @@ import { VisitorPattern } from './VisitorPattern';
 import { StatePattern } from './StatePattern';
 import { MediatorPattern } from './MediatorPattern';
 import { IteratorPattern } from './IteratorPattern';
-import { InterpreterPattern } from './InterpreterPattern';
+import { interpreterPattern } from './interpreter';
 import type { PatternRecord } from "@atlas-patterns/schemas";
 import { decoratorPattern } from "./decorator";
 import { StrategyPattern } from "./StrategyPattern";
@@ -36,7 +36,7 @@ export {
   facadePattern,
   factoryMethodPattern,
   flyweightPattern,
-  InterpreterPattern,
+  interpreterPattern,
   IteratorPattern,
   MediatorPattern,
   MementoPattern,
@@ -62,7 +62,7 @@ export const patterns: PatternRecord[] = [
   facadePattern,
   factoryMethodPattern,
   flyweightPattern,
-  InterpreterPattern,
+  interpreterPattern,
   IteratorPattern,
   MediatorPattern,
   MementoPattern,
