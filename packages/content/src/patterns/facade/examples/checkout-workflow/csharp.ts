@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const csharp: PatternLanguageExample = {
+  language: "csharp",
+  title: "Checkout workflow",
+  code: "using System;\n\npublic class AuthService\n{\n    public bool Authenticate(string userId)\n    {\n        Console.WriteLine($\"Authenticating {userId}\");\n        return true;\n    }\n}\n\npublic class PaymentService\n{\n    public void Charge(string userId, decimal amount)\n    {\n        Console.WriteLine($\"Charging {userId} ${amount}\");\n    }\n}\n\npublic class InventoryService\n{\n    public void Reserve(string itemId)\n    {\n        Console.WriteLine($\"Reserving item {itemId}\");\n    }\n}\n\npublic class NotificationService\n{\n    public void SendConfirmation(string userId)\n    {\n        Console.WriteLine($\"Sending confirmation to {userId}\");\n    }\n}\n\npublic class CheckoutFacade\n{\n    private readonly AuthService _auth = new();\n    private readonly PaymentService _payment = new();\n    private readonly InventoryService _inventory = new();\n    private readonly NotificationService _notifications = new();\n\n    public void PlaceOrder(string userId, string itemId, decimal amount)\n    {\n        if (!_auth.Authenticate(userId))\n        {\n            throw new InvalidOperationException(\"Authentication failed\");\n        }\n\n        _inventory.Reserve(itemId);\n        _payment.Charge(userId, amount);\n        _notifications.SendConfirmation(userId);\n    }\n}\n\nvar checkout = new CheckoutFacade();\ncheckout.PlaceOrder(\"user-42\", \"book-7\", 39.99m);",
+  explanation: "The C# facade gives the client one high-level checkout method while it handles the subsystem calls in the correct order.",
+};

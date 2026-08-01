@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Video conversion pipeline",
+  code: "import React, { useMemo } from \"react\";\n\nclass VideoReader {\n  read(fileName: string): void {\n    console.log(`Reading ${fileName}`);\n  }\n}\n\nclass VideoDecoder {\n  decode(): void {\n    console.log(\"Decoding video stream\");\n  }\n}\n\nclass VideoEncoder {\n  encode(format: string): void {\n    console.log(`Encoding to ${format}`);\n  }\n}\n\nclass VideoWriter {\n  write(outputFile: string): void {\n    console.log(`Writing output to ${outputFile}`);\n  }\n}\n\nclass VideoConversionFacade {\n  constructor(\n    private reader = new VideoReader(),\n    private decoder = new VideoDecoder(),\n    private encoder = new VideoEncoder(),\n    private writer = new VideoWriter(),\n  ) {}\n\n  convert(inputFile: string, outputFile: string, format: string): void {\n    this.reader.read(inputFile);\n    this.decoder.decode();\n    this.encoder.encode(format);\n    this.writer.write(outputFile);\n  }\n}\n\nfunction ConvertButton({ converter }: { converter: VideoConversionFacade }) {\n  return (\n    <button onClick={() => converter.convert(\"demo.mov\", \"demo.mp4\", \"mp4\")}>\n      Convert video\n    </button>\n  );\n}\n\nexport function App() {\n  const converter = useMemo(() => new VideoConversionFacade(), []);\n\n  return (\n    <main>\n      <h1>Video Conversion</h1>\n      <ConvertButton converter={converter} />\n    </main>\n  );\n}",
+  explanation: "The React example exposes a single convert action to the UI while the facade hides the reader, decoder, encoder, and writer steps behind it.",
+};

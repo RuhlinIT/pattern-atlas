@@ -7,7 +7,7 @@ import type { PatternRecord } from "@atlas-patterns/schemas";
 import { decoratorPattern } from "./decorator";
 import { StrategyPattern } from "./StrategyPattern";
 import { ObserverPattern } from "./ObserverPattern";
-import { FacadePattern } from "./FacadePattern";
+import { facadePattern } from "./facade";
 import { adapterPattern } from "./adapter";
 import { commandPattern } from "./command";
 import { FactoryMethodPattern } from "./FactoryMethodPattern";
@@ -33,7 +33,7 @@ export {
   commandPattern,
   compositePattern,
   decoratorPattern,
-  FacadePattern,
+  facadePattern,
   FactoryMethodPattern,
   FlyweightPattern,
   InterpreterPattern,
@@ -59,7 +59,7 @@ export const patterns: PatternRecord[] = [
   commandPattern,
   compositePattern,
   decoratorPattern,
-  FacadePattern,
+  facadePattern,
   FactoryMethodPattern,
   FlyweightPattern,
   InterpreterPattern,
