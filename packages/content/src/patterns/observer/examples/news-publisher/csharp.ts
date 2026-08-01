@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const csharp: PatternLanguageExample = {
+  language: "csharp",
+  title: "News publisher",
+  code: "using System;\nusing System.Collections.Generic;\n\npublic interface ISubscriber\n{\n    void Update(string headline);\n}\n\npublic class NewsPublisher\n{\n    private readonly List<ISubscriber> _subscribers = new();\n\n    public void Subscribe(ISubscriber subscriber)\n    {\n        _subscribers.Add(subscriber);\n    }\n\n    public void Publish(string headline)\n    {\n        foreach (var subscriber in _subscribers)\n        {\n            subscriber.Update(headline);\n        }\n    }\n}\n\npublic class MobileAppSubscriber : ISubscriber\n{\n    public void Update(string headline)\n    {\n        Console.WriteLine($\"Mobile app received: {headline}\");\n    }\n}\n\npublic class EmailSubscriber : ISubscriber\n{\n    public void Update(string headline)\n    {\n        Console.WriteLine($\"Email subscriber received: {headline}\");\n    }\n}\n\npublic class WebSubscriber : ISubscriber\n{\n    public void Update(string headline)\n    {\n        Console.WriteLine($\"Web subscriber received: {headline}\");\n    }\n}\n\nvar publisher = new NewsPublisher();\npublisher.Subscribe(new MobileAppSubscriber());\npublisher.Subscribe(new EmailSubscriber());\npublisher.Subscribe(new WebSubscriber());\npublisher.Publish(\"New design patterns article is live\");",
+  explanation: "The C# example models the publisher as the subject and the subscribers as observers, so each channel reacts when a new headline is broadcast.",
+};

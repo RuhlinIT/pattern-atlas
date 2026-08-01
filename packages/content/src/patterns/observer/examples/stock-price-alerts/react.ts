@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Stock price alerts",
+  code: "import React, { useMemo } from \"react\";\n\ninterface Observer {\n  update(price: number): void;\n}\n\nclass Stock {\n  private observers: Observer[] = [];\n\n  constructor(private price: number) {}\n\n  subscribe(observer: Observer): void {\n    this.observers.push(observer);\n  }\n\n  unsubscribe(observer: Observer): void {\n    this.observers = this.observers.filter((item) => item !== observer);\n  }\n\n  setPrice(price: number): void {\n    this.price = price;\n    this.notify();\n  }\n\n  private notify(): void {\n    this.observers.forEach((observer) => observer.update(this.price));\n  }\n}\n\nclass PriceDisplay implements Observer {\n  update(price: number): void {\n    console.log(`Display updated: ${price}`);\n  }\n}\n\nclass PriceAlert implements Observer {\n  update(price: number): void {\n    if (price > 100) {\n      console.log(`Alert: stock price is ${price}`);\n    }\n  }\n}\n\nfunction StockControls({ stock }: { stock: Stock }) {\n  return <button onClick={() => stock.setPrice(105)}>Set price to 105</button>;\n}\n\nexport function App() {\n  const stock = useMemo(() => {\n    const instance = new Stock(95);\n    instance.subscribe(new PriceDisplay());\n    instance.subscribe(new PriceAlert());\n    return instance;\n  }, []);\n\n  return (\n    <main>\n      <h1>Stock Price Alerts</h1>\n      <StockControls stock={stock} />\n    </main>\n  );\n}",
+  explanation: "The React example keeps the stock as the subject and lets display and alert observers react independently when the price changes.",
+};

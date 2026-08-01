@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const csharp: PatternLanguageExample = {
+  language: "csharp",
+  title: "Order status notifications",
+  code: "using System;\nusing System.Collections.Generic;\n\npublic interface IOrderObserver\n{\n    void Update(string status);\n}\n\npublic class Order\n{\n    private readonly List<IOrderObserver> _observers = new();\n    private string _status;\n\n    public Order(string status)\n    {\n        _status = status;\n    }\n\n    public void Subscribe(IOrderObserver observer)\n    {\n        _observers.Add(observer);\n    }\n\n    public void SetStatus(string status)\n    {\n        _status = status;\n        Notify();\n    }\n\n    private void Notify()\n    {\n        foreach (var observer in _observers)\n        {\n            observer.Update(_status);\n        }\n    }\n}\n\npublic class EmailNotifier : IOrderObserver\n{\n    public void Update(string status)\n    {\n        Console.WriteLine($\"Email sent for status: {status}\");\n    }\n}\n\npublic class WarehouseUpdater : IOrderObserver\n{\n    public void Update(string status)\n    {\n        Console.WriteLine($\"Warehouse updated for status: {status}\");\n    }\n}\n\npublic class AnalyticsTracker : IOrderObserver\n{\n    public void Update(string status)\n    {\n        Console.WriteLine($\"Analytics tracked: {status}\");\n    }\n}\n\nvar order = new Order(\"created\");\norder.Subscribe(new EmailNotifier());\norder.Subscribe(new WarehouseUpdater());\norder.Subscribe(new AnalyticsTracker());\norder.SetStatus(\"shipped\");",
+  explanation: "The C# example keeps the order as the subject and lets multiple observers react to status changes without the order knowing their concrete behavior.",
+};

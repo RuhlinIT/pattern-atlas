@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const angular: PatternLanguageExample = {
+  language: "angular",
+  title: "Order status notifications",
+  code: "import { Injectable } from '@angular/core';\nimport { Subject, Subscription } from 'rxjs';\n\n\ninterface OrderObserver {\n  update(status: string): void;\n}\n\n\n@Injectable({ providedIn: 'root' })\nclass Order {\n  private statusChanges = new Subject<string>();\n  private status: string;\n\n\n  constructor() {\n    this.status = 'created';\n  }\n\n\n  subscribe(observer: OrderObserver): Subscription {\n    return this.statusChanges.subscribe((status) => observer.update(status));\n  }\n\n\n  setStatus(status: string): void {\n    this.status = status;\n    this.statusChanges.next(this.status);\n  }\n}\n\n\nclass EmailNotifier implements OrderObserver {\n  update(status: string): void {\n    console.log(`Email sent for status: ${status}`);\n  }\n}\n\n\nclass WarehouseUpdater implements OrderObserver {\n  update(status: string): void {\n    console.log(`Warehouse updated for status: ${status}`);\n  }\n}\n\n\nclass AnalyticsTracker implements OrderObserver {\n  update(status: string): void {\n    console.log(`Analytics tracked: ${status}`);\n  }\n}\n\n\nconst order = new Order();\norder.subscribe(new EmailNotifier());\norder.subscribe(new WarehouseUpdater());\norder.subscribe(new AnalyticsTracker());\norder.setStatus('shipped');",
+  explanation: "The Angular order service publishes each status change once, and multiple observers react independently through subscriptions to the same update stream.",
+};

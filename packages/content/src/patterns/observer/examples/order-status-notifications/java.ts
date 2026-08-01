@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const java: PatternLanguageExample = {
+  language: "java",
+  title: "Order status notifications",
+  code: "import java.util.ArrayList;\nimport java.util.List;\n\ninterface OrderObserver {\n    void update(String status);\n}\n\nclass Order {\n    private final List<OrderObserver> observers = new ArrayList<>();\n    private String status;\n\n    public Order(String status) {\n        this.status = status;\n    }\n\n    public void subscribe(OrderObserver observer) {\n        observers.add(observer);\n    }\n\n    public void setStatus(String status) {\n        this.status = status;\n        notifyObservers();\n    }\n\n    private void notifyObservers() {\n        for (OrderObserver observer : observers) {\n            observer.update(status);\n        }\n    }\n}\n\nclass EmailNotifier implements OrderObserver {\n    public void update(String status) {\n        System.out.println(\"Email sent for status: \" + status);\n    }\n}\n\nclass WarehouseUpdater implements OrderObserver {\n    public void update(String status) {\n        System.out.println(\"Warehouse updated for status: \" + status);\n    }\n}\n\nclass AnalyticsTracker implements OrderObserver {\n    public void update(String status) {\n        System.out.println(\"Analytics tracked: \" + status);\n    }\n}\n\nOrder order = new Order(\"created\");\norder.subscribe(new EmailNotifier());\norder.subscribe(new WarehouseUpdater());\norder.subscribe(new AnalyticsTracker());\norder.setStatus(\"shipped\");",
+  explanation: "Each subscriber reacts to the same order event in its own way without the order object coordinating concrete downstream logic.",
+};

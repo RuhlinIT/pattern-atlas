@@ -6,7 +6,7 @@ import { interpreterPattern } from './interpreter';
 import type { PatternRecord } from "@atlas-patterns/schemas";
 import { decoratorPattern } from "./decorator";
 import { StrategyPattern } from "./StrategyPattern";
-import { ObserverPattern } from "./ObserverPattern";
+import { observerPattern } from "./observer";
 import { facadePattern } from "./facade";
 import { adapterPattern } from "./adapter";
 import { commandPattern } from "./command";
@@ -40,7 +40,7 @@ export {
   iteratorPattern,
   mediatorPattern,
   mementoPattern,
-  ObserverPattern,
+  observerPattern,
   PrototypePattern,
   ProxyPattern,
   SingletonPattern,
@@ -66,7 +66,7 @@ export const patterns: PatternRecord[] = [
   iteratorPattern,
   mediatorPattern,
   mementoPattern,
-  ObserverPattern,
+  observerPattern,
   PrototypePattern,
   ProxyPattern,
   SingletonPattern,
