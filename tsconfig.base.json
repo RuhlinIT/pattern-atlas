@@ -27,6 +27,8 @@
       "@atlas-patterns/schemas": ["packages/schemas/src/index.ts"],
       "@atlas-patterns/integrations": ["packages/integrations/src/index.ts"],
       "@atlas-patterns/ui": ["packages/ui/src/index.ts"]
-    }
-  }
+    },
+    "types": ["node"]
+  },
+  "include": ["scripts/**/*.ts"]
 }

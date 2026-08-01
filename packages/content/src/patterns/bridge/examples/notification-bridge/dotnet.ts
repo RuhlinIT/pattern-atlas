@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const dotnet: PatternLanguageExample = {
+  language: "dotnet",
+  title: "Notification bridge",
+  code: "using System;\nusing Microsoft.Extensions.DependencyInjection;\n\n\npublic interface INotificationSender\n{\n    string Send(string message);\n}\n\n\npublic class EmailSender : INotificationSender\n{\n    public string Send(string message)\n    {\n        return $\"Email sent: {message}\";\n    }\n}\n\n\npublic class SmsSender : INotificationSender\n{\n    public string Send(string message)\n    {\n        return $\"SMS sent: {message}\";\n    }\n}\n\n\npublic abstract class Notification\n{\n    protected readonly INotificationSender Sender;\n\n\n    protected Notification(INotificationSender sender)\n    {\n        Sender = sender;\n    }\n\n\n    public abstract string Notify(string message);\n}\n\n\npublic class AlertNotification : Notification\n{\n    public AlertNotification(INotificationSender sender) : base(sender) { }\n\n\n    public override string Notify(string message)\n    {\n        return Sender.Send($\"ALERT: {message}\");\n    }\n}\n\n\nvar services = new ServiceCollection();\nservices.AddSingleton<INotificationSender, EmailSender>();\nservices.AddTransient<AlertNotification>();\n\nvar provider = services.BuildServiceProvider();\nvar alert = provider.GetRequiredService<AlertNotification>();\n\nConsole.WriteLine(alert.Notify(\"Server is down\"));",
+  explanation: "The .NET example uses dependency injection to bridge the notification abstraction to a concrete sender implementation.",
+};

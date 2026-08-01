@@ -16,7 +16,7 @@ import { BuilderPattern } from "./BuilderPattern";
 import { abstractFactoryPattern } from './abstract-factory';
 import { PrototypePattern } from "./PrototypePattern";
 import { SingletonPattern } from "./SingletonPattern";
-import { BridgePattern } from "./BridgePattern";
+import { bridgePattern } from "./bridge";
 import { CompositePattern } from "./CompositePattern";
 import { FlyweightPattern } from "./FlyweightPattern";
 import { ProxyPattern } from "./ProxyPattern";
@@ -27,7 +27,7 @@ import { TemplateMethodPattern } from './TemplateMethodPattern';
 export {
   abstractFactoryPattern,
   AdapterPattern,
-  BridgePattern,
+  bridgePattern,
   BuilderPattern,
   ChainOfResponsibilityPattern,
   CommandPattern,
@@ -53,7 +53,7 @@ export {
 export const patterns: PatternRecord[] = [
   abstractFactoryPattern,
   AdapterPattern,
-  BridgePattern,
+  bridgePattern,
   BuilderPattern,
   ChainOfResponsibilityPattern,
   CommandPattern,

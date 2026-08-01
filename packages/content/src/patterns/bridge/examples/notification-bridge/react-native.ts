@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const reactNative: PatternLanguageExample = {
+  language: "react-native",
+  title: "Notification bridge",
+  code: "import React, { useMemo } from \"react\";\nimport { SafeAreaView, Text, View } from \"react-native\";\n\n\ninterface NotificationSender {\n  send(message: string): string;\n}\n\n\nclass EmailSender implements NotificationSender {\n  send(message: string): string {\n    return `Email sent: ${message}`;\n  }\n}\n\n\nclass SmsSender implements NotificationSender {\n  send(message: string): string {\n    return `SMS sent: ${message}`;\n  }\n}\n\n\nabstract class Notification {\n  constructor(protected sender: NotificationSender) {}\n\n\n  abstract notify(message: string): string;\n}\n\n\nclass AlertNotification extends Notification {\n  notify(message: string): string {\n    return this.sender.send(`ALERT: ${message}`);\n  }\n}\n\n\nfunction NotificationPreview({ notification }: { notification: Notification }) {\n  return (\n    <View>\n      <Text>{notification.notify(\"Server is down\")}</Text>\n    </View>\n  );\n}\n\n\nexport function App() {\n  const notification = useMemo(() => new AlertNotification(new EmailSender()), []);\n\n\n  return (\n    <SafeAreaView style={{ flex: 1, justifyContent: \"center\", padding: 24 }}>\n      <View style={{ gap: 16 }}>\n        <Text style={{ fontSize: 24, fontWeight: \"600\" }}>Notification Bridge</Text>\n        <NotificationPreview notification={notification} />\n      </View>\n    </SafeAreaView>\n  );\n}",
+  explanation: "The React Native example uses the same bridge structure so notifications can target different delivery channels in a mobile app.",
+};

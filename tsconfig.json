@@ -7,5 +7,5 @@
     { "path": "./packages/integrations" },
     { "path": "./apps/pattern-atlas-web" },
     { "path": "./packages/ui" },
-  ]
+  ],
 }

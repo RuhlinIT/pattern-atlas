@@ -1,0 +1,8 @@
+import type { PatternLanguageExample } from "@atlas-patterns/schemas";
+
+export const react: PatternLanguageExample = {
+  language: "react",
+  title: "Shape renderer bridge",
+  code: "import React, { useMemo } from \"react\";\n\n\ninterface Renderer {\n  renderCircle(radius: number): string;\n  renderSquare(side: number): string;\n}\n\n\nclass VectorRenderer implements Renderer {\n  renderCircle(radius: number): string {\n    return `Drawing a vector circle with radius ${radius}`;\n  }\n\n\n  renderSquare(side: number): string {\n    return `Drawing a vector square with side ${side}`;\n  }\n}\n\n\nclass RasterRenderer implements Renderer {\n  renderCircle(radius: number): string {\n    return `Drawing a raster circle with radius ${radius}`;\n  }\n\n\n  renderSquare(side: number): string {\n    return `Drawing a raster square with side ${side}`;\n  }\n}\n\n\nabstract class Shape {\n  constructor(protected renderer: Renderer) {}\n\n\n  abstract draw(): string;\n}\n\n\nclass Circle extends Shape {\n  constructor(renderer: Renderer, private radius: number) {\n    super(renderer);\n  }\n\n\n  draw(): string {\n    return this.renderer.renderCircle(this.radius);\n  }\n}\n\n\nfunction ShapePreview({ shape }: { shape: Shape }) {\n  return <p>{shape.draw()}</p>;\n}\n\n\nexport function App() {\n  const shape = useMemo(() => new Circle(new VectorRenderer(), 10), []);\n\n\n  return (\n    <main>\n      <h1>Shape Renderer Bridge</h1>\n      <ShapePreview shape={shape} />\n    </main>\n  );\n}",
+  explanation: "The React example bridges a shape object to a renderer so the UI can render the same shape with different drawing strategies.",
+};

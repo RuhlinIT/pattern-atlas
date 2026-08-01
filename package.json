@@ -7,13 +7,19 @@
     "dev": "pnpm --filter pattern-atlas-web dev",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
-    "type-check": "pnpm -r type-check"
+    "type-check": "pnpm -r type-check",
+    "scaffold:pattern": "tsx scripts/scaffold-pattern.ts",
+    "migrate:pattern": "tsx scripts/migrate-legacy-pattern.ts"
   },
   "dependencies": {
     "framer-motion": "^12.43.0",
     "react-syntax-highlighter": "^16.1.1"
   },
   "devDependencies": {
-    "@types/react-syntax-highlighter": "^15.5.13"
+    "@mui/material": "^9.2.0",
+    "@types/node": "^20.19.43",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "tsx": "^4.23.1",
+    "typescript": "^5.9.3"
   }
 }
