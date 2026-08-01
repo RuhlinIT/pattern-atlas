@@ -36,8 +36,8 @@ export function ComparePicker({
               aria-pressed={selected}
               className={`px-3 py-2 rounded-md text-sm font-medium border transition-colors ${
                 selected
-                  ? "bg-sky-600 text-white"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                  ? "bg-white text-black border-[#7dd3fc] hover:bg-slate-50"
+                  : "bg-gray-800 text-gray-300 border-gray-600 hover:bg-gray-700 hover:text-white hover:border-sky-500"
               }`}
             >
               {item.name}
