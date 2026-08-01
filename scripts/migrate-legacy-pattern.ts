@@ -158,7 +158,7 @@ export const ${exportConst}: PatternLanguageExample = {
 
   writeFileIfMissing(
     path.join(scenarioDir, "index.ts"),
-    `import { normalizeExamples } from "../../normalize-examples";
+    `import { normalizeExamples } from "../../../normalize-examples";
 
 ${normalized
   .map((ex) => {
