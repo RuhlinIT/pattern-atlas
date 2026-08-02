@@ -3,6 +3,44 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const python: PatternLanguageExample = {
   language: "python",
   title: "Text editor undo",
-  code: "from abc import ABC, abstractmethod\n\nclass Command(ABC):\n    @abstractmethod\n    def execute(self) -> None:\n        pass\n\n    @abstractmethod\n    def undo(self) -> None:\n        pass\n\nclass DocumentEditor:\n    def __init__(self) -> None:\n        self.content = \"\"\n\n    def insert(self, text: str) -> None:\n        self.content += text\n\n    def remove_last(self, length: int) -> None:\n        self.content = self.content[:-length]\n\n    def get_content(self) -> str:\n        return self.content\n\nclass InsertTextCommand(Command):\n    def __init__(self, editor: DocumentEditor, text: str) -> None:\n        self.editor = editor\n        self.text = text\n\n    def execute(self) -> None:\n        self.editor.insert(self.text)\n\n    def undo(self) -> None:\n        self.editor.remove_last(len(self.text))\n\nclass CommandHistory:\n    def __init__(self) -> None:\n        self.history: list[Command] = []\n\n    def execute_command(self, command: Command) -> None:\n        command.execute()\n        self.history.append(command)\n\n    def undo_last(self) -> None:\n        if self.history:\n            command = self.history.pop()\n            command.undo()\n\neditor = DocumentEditor()\nhistory = CommandHistory()\n\nhistory.execute_command(InsertTextCommand(editor, \"Hello \"))\nhistory.execute_command(InsertTextCommand(editor, \"World\"))\n\nprint(editor.get_content())\n\nhistory.undo_last()\nprint(editor.get_content())",
-  explanation: "The history object can execute and undo commands because each command carries the information needed to perform and reverse the operation.",
+  code: `class Editor:
+    def __init__(self):
+        self.content = ""
+
+    def insert(self, text):
+        self.content += text
+
+    def delete(self, length):
+        self.content = self.content[:-length]
+
+class InsertTextCommand:
+    def __init__(self, editor, text):
+        self.editor = editor
+        self.text = text
+
+    def execute(self):
+        self.editor.insert(self.text)
+
+    def undo(self):
+        self.editor.delete(len(self.text))
+
+class CommandHistory:
+    def __init__(self):
+        self.commands = []
+
+    def execute(self, command):
+        command.execute()
+        self.commands.append(command)
+
+    def undo_last(self):
+        if self.commands:
+            self.commands.pop().undo()
+
+editor = Editor()
+history = CommandHistory()
+history.execute(InsertTextCommand(editor, "Hello "))
+history.execute(InsertTextCommand(editor, "world"))
+history.undo_last()`,
+  explanation:
+    "Wrap edits as commands so the editor can execute them and later undo the most recent action.",
 };

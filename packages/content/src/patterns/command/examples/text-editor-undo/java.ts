@@ -3,6 +3,63 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "Text editor undo",
-  code: "import java.util.ArrayList;\nimport java.util.List;\n\ninterface Command {\n    void execute();\n    void undo();\n}\n\nclass DocumentEditor {\n    private String content = \"\";\n\n    public void insert(String text) {\n        content += text;\n    }\n\n    public void removeLast(int length) {\n        content = content.substring(0, content.length() - length);\n    }\n\n    public String getContent() {\n        return content;\n    }\n}\n\nclass InsertTextCommand implements Command {\n    private final DocumentEditor editor;\n    private final String text;\n\n    public InsertTextCommand(DocumentEditor editor, String text) {\n        this.editor = editor;\n        this.text = text;\n    }\n\n    public void execute() {\n        editor.insert(text);\n    }\n\n    public void undo() {\n        editor.removeLast(text.length());\n    }\n}\n\nclass CommandHistory {\n    private final List<Command> history = new ArrayList<>();\n\n    public void executeCommand(Command command) {\n        command.execute();\n        history.add(command);\n    }\n\n    public void undoLast() {\n        if (!history.isEmpty()) {\n            Command command = history.remove(history.size() - 1);\n            command.undo();\n        }\n    }\n}\n\nDocumentEditor editor = new DocumentEditor();\nCommandHistory history = new CommandHistory();\n\nhistory.executeCommand(new InsertTextCommand(editor, \"Hello \"));\nhistory.executeCommand(new InsertTextCommand(editor, \"World\"));\n\nSystem.out.println(editor.getContent());\n\nhistory.undoLast();\nSystem.out.println(editor.getContent());",
-  explanation: "The command object stores what action to run and how to reverse it, which makes undo support straightforward.",
+  code: `import java.util.ArrayDeque;
+import java.util.Deque;
+
+interface Command {
+    void execute();
+    void undo();
+}
+
+class Editor {
+    private StringBuilder content = new StringBuilder();
+
+    void insert(String text) {
+        content.append(text);
+    }
+
+    void delete(int length) {
+        content.delete(content.length() - length, content.length());
+    }
+
+    String getText() {
+        return content.toString();
+    }
+}
+
+class InsertTextCommand implements Command {
+    private final Editor editor;
+    private final String text;
+
+    InsertTextCommand(Editor editor, String text) {
+        this.editor = editor;
+        this.text = text;
+    }
+
+    public void execute() {
+        editor.insert(text);
+    }
+
+    public void undo() {
+        editor.delete(text.length());
+    }
+}
+
+class CommandHistory {
+    private final Deque<Command> commands = new ArrayDeque<>();
+
+    void execute(Command command) {
+        command.execute();
+        commands.push(command);
+    }
+
+    void undoLast() {
+        if (!commands.isEmpty()) {
+            commands.pop().undo();
+        }
+    }
+}
+`,
+  explanation:
+    "Wrap edits as commands so the editor can execute them and later undo the most recent action.",
 };

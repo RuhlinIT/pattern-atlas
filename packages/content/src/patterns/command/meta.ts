@@ -4,10 +4,12 @@ export const meta: PatternMeta = {
   slug: "command",
   name: "Command",
   category: "behavioral",
-  summary: "",
-  intent: "Encapsulate a request as an object so it can be invoked, queued, logged, or undone independently of the receiver that performs the work.",
+  summary:
+    "Encapsulate a request as an object so it can be invoked, queued, logged, or undone independently of the receiver that performs the work.",
+  intent:
+    "Encapsulate a request as an object so it can be invoked, queued, logged, or undone independently of the receiver that performs the work.",
   difficulty: "intermediate",
-  tags: [],
+  tags: ["behavioral", "request", "invocation", "undo"],
   relatedPatterns: [],
   aliases: [],
   order: 0,
@@ -15,13 +17,13 @@ export const meta: PatternMeta = {
   prerequisites: [],
   bestFor: [],
   languages: [
-  "typescript",
-  "java",
-  "python",
-  "angular",
-  "react",
-  "react-native",
-  "csharp",
-  "dotnet"
-],
+    "typescript",
+    "java",
+    "python",
+    "angular",
+    "react",
+    "react-native",
+    "csharp",
+    "dotnet",
+  ],
 };

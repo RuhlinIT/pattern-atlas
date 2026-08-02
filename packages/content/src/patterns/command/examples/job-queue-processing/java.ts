@@ -3,6 +3,32 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "Job queue processing",
-  code: "import java.util.LinkedList;\nimport java.util.Queue;\n\ninterface Command {\n    void execute();\n}\n\nclass EmailService {\n    public void send(String to, String body) {\n        System.out.println(\"Email sent to \" + to + \": \" + body);\n    }\n}\n\nclass SendEmailCommand implements Command {\n    private final EmailService emailService;\n    private final String to;\n    private final String body;\n\n    public SendEmailCommand(EmailService emailService, String to, String body) {\n        this.emailService = emailService;\n        this.to = to;\n        this.body = body;\n    }\n\n    public void execute() {\n        emailService.send(to, body);\n    }\n}\n\nclass JobQueue {\n    private final Queue<Command> queue = new LinkedList<>();\n\n    public void add(Command command) {\n        queue.add(command);\n    }\n\n    public void runNext() {\n        Command command = queue.poll();\n        if (command != null) {\n            command.execute();\n        }\n    }\n}\n\nJobQueue queue = new JobQueue();\nEmailService emailService = new EmailService();\n\nqueue.add(new SendEmailCommand(emailService, \"team@example.com\", \"Build passed\"));\nqueue.add(new SendEmailCommand(emailService, \"ops@example.com\", \"Deploy started\"));\n\nqueue.runNext();\nqueue.runNext();",
-  explanation: "The queued command objects decouple job submission from job execution, which is one of the pattern's primary benefits.",
+  code: `import java.util.List;
+
+interface Command {
+    void execute();
+}
+
+class SendEmailCommand implements Command {
+    private final String recipient;
+
+    SendEmailCommand(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public void execute() {
+        System.out.println("Sending email to " + recipient);
+    }
+}
+
+class Worker {
+    void process(List<Command> queue) {
+        for (Command command : queue) {
+            command.execute();
+        }
+    }
+}
+`,
+  explanation:
+    "Package jobs as commands so workers can execute them later, independent of submission time.",
 };
