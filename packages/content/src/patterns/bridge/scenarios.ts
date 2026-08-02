@@ -7,11 +7,12 @@ export const scenarios: readonly PatternScenario[] = [
     summary:
       "A reporting layer reads from SQL, API, or file-based sources without changing the reporting logic.",
     context:
-      "A product team needs a stable query/report API while the underlying data sources continue to change.",
+      "A product team needs a stable query and reporting API while underlying data sources continue to change.",
     problem:
-      "Hardcoding data-source details into the abstraction makes the reporting layer brittle.",
+      "Hardcoding source-specific details into the abstraction makes reporting brittle and harder to evolve.",
     solution:
       "Use Bridge to separate the reporting abstraction from the data-source implementation.",
+    stackArea: "backend",
   },
   {
     slug: "notification-delivery",
@@ -24,6 +25,7 @@ export const scenarios: readonly PatternScenario[] = [
       "If delivery code is embedded in the notification flow, provider changes become expensive.",
     solution:
       "Use Bridge to keep notification content separate from channel delivery implementations.",
+    stackArea: "integration",
   },
   {
     slug: "payment-routing",
@@ -36,6 +38,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Provider-specific code spread throughout checkout logic makes integrations hard to maintain.",
     solution:
       "Use Bridge to separate checkout behavior from provider-specific payment handling.",
+    stackArea: "integration",
   },
   {
     slug: "printer-driver-layer",
@@ -48,6 +51,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Direct coupling to a specific printer backend makes the document app difficult to extend.",
     solution:
       "Use Bridge to decouple document rendering from printer driver implementations.",
+    stackArea: "backend",
   },
   {
     slug: "remote-control-bridge",
@@ -60,6 +64,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Tight coupling between controls and specific devices makes the remote hard to extend.",
     solution:
       "Use Bridge to separate the remote control abstraction from the device implementation.",
+    stackArea: "frontend",
   },
   {
     slug: "shape-renderer-bridge",
@@ -72,5 +77,6 @@ export const scenarios: readonly PatternScenario[] = [
       "If shape behavior depends on a specific rendering API, the graphics code becomes hard to reuse.",
     solution:
       "Use Bridge to separate shape abstraction from rendering implementation.",
+    stackArea: "frontend",
   },
 ];

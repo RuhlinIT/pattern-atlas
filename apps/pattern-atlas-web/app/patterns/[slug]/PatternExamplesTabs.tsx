@@ -6,25 +6,27 @@ import type {
   PatternRecord,
   PatternScenario,
   PatternScenarioExamples,
+  PatternStackArea,
 } from "@atlas-patterns/schemas";
 import { CodeBlock, SectionCard, Tag } from "@atlas-patterns/ui";
 
-type ScenarioRuntimeFilter = "all" | "frontend" | "backend";
+type StackAreaFilter = "all" | PatternStackArea;
 
-type PatternExamplesTabsProps = {
-  scenarios: PatternRecord["scenarios"];
-  scenarioExamples?: PatternScenarioExamples;
-};
+const STACK_AREA_ORDER: readonly PatternStackArea[] = [
+  "frontend",
+  "backend",
+  "integration",
+  "devops",
+  "cloud",
+  "fullstack",
+];
 
 function getScenarioExampleLanguages(
   scenarioSlug: string,
   scenarioExamples?: PatternScenarioExamples,
 ): PatternLanguageExample[] {
   const exampleMap = scenarioExamples?.[scenarioSlug];
-  if (!exampleMap) {
-    return [];
-  }
-
+  if (!exampleMap) return [];
   return Object.values(exampleMap);
 }
 
@@ -46,32 +48,48 @@ function ExampleCodeBlock({ example }: { example: PatternLanguageExample }) {
 export function PatternExamplesTabs({
   scenarios,
   scenarioExamples,
-}: PatternExamplesTabsProps) {
-  const scenarioList = useMemo(
-    () => scenarios as PatternScenario[],
-    [scenarios],
-  );
-  const [runtimeFilter, setRuntimeFilter] =
-    useState<ScenarioRuntimeFilter>("all");
-  const [activeScenarioSlug, setActiveScenarioSlug] = useState(
-    scenarioList[0]?.slug ?? "",
-  );
-  const [activeLanguage, setActiveLanguage] = useState("");
+}: {
+  scenarios: PatternRecord["scenarios"];
+  scenarioExamples?: PatternScenarioExamples;
+}) {
+  const scenarioList = useMemo(() => scenarios as PatternScenario[], [scenarios]);
 
-  const filteredScenarios = useMemo(() => {
-    if (runtimeFilter === "all") {
-      return scenarioList;
-    }
+  const groupedScenarios = useMemo(
+    () => ({
+      frontend: scenarioList.filter((scenario) => scenario.stackArea === "frontend"),
+      backend: scenarioList.filter((scenario) => scenario.stackArea === "backend"),
+      integration: scenarioList.filter((scenario) => scenario.stackArea === "integration"),
+      devops: scenarioList.filter((scenario) => scenario.stackArea === "devops"),
+      cloud: scenarioList.filter((scenario) => scenario.stackArea === "cloud"),
+      fullstack: scenarioList.filter((scenario) => scenario.stackArea === "fullstack"),
+    }),
+    [scenarioList],
+  );
 
-    return scenarioList.filter(
-      (scenario) => scenario.runtime === runtimeFilter,
-    );
-  }, [scenarioList, runtimeFilter]);
+  const initialStackArea = useMemo<StackAreaFilter>(() => {
+    return STACK_AREA_ORDER.find((area) => groupedScenarios[area].length > 0) ?? "all";
+  }, [groupedScenarios]);
+
+  const [stackAreaFilter, setStackAreaFilter] = useState<StackAreaFilter>(initialStackArea);
+  const [activeScenarioSlug, setActiveScenarioSlug] = useState(() => {
+    const seedList = initialStackArea === "all" ? scenarioList : groupedScenarios[initialStackArea];
+    return seedList[0]?.slug ?? "";
+  });
+  const [activeLanguage, setActiveLanguage] = useState(() => {
+    const seedList = initialStackArea === "all" ? scenarioList : groupedScenarios[initialStackArea];
+    const seedScenario = seedList[0];
+    return seedScenario ? getScenarioExampleLanguages(seedScenario.slug, scenarioExamples)[0]?.language ?? "" : "";
+  });
+
+  const visibleScenarios = useMemo(() => {
+    if (stackAreaFilter === "all") return scenarioList;
+    return groupedScenarios[stackAreaFilter];
+  }, [stackAreaFilter, groupedScenarios, scenarioList]);
 
   const activeScenario =
-    filteredScenarios.find(
-      (scenario) => scenario.slug === activeScenarioSlug,
-    ) ?? filteredScenarios[0];
+    visibleScenarios.find((scenario) => scenario.slug === activeScenarioSlug) ??
+    visibleScenarios[0] ??
+    null;
 
   const activeExamples = activeScenario
     ? getScenarioExampleLanguages(activeScenario.slug, scenarioExamples)
@@ -79,50 +97,40 @@ export function PatternExamplesTabs({
 
   const activeExample =
     activeExamples.find((example) => example.language === activeLanguage) ??
-    activeExamples[0];
+    activeExamples[0] ??
+    null;
 
-  function handleRuntimeFilterChange(nextFilter: ScenarioRuntimeFilter) {
-    setRuntimeFilter(nextFilter);
-
-    const nextFilteredScenarios =
-      nextFilter === "all"
-        ? scenarioList
-        : scenarioList.filter((scenario) => scenario.runtime === nextFilter);
-
-    const nextScenario = nextFilteredScenarios[0];
+  function handleStackAreaChange(nextArea: StackAreaFilter) {
+    setStackAreaFilter(nextArea);
+    const nextScenarios = nextArea === "all" ? scenarioList : groupedScenarios[nextArea];
+    const nextScenario = nextScenarios[0];
     setActiveScenarioSlug(nextScenario?.slug ?? "");
-
-    const nextExamples = nextScenario
-      ? getScenarioExampleLanguages(nextScenario.slug, scenarioExamples)
-      : [];
-
+    const nextExamples = nextScenario ? getScenarioExampleLanguages(nextScenario.slug, scenarioExamples) : [];
     setActiveLanguage(nextExamples[0]?.language ?? "");
   }
 
   function handleScenarioChange(nextScenarioSlug: string) {
     setActiveScenarioSlug(nextScenarioSlug);
-
-    const nextExamples = getScenarioExampleLanguages(
-      nextScenarioSlug,
-      scenarioExamples,
-    );
-
+    const nextExamples = getScenarioExampleLanguages(nextScenarioSlug, scenarioExamples);
     setActiveLanguage(nextExamples[0]?.language ?? "");
   }
 
-  if (scenarioList.length === 0) {
-    return <p>No scenarios yet.</p>;
+  if (!scenarioList.length) {
+    return null;
   }
 
   return (
     <div className="space-y-6">
       <div
         role="tablist"
-        aria-label="Scenario runtime filter"
+        aria-label="Scenario stack area filter"
         className="flex flex-wrap gap-2 border-b border-slate-700"
       >
-        {(["all", "frontend", "backend"] as const).map((filter) => {
-          const isActive = runtimeFilter === filter;
+        {STACK_AREA_ORDER.map((filter) => {
+          const isActive = stackAreaFilter === filter;
+          const count = groupedScenarios[filter].length;
+
+          if (count === 0) return null;
 
           return (
             <button
@@ -130,7 +138,7 @@ export function PatternExamplesTabs({
               type="button"
               role="tab"
               aria-selected={isActive}
-              onClick={() => handleRuntimeFilterChange(filter)}
+              onClick={() => handleStackAreaChange(filter)}
               className={[
                 "relative -mb-px rounded-t-lg border px-4 py-3 text-sm transition-all",
                 isActive
@@ -138,15 +146,31 @@ export function PatternExamplesTabs({
                   : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
               ].join(" ")}
             >
-              {filter}
+              {filter} ({count})
             </button>
           );
         })}
+
+        <button
+          type="button"
+          role="tab"
+          aria-selected={stackAreaFilter === "all"}
+          onClick={() => handleStackAreaChange("all")}
+          className={[
+            "relative -mb-px rounded-t-lg border px-4 py-3 text-sm transition-all",
+            stackAreaFilter === "all"
+              ? "border-sky-400 border-b-slate-950 bg-slate-950 text-sky-400 shadow-sm"
+              : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
+          ].join(" ")}
+        >
+          all ({scenarioList.length})
+        </button>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {filteredScenarios.map((scenario) => {
+        {visibleScenarios.map((scenario) => {
           const isActive = scenario.slug === activeScenario?.slug;
+          const exampleCount = getScenarioExampleLanguages(scenario.slug, scenarioExamples).length;
 
           return (
             <button
@@ -160,7 +184,7 @@ export function PatternExamplesTabs({
                   : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
               ].join(" ")}
             >
-              {scenario.title}
+              {scenario.title} ({exampleCount})
             </button>
           );
         })}
@@ -171,28 +195,22 @@ export function PatternExamplesTabs({
           <SectionCard title={activeScenario.title}>
             <div className="space-y-3">
               <p>{activeScenario.summary}</p>
-
               {activeScenario.context ? (
                 <p>
                   <strong>Context:</strong> {activeScenario.context}
                 </p>
               ) : null}
-
               {activeScenario.problem ? (
                 <p>
                   <strong>Problem:</strong> {activeScenario.problem}
                 </p>
               ) : null}
-
               {activeScenario.solution ? (
                 <p>
                   <strong>Solution:</strong> {activeScenario.solution}
                 </p>
               ) : null}
-
-              {activeScenario.runtime ? (
-                <Tag>{activeScenario.runtime}</Tag>
-              ) : null}
+              {activeScenario.stackArea ? <Tag>{activeScenario.stackArea}</Tag> : null}
             </div>
           </SectionCard>
 
@@ -208,7 +226,6 @@ export function PatternExamplesTabs({
                 >
                   {activeExamples.map((example) => {
                     const isActive = example.language === activeLanguage;
-
                     return (
                       <button
                         key={example.language}

@@ -8,7 +8,6 @@ export const patternCategorySchema = z.enum([
   "integration",
   "other",
 ]);
-
 export type PatternCategory = z.infer<typeof patternCategorySchema>;
 
 export const patternDifficultySchema = z.enum([
@@ -16,7 +15,6 @@ export const patternDifficultySchema = z.enum([
   "intermediate",
   "advanced",
 ]);
-
 export type PatternDifficulty = z.infer<typeof patternDifficultySchema>;
 
 export const patternLanguageSchema = z.enum([
@@ -35,6 +33,7 @@ export const patternLanguageSchema = z.enum([
   "go",
   "php",
 ]);
+export type PatternLanguage = z.infer<typeof patternLanguageSchema>;
 
 export const patternVariantLanguageSchema = z.enum([
   "typescript",
@@ -52,21 +51,20 @@ export const patternVariantLanguageSchema = z.enum([
   "react-native",
   "angular",
 ]);
-
 export type PatternVariantLanguage = z.infer<typeof patternVariantLanguageSchema>;
-
-export type PatternLanguage = z.infer<typeof patternLanguageSchema>;
 
 export const exampleRuntimeSchema = z.enum(["frontend", "backend"]);
 export type ExampleRuntime = z.infer<typeof exampleRuntimeSchema>;
 
-export const patternLayerSchema = z.enum([
+export const patternStackAreaSchema = z.enum([
   "frontend",
   "backend",
   "integration",
+  "devops",
+  "cloud",
+  "fullstack",
 ]);
-
-export type PatternLayer = z.infer<typeof patternLayerSchema>;
+export type PatternStackArea = z.infer<typeof patternStackAreaSchema>;
 
 export interface PatternMeta {
   slug: string;
@@ -92,6 +90,7 @@ export interface PatternScenario {
   context?: string;
   problem?: string;
   solution?: string;
+  stackArea?: PatternStackArea;
   runtime?: ExampleRuntime;
 }
 
@@ -123,7 +122,7 @@ export interface LegacyPatternScenario extends PatternScenario {
 export interface PatternVariant {
   slug: string;
   title: string;
-  layer: PatternLayer;
+  stackArea: PatternStackArea;
   language: PatternVariantLanguage;
   summary: string;
   intent?: string;
@@ -156,13 +155,14 @@ export const patternScenarioSchema = z.object({
   context: z.string().optional(),
   problem: z.string().optional(),
   solution: z.string().optional(),
+  stackArea: patternStackAreaSchema.optional(),
   runtime: exampleRuntimeSchema.optional(),
 });
 
 export const patternVariantSchema = z.object({
   slug: z.string(),
   title: z.string(),
-  layer: patternLayerSchema,
+  stackArea: patternStackAreaSchema,
   language: patternVariantLanguageSchema,
   summary: z.string(),
   intent: z.string().optional(),
@@ -236,5 +236,3 @@ export const patternRecordSchema = z.object({
 
 export const patternsSchema = z.array(patternRecordSchema);
 export type Patterns = z.infer<typeof patternsSchema>;
-
-//export type PatternVariant = z.infer<typeof patternVariantSchema>;

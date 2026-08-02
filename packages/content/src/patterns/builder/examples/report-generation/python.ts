@@ -3,6 +3,49 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const python: PatternLanguageExample = {
   language: "python",
   title: "Report generation",
-  code: "class Report:\n    def __init__(\n        self,\n        title: str,\n        summary: str,\n        sections: list[str],\n        include_charts: bool,\n    ) -> None:\n        self.title = title\n        self.summary = summary\n        self.sections = sections\n        self.include_charts = include_charts\n\n\nclass ReportBuilder:\n    def __init__(self) -> None:\n        self.title = \"Untitled Report\"\n        self.summary = \"\"\n        self.sections: list[str] = []\n        self.include_charts = False\n\n    def with_title(self, title: str) -> \"ReportBuilder\":\n        self.title = title\n        return self\n\n    def with_summary(self, summary: str) -> \"ReportBuilder\":\n        self.summary = summary\n        return self\n\n    def add_section(self, section: str) -> \"ReportBuilder\":\n        self.sections.append(section)\n        return self\n\n    def with_charts(self, include_charts: bool) -> \"ReportBuilder\":\n        self.include_charts = include_charts\n        return self\n\n    def build(self) -> Report:\n        return Report(self.title, self.summary, list(self.sections), self.include_charts)\n\n\nreport = (\n    ReportBuilder()\n    .with_title(\"Quarterly Review\")\n    .with_summary(\"Q1 performance overview\")\n    .add_section(\"Revenue\")\n    .add_section(\"Growth\")\n    .with_charts(True)\n    .build()\n)\n\nprint(report.__dict__)",
-  explanation: "The builder lets report construction stay readable while optional sections and presentation settings are added step by step.",
+  code: `from dataclasses import dataclass, field
+from typing import List, Optional
+
+@dataclass
+class Report:
+    title: str = ""
+    sections: List[str] = field(default_factory=list)
+    charts: List[str] = field(default_factory=list)
+    footer: Optional[str] = None
+
+class ReportBuilder:
+    def __init__(self):
+        self._report = Report()
+
+    def title(self, title: str):
+        self._report.title = title
+        return self
+
+    def add_section(self, section: str):
+        self._report.sections.append(section)
+        return self
+
+    def add_chart(self, chart: str):
+        self._report.charts.append(chart)
+        return self
+
+    def footer(self, footer: str):
+        self._report.footer = footer
+        return self
+
+    def build(self):
+        if not self._report.title:
+            raise ValueError("title is required")
+        return self._report
+
+report = (
+    ReportBuilder()
+    .title("Quarterly Revenue")
+    .add_section("Summary")
+    .add_chart("Revenue by Region")
+    .footer("Confidential")
+    .build()
+)`,
+  explanation:
+    "A builder helps when a report is assembled from optional sections and formatting choices.",
 };

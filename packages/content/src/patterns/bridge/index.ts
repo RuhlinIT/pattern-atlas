@@ -100,82 +100,61 @@ export const bridgePattern: PatternRecord = {
   },
   variants: [
     {
-      slug: "data-source-abstraction",
-      title: "Data source abstraction",
-      layer: "backend",
+      slug: "bridge-backend-provider",
+      title: "Backend provider bridge",
+      stackArea: "backend",
       language: "typescript",
       summary:
-        "A reporting layer reads from SQL, API, or file-based sources without changing the reporting logic.",
+        "Bridge a stable business abstraction to interchangeable backend providers such as databases, printers, or legacy systems.",
       intent:
-        "Keep reporting logic stable while changing the data-source implementation.",
+        "Keep business logic independent from provider-specific implementation details.",
+      problem:
+        "Backend code becomes brittle when service behavior depends directly on a concrete provider.",
       solution:
-        "Use Bridge to separate the reporting abstraction from data-source access.",
+        "Introduce a provider bridge that separates the abstraction from the implementation behind it.",
+      dependencies: ["bridge"],
+      relatedVariants: ["bridge-integration-contract", "bridge-device-control"],
       examplePatternSlugs: ["bridge"],
+      notes:
+        "Use this variant when the abstraction stays stable but the backend target can change by tenant, region, or vendor.",
     },
     {
-      slug: "notification-delivery",
-      title: "Notification delivery",
-      layer: "integration",
+      slug: "bridge-integration-contract",
+      title: "Integration contract bridge",
+      stackArea: "integration",
       language: "typescript",
       summary:
-        "A notification system sends the same message via email, SMS, or push without changing the sending flow.",
+        "Bridge between internal workflows and external contracts such as payment gateways, message buses, or third-party APIs.",
       intent:
-        "Keep notification content separate from channel delivery.",
+        "Keep internal orchestration stable while external contracts vary independently.",
+      problem:
+        "Integration logic becomes costly when each vendor or endpoint change leaks into the workflow layer.",
       solution:
-        "Use Bridge to decouple notification behavior from delivery providers.",
+        "Use a bridge to isolate the workflow abstraction from provider-specific contracts.",
+      dependencies: ["bridge"],
+      relatedVariants: ["bridge-backend-provider", "bridge-device-control"],
       examplePatternSlugs: ["bridge"],
+      notes:
+        "This is the right shape when you own the orchestration and swap vendors, gateways, or adapters underneath it.",
     },
     {
-      slug: "payment-routing",
-      title: "Payment routing",
-      layer: "integration",
+      slug: "bridge-device-control",
+      title: "Device control bridge",
+      stackArea: "frontend",
       language: "typescript",
       summary:
-        "A checkout flow routes payments through Stripe, Adyen, or PayPal while keeping the checkout API stable.",
+        "Bridge UI controls to different devices or rendering targets while preserving one control surface.",
       intent:
-        "Keep checkout behavior stable while swapping payment providers.",
+        "Keep the user-facing abstraction stable while device behavior varies behind it.",
+      problem:
+        "UI code becomes hard to evolve when controls are directly wired to specific device implementations.",
       solution:
-        "Use Bridge to separate checkout logic from provider-specific payment handling.",
+        "Use a bridge so the control layer delegates to a replaceable device implementation.",
+      dependencies: ["bridge"],
+      relatedVariants: ["bridge-backend-provider", "bridge-integration-contract"],
       examplePatternSlugs: ["bridge"],
-    },
-    {
-      slug: "printer-driver-layer",
-      title: "Printer driver layer",
-      layer: "backend",
-      language: "typescript",
-      summary:
-        "A document app prints to local, network, or cloud printers through interchangeable driver implementations.",
-      intent:
-        "Keep document rendering separate from printer backend behavior.",
-      solution:
-        "Use Bridge to decouple document rendering from printer drivers.",
-      examplePatternSlugs: ["bridge"],
-    },
-    {
-      slug: "remote-control-bridge",
-      title: "Remote control bridge",
-      layer: "frontend",
-      language: "typescript",
-      summary:
-        "A remote control triggers TVs, speakers, and streaming devices through interchangeable device implementations.",
-      intent:
-        "Keep remote commands independent from device behavior.",
-      solution:
-        "Use Bridge to separate remote control actions from device implementations.",
-      examplePatternSlugs: ["bridge"],
-    },
-    {
-      slug: "shape-renderer-bridge",
-      title: "Shape renderer bridge",
-      layer: "frontend",
-      language: "typescript",
-      summary:
-        "Shapes like circles and rectangles can be drawn on screens, canvases, or SVG backends without changing the shape logic.",
-      intent:
-        "Keep shape behavior independent from rendering APIs.",
-      solution:
-        "Use Bridge to separate shape abstraction from rendering implementation.",
-      examplePatternSlugs: ["bridge"],
+      notes:
+        "This fits remotes, dashboards, canvas renderers, and any UI that needs to target multiple implementations.",
     },
   ],
   realWorldExamples: [

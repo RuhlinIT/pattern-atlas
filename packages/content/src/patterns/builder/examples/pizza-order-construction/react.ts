@@ -3,6 +3,35 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const react: PatternLanguageExample = {
   language: "react",
   title: "Pizza order construction",
-  code: "import React, { useMemo } from \"react\";\n\nclass Pizza {\n  constructor(\n    public size: string,\n    public crust: string,\n    public cheese: boolean,\n    public toppings: string[],\n  ) {}\n}\n\nclass PizzaBuilder {\n  private size = \"medium\";\n  private crust = \"regular\";\n  private cheese = true;\n  private toppings: string[] = [];\n\n  withSize(size: string): this {\n    this.size = size;\n    return this;\n  }\n\n  withCrust(crust: string): this {\n    this.crust = crust;\n    return this;\n  }\n\n  withCheese(cheese: boolean): this {\n    this.cheese = cheese;\n    return this;\n  }\n\n  addTopping(topping: string): this {\n    this.toppings.push(topping);\n    return this;\n  }\n\n  build(): Pizza {\n    return new Pizza(this.size, this.crust, this.cheese, [...this.toppings]);\n  }\n}\n\nfunction PizzaPreview({ pizza }: { pizza: Pizza }) {\n  return (\n    <div>\n      <p>{pizza.size} pizza</p>\n      <p>{pizza.crust} crust</p>\n      <p>Cheese: {pizza.cheese ? \"yes\" : \"no\"}</p>\n      <p>Toppings: {pizza.toppings.join(\", \") || \"none\"}</p>\n    </div>\n  );\n}\n\nexport function App() {\n  const pizza = useMemo(\n    () =>\n      new PizzaBuilder()\n        .withSize(\"large\")\n        .withCrust(\"thin\")\n        .addTopping(\"pepperoni\")\n        .addTopping(\"mushrooms\")\n        .build(),\n    [],\n  );\n\n  return (\n    <main>\n      <h1>Pizza Builder</h1>\n      <PizzaPreview pizza={pizza} />\n    </main>\n  );\n}",
-  explanation: "The React example uses the builder to assemble a pizza object before rendering it, which keeps optional configuration out of the UI.",
+  code: `type PizzaOrder = {
+  size: string;
+  crust: string;
+  toppings: string[];
+  extras: string[];
+};
+
+function buildPizzaOrder(): PizzaOrder {
+  return {
+    size: "large",
+    crust: "thin",
+    toppings: ["pepperoni", "mushrooms"],
+    extras: ["garlic dip"],
+  };
+}
+
+export function PizzaOrderSummary() {
+  const order = buildPizzaOrder();
+
+  return (
+    <section>
+      <h2>Pizza order</h2>
+      <p>Size: {order.size}</p>
+      <p>Crust: {order.crust}</p>
+      <p>Toppings: {order.toppings.join(", ")}</p>
+      <p>Extras: {order.extras.join(", ")}</p>
+    </section>
+  );
+}`,
+  explanation:
+    "A builder-like step can prepare a complete pizza order object before rendering the summary.",
 };

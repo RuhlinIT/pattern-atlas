@@ -3,6 +3,64 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const csharp: PatternLanguageExample = {
   language: "csharp",
   title: "Character creation",
-  code: "using System;\n\npublic class Character\n{\n    public string Name { get; }\n    public string ClassType { get; }\n    public int Strength { get; }\n    public int Agility { get; }\n    public int Intelligence { get; }\n\n    public Character(string name, string classType, int strength, int agility, int intelligence)\n    {\n        Name = name;\n        ClassType = classType;\n        Strength = strength;\n        Agility = agility;\n        Intelligence = intelligence;\n    }\n}\n\npublic class CharacterBuilder\n{\n    private string _name = \"Unnamed\";\n    private string _classType = \"Adventurer\";\n    private int _strength = 5;\n    private int _agility = 5;\n    private int _intelligence = 5;\n\n    public CharacterBuilder WithName(string name)\n    {\n        _name = name;\n        return this;\n    }\n\n    public CharacterBuilder WithClassType(string classType)\n    {\n        _classType = classType;\n        return this;\n    }\n\n    public CharacterBuilder WithStrength(int strength)\n    {\n        _strength = strength;\n        return this;\n    }\n\n    public CharacterBuilder WithAgility(int agility)\n    {\n        _agility = agility;\n        return this;\n    }\n\n    public CharacterBuilder WithIntelligence(int intelligence)\n    {\n        _intelligence = intelligence;\n        return this;\n    }\n\n    public Character Build()\n    {\n        return new Character(_name, _classType, _strength, _agility, _intelligence);\n    }\n}\n\nvar character = new CharacterBuilder()\n    .WithName(\"Aria\")\n    .WithClassType(\"Mage\")\n    .WithStrength(3)\n    .WithAgility(7)\n    .WithIntelligence(10)\n    .Build();\n\nConsole.WriteLine(character.Name);",
-  explanation: "The C# character builder separates object setup from the final constructed result, which keeps creation code easy to read and maintain.",
+  code: `public class Stats
+{
+    public int Strength { get; set; }
+    public int Agility { get; set; }
+    public int Intelligence { get; set; }
+}
+
+public class Character
+{
+    public string Name { get; set; } = "";
+    public string ClassName { get; set; } = "";
+    public Stats Stats { get; set; } = new Stats();
+}
+
+public class CharacterBuilder
+{
+    private readonly Character character = new Character();
+
+    public CharacterBuilder Name(string name)
+    {
+        character.Name = name;
+        return this;
+    }
+
+    public CharacterBuilder ClassName(string className)
+    {
+        character.ClassName = className;
+        return this;
+    }
+
+    public CharacterBuilder Strength(int value)
+    {
+        character.Stats.Strength = value;
+        return this;
+    }
+
+    public CharacterBuilder Agility(int value)
+    {
+        character.Stats.Agility = value;
+        return this;
+    }
+
+    public CharacterBuilder Intelligence(int value)
+    {
+        character.Stats.Intelligence = value;
+        return this;
+    }
+
+    public Character Build() => character;
+}
+
+var hero = new CharacterBuilder()
+    .Name("Astra")
+    .ClassName("Mage")
+    .Strength(4)
+    .Agility(7)
+    .Intelligence(12)
+    .Build();`,
+  explanation:
+    "Builder works well for character creation when the object is assembled step by step and requires several related fields.",
 };

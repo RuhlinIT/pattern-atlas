@@ -1,47 +1,56 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { PatternRecord } from "@atlas-patterns/schemas";
+import type { PatternRecord, PatternStackArea } from "@atlas-patterns/schemas";
 import { PatternVariantCard } from "./PatternVariantCard";
 
-type VariantLayer = "frontend" | "backend" | "integration";
+type VariantStackArea = "all" | PatternStackArea;
+
+const STACK_AREA_ORDER: readonly PatternStackArea[] = [
+  "frontend",
+  "backend",
+  "integration",
+  "devops",
+  "cloud",
+  "fullstack",
+];
 
 export function PatternVariantsSection({ pattern }: { pattern: PatternRecord }) {
-  const variants = pattern.variants ?? [];
+  const variants = useMemo(() => pattern.variants ?? [], [pattern.variants]);
 
-  const groupedVariants = useMemo(() => {
-    return {
-      frontend: variants.filter((variant) => variant.layer === "frontend"),
-      backend: variants.filter((variant) => variant.layer === "backend"),
-      integration: variants.filter((variant) => variant.layer === "integration"),
-    };
-  }, [variants]);
-
-  const initialLayer: VariantLayer =
-    groupedVariants.frontend.length > 0
-      ? "frontend"
-      : groupedVariants.backend.length > 0
-        ? "backend"
-        : "integration";
-
-  const [activeLayer, setActiveLayer] = useState<VariantLayer>(initialLayer);
-  const activeVariants = groupedVariants[activeLayer];
-  const [activeVariantSlug, setActiveVariantSlug] = useState(
-    activeVariants[0]?.slug ?? "",
+  const groupedVariants = useMemo(
+    () => ({
+      frontend: variants.filter((variant) => variant.stackArea === "frontend"),
+      backend: variants.filter((variant) => variant.stackArea === "backend"),
+      integration: variants.filter((variant) => variant.stackArea === "integration"),
+      devops: variants.filter((variant) => variant.stackArea === "devops"),
+      cloud: variants.filter((variant) => variant.stackArea === "cloud"),
+      fullstack: variants.filter((variant) => variant.stackArea === "fullstack"),
+    }),
+    [variants],
   );
 
+  const initialStackArea = useMemo<VariantStackArea>(() => {
+    return STACK_AREA_ORDER.find((area) => groupedVariants[area].length > 0) ?? "all";
+  }, [groupedVariants]);
+
+  const [activeStackArea, setActiveStackArea] = useState<VariantStackArea>(initialStackArea);
+  const [activeVariantSlug, setActiveVariantSlug] = useState("");
+
+  const visibleVariants = useMemo(() => {
+    if (activeStackArea === "all") return variants;
+    return groupedVariants[activeStackArea];
+  }, [activeStackArea, groupedVariants, variants]);
+
   const activeVariant =
-    activeVariants.find((variant) => variant.slug === activeVariantSlug) ??
-    activeVariants[0];
+    visibleVariants.find((variant) => variant.slug === activeVariantSlug) ??
+    visibleVariants[0] ??
+    null;
 
-  function handleLayerChange(nextLayer: VariantLayer) {
-    setActiveLayer(nextLayer);
-    const nextFirstVariant = groupedVariants[nextLayer][0];
-    setActiveVariantSlug(nextFirstVariant?.slug ?? "");
-  }
-
-  function handleVariantChange(nextVariantSlug: string) {
-    setActiveVariantSlug(nextVariantSlug);
+  function handleStackAreaChange(nextArea: VariantStackArea) {
+    setActiveStackArea(nextArea);
+    const nextVariants = nextArea === "all" ? variants : groupedVariants[nextArea];
+    setActiveVariantSlug(nextVariants[0]?.slug ?? "");
   }
 
   if (!variants.length) {
@@ -52,12 +61,12 @@ export function PatternVariantsSection({ pattern }: { pattern: PatternRecord }) 
     <section className="space-y-4">
       <div
         role="tablist"
-        aria-label="Variant layers"
+        aria-label="Variant stack areas"
         className="flex flex-wrap gap-2 border-b border-slate-700"
       >
-        {(["frontend", "backend", "integration"] as const).map((layer) => {
-          const isActive = activeLayer === layer;
-          const count = groupedVariants[layer].length;
+        {STACK_AREA_ORDER.map((area) => {
+          const isActive = activeStackArea === area;
+          const count = groupedVariants[area].length;
 
           if (count === 0) {
             return null;
@@ -65,11 +74,11 @@ export function PatternVariantsSection({ pattern }: { pattern: PatternRecord }) 
 
           return (
             <button
-              key={layer}
+              key={area}
               type="button"
               role="tab"
               aria-selected={isActive}
-              onClick={() => handleLayerChange(layer)}
+              onClick={() => handleStackAreaChange(area)}
               className={[
                 "relative -mb-px rounded-t-lg border px-4 py-2 text-sm transition-all",
                 isActive
@@ -77,19 +86,30 @@ export function PatternVariantsSection({ pattern }: { pattern: PatternRecord }) 
                   : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
               ].join(" ")}
             >
-              {layer} ({count})
+              {area} ({count})
             </button>
           );
         })}
+
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeStackArea === "all"}
+          onClick={() => handleStackAreaChange("all")}
+          className={[
+            "relative -mb-px rounded-t-lg border px-4 py-2 text-sm transition-all",
+            activeStackArea === "all"
+              ? "border-sky-400 border-b-slate-950 bg-slate-950 text-sky-400 shadow-sm"
+              : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
+          ].join(" ")}
+        >
+          all ({variants.length})
+        </button>
       </div>
 
-      {activeVariants.length > 1 ? (
-        <div
-          role="tablist"
-          aria-label="Variants"
-          className="flex flex-wrap gap-2"
-        >
-          {activeVariants.map((variant) => {
+      {visibleVariants.length > 1 ? (
+        <div role="tablist" aria-label="Variants" className="flex flex-wrap gap-2">
+          {visibleVariants.map((variant) => {
             const isActive = variant.slug === activeVariant?.slug;
 
             return (
@@ -98,7 +118,7 @@ export function PatternVariantsSection({ pattern }: { pattern: PatternRecord }) 
                 type="button"
                 role="tab"
                 aria-selected={isActive}
-                onClick={() => handleVariantChange(variant.slug)}
+                onClick={() => setActiveVariantSlug(variant.slug)}
                 className={[
                   "rounded-lg border px-3 py-2 text-sm transition-all",
                   isActive

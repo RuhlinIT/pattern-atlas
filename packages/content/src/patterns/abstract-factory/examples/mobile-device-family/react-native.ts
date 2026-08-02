@@ -2,20 +2,30 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 
 export const reactNative: PatternLanguageExample = {
   language: "react-native",
-  title: "React Native device family",
-  code: `type Platform = "ios" | "android";
+  title: "Mobile device family",
+  code: `type Button = {
+  render(): string;
+};
 
-type View = { platform: Platform };
-type ActionSheet = { platform: Platform };
-type Navigation = { platform: Platform };
+type Modal = {
+  open(): string;
+};
 
-function createDeviceFamily(platform: Platform) {
-  return {
-    view: { platform } satisfies View,
-    actionSheet: { platform } satisfies ActionSheet,
-    navigation: { platform } satisfies Navigation,
-  };
-}`,
+type MobileUIFactory = {
+  createButton(): Button;
+  createModal(): Modal;
+};
+
+const createIOSFactory = (): MobileUIFactory => ({
+  createButton: () => ({ render: () => "Render iOS button" }),
+  createModal: () => ({ open: () => "Open iOS modal" }),
+});
+
+const createAndroidFactory = (): MobileUIFactory => ({
+  createButton: () => ({ render: () => "Render Android button" }),
+  createModal: () => ({ open: () => "Open Android modal" }),
+});
+`,
   explanation:
-    "React Native can create a coordinated family of platform-aware mobile objects.",
+    "React Native can use a factory to keep platform-specific mobile UI objects consistent across iOS and Android.",
 };

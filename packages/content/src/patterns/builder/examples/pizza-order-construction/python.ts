@@ -3,6 +3,48 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const python: PatternLanguageExample = {
   language: "python",
   title: "Pizza order construction",
-  code: "class Pizza:\n    def __init__(self, size: str, crust: str, cheese: bool, toppings: list[str]) -> None:\n        self.size = size\n        self.crust = crust\n        self.cheese = cheese\n        self.toppings = toppings\n\nclass PizzaBuilder:\n    def __init__(self) -> None:\n        self.size = \"medium\"\n        self.crust = \"regular\"\n        self.cheese = True\n        self.toppings: list[str] = []\n\n    def with_size(self, size: str) -> \"PizzaBuilder\":\n        self.size = size\n        return self\n\n    def with_crust(self, crust: str) -> \"PizzaBuilder\":\n        self.crust = crust\n        return self\n\n    def with_cheese(self, cheese: bool) -> \"PizzaBuilder\":\n        self.cheese = cheese\n        return self\n\n    def add_topping(self, topping: str) -> \"PizzaBuilder\":\n        self.toppings.append(topping)\n        return self\n\n    def build(self) -> Pizza:\n        return Pizza(self.size, self.crust, self.cheese, list(self.toppings))\n\npizza = (\n    PizzaBuilder()\n    .with_size(\"large\")\n    .with_crust(\"thin\")\n    .add_topping(\"pepperoni\")\n    .add_topping(\"mushrooms\")\n    .build()\n)\n\nprint(pizza.__dict__)",
-  explanation: "The builder makes pizza creation explicit and easy to extend as more toppings or options are added.",
+  code: `from dataclasses import dataclass, field
+from typing import List
+
+@dataclass
+class PizzaOrder:
+    size: str = "medium"
+    crust: str = "regular"
+    toppings: List[str] = field(default_factory=list)
+    extras: List[str] = field(default_factory=list)
+
+class PizzaOrderBuilder:
+    def __init__(self):
+        self._order = PizzaOrder()
+
+    def size(self, size: str):
+        self._order.size = size
+        return self
+
+    def crust(self, crust: str):
+        self._order.crust = crust
+        return self
+
+    def add_topping(self, topping: str):
+        self._order.toppings.append(topping)
+        return self
+
+    def add_extra(self, extra: str):
+        self._order.extras.append(extra)
+        return self
+
+    def build(self):
+        return self._order
+
+order = (
+    PizzaOrderBuilder()
+    .size("large")
+    .crust("thin")
+    .add_topping("pepperoni")
+    .add_topping("mushrooms")
+    .add_extra("garlic dip")
+    .build()
+)`,
+  explanation:
+    "A builder works well here because a pizza order is assembled in stages with optional toppings and extras.",
 };

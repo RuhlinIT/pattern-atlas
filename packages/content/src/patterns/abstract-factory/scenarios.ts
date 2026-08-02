@@ -12,6 +12,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Directly creating each office piece makes it easy for the furniture, colors, and materials to drift out of sync.",
     solution:
       "Use an abstract factory to produce a consistent family of office items that all match the selected theme.",
+    stackArea: "backend",
   },
   {
     slug: "ui-component-suite",
@@ -24,6 +25,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Creating UI pieces independently can lead to mismatched colors, spacing, and behavior across the app.",
     solution:
       "Use an abstract factory to generate a coordinated family of UI components for each theme.",
+    stackArea: "frontend",
   },
   {
     slug: "backend-product-line",
@@ -36,6 +38,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Direct construction ties the service to specific implementations and makes tenant-specific variation difficult.",
     solution:
       "Use an abstract factory to create backend families that vary by tenant, region, or deployment target.",
+    stackArea: "backend",
   },
   {
     slug: "integration-vendor-bridge",
@@ -48,6 +51,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Hardcoding vendor logic creates fragile integrations and makes switching providers painful.",
     solution:
       "Use an abstract factory to create a vendor-specific integration family behind a stable contract.",
+    stackArea: "integration",
   },
   {
     slug: "mobile-device-family",
@@ -60,6 +64,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Creating device-specific objects separately can lead to inconsistent mobile experiences.",
     solution:
       "Use an abstract factory to create a device family of related mobile objects together.",
+    stackArea: "frontend",
   },
   {
     slug: "document-generation-family",
@@ -72,5 +77,6 @@ export const scenarios: readonly PatternScenario[] = [
       "Independent document creation can cause mismatched layouts, formats, and data rules.",
     solution:
       "Use an abstract factory to generate a family of documents that share the same brand or locale rules.",
+    stackArea: "backend",
   },
 ];

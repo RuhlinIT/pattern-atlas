@@ -3,96 +3,82 @@ import { meta } from "./meta";
 import { scenarios } from "./scenarios";
 import { normalizeExamples } from "../normalize-examples";
 
-import { angular as modernOfficeSetupAngular } from "./examples/modern-office-setup/angular";
-import { csharp as modernOfficeSetupCsharp } from "./examples/modern-office-setup/csharp";
-import { dotnet as modernOfficeSetupDotnet } from "./examples/modern-office-setup/dotnet";
+import { typescript as modernOfficeSetupTypescript } from "./examples/modern-office-setup/typescript";
 import { java as modernOfficeSetupJava } from "./examples/modern-office-setup/java";
 import { python as modernOfficeSetupPython } from "./examples/modern-office-setup/python";
-import { reactNative as modernOfficeSetupReactNative } from "./examples/modern-office-setup/react-native";
-import { react as modernOfficeSetupReact } from "./examples/modern-office-setup/react";
-import { typescript as modernOfficeSetupTypescript } from "./examples/modern-office-setup/typescript";
 
-import { angular as uiComponentSuiteAngular } from "./examples/ui-component-suite/angular";
-import { csharp as uiComponentSuiteCsharp } from "./examples/ui-component-suite/csharp";
-import { dotnet as uiComponentSuiteDotnet } from "./examples/ui-component-suite/dotnet";
-import { java as uiComponentSuiteJava } from "./examples/ui-component-suite/java";
-import { python as uiComponentSuitePython } from "./examples/ui-component-suite/python";
-import { react as uiComponentSuiteReact } from "./examples/ui-component-suite/react";
 import { typescript as uiComponentSuiteTypescript } from "./examples/ui-component-suite/typescript";
+import { react as uiComponentSuiteReact } from "./examples/ui-component-suite/react";
+import { angular as uiComponentSuiteAngular } from "./examples/ui-component-suite/angular";
 
+import { typescript as backendProductLineTypescript } from "./examples/backend-product-line/typescript";
 import { java as backendProductLineJava } from "./examples/backend-product-line/java";
 import { python as backendProductLinePython } from "./examples/backend-product-line/python";
-import { typescript as backendProductLineTypescript } from "./examples/backend-product-line/typescript";
 
-import { angular as integrationVendorBridgeAngular } from "./examples/integration-vendor-bridge/angular";
-import { react as integrationVendorBridgeReact } from "./examples/integration-vendor-bridge/react";
 import { typescript as integrationVendorBridgeTypescript } from "./examples/integration-vendor-bridge/typescript";
+import { react as integrationVendorBridgeReact } from "./examples/integration-vendor-bridge/react";
 
-import { csharp as mobileDeviceFamilyCsharp } from "./examples/mobile-device-family/csharp";
-import { dotnet as mobileDeviceFamilyDotnet } from "./examples/mobile-device-family/dotnet";
+import { typescript as mobileDeviceFamilyTypescript } from "./examples/mobile-device-family/typescript";
+import { java as mobileDeviceFamilyJava } from "./examples/mobile-device-family/java";
+import { python as mobileDeviceFamilyPython } from "./examples/mobile-device-family/python";
 import { reactNative as mobileDeviceFamilyReactNative } from "./examples/mobile-device-family/react-native";
 
+import { typescript as documentGenerationFamilyTypescript } from "./examples/document-generation-family/typescript";
+import { java as documentGenerationFamilyJava } from "./examples/document-generation-family/java";
+import { python as documentGenerationFamilyPython } from "./examples/document-generation-family/python";
 import { csharp as documentGenerationFamilyCsharp } from "./examples/document-generation-family/csharp";
 import { dotnet as documentGenerationFamilyDotnet } from "./examples/document-generation-family/dotnet";
-import { typescript as documentGenerationFamilyTypescript } from "./examples/document-generation-family/typescript";
 
 const modernOfficeSetupExamples = normalizeExamples({
-  angular: modernOfficeSetupAngular,
-  csharp: modernOfficeSetupCsharp,
-  dotnet: modernOfficeSetupDotnet,
+  typescript: modernOfficeSetupTypescript,
   java: modernOfficeSetupJava,
   python: modernOfficeSetupPython,
-  "react-native": modernOfficeSetupReactNative,
-  react: modernOfficeSetupReact,
-  typescript: modernOfficeSetupTypescript,
 });
 
 const uiComponentSuiteExamples = normalizeExamples({
-  angular: uiComponentSuiteAngular,
-  csharp: uiComponentSuiteCsharp,
-  dotnet: uiComponentSuiteDotnet,
-  java: uiComponentSuiteJava,
-  python: uiComponentSuitePython,
-  react: uiComponentSuiteReact,
   typescript: uiComponentSuiteTypescript,
+  react: uiComponentSuiteReact,
+  angular: uiComponentSuiteAngular,
 });
 
 const backendProductLineExamples = normalizeExamples({
+  typescript: backendProductLineTypescript,
   java: backendProductLineJava,
   python: backendProductLinePython,
-  typescript: backendProductLineTypescript,
 });
 
 const integrationVendorBridgeExamples = normalizeExamples({
-  angular: integrationVendorBridgeAngular,
-  react: integrationVendorBridgeReact,
   typescript: integrationVendorBridgeTypescript,
+  react: integrationVendorBridgeReact,
 });
 
 const mobileDeviceFamilyExamples = normalizeExamples({
-  csharp: mobileDeviceFamilyCsharp,
-  dotnet: mobileDeviceFamilyDotnet,
+  typescript: mobileDeviceFamilyTypescript,
+  java: mobileDeviceFamilyJava,
+  python: mobileDeviceFamilyPython,
   "react-native": mobileDeviceFamilyReactNative,
 });
 
 const documentGenerationFamilyExamples = normalizeExamples({
+  typescript: documentGenerationFamilyTypescript,
+  java: documentGenerationFamilyJava,
+  python: documentGenerationFamilyPython,
   csharp: documentGenerationFamilyCsharp,
   dotnet: documentGenerationFamilyDotnet,
-  typescript: documentGenerationFamilyTypescript,
 });
 
 export const abstractFactoryPattern: PatternRecord = {
   ...meta,
   problem:
-    "A system needs families of related objects created together, but direct construction ties clients to specific concrete classes and makes switching product families difficult.",
+    "When related objects are created independently, they can drift out of sync and become hard to swap as a family.",
   tradeoffs: [
-    "Can introduce many interfaces and classes for each product family.",
-    "May be more complex than necessary if the system only creates a few unrelated objects.",
-    "Can improve consistency when whole families need to change together.",
+    "Adds more abstraction and more types.",
+    "Can be overkill for simple object creation.",
+    "Makes it easier to swap entire families of objects consistently.",
   ],
-  platforms: ["web", "backend", "mobile", "ui kits", "cross-platform systems"],
+  platforms: ["frontend", "backend", "integration"],
   integrationNotes:
-    "Abstract Factory is useful when the application must stay consistent across themes, platforms, or vendor-specific product families, such as UI kits, backend tenant provisioning, or third-party integrations.",
+    "Abstract Factory is most useful when a product family must remain consistent across themes, tenants, vendors, or platforms.",
   scenarios,
   scenarioExamples: {
     "modern-office-setup": modernOfficeSetupExamples,
@@ -104,109 +90,78 @@ export const abstractFactoryPattern: PatternRecord = {
   },
   variants: [
     {
-      slug: "modern-office-setup",
-      title: "Modern office setup",
-      layer: "integration",
+      slug: "abstract-factory-theme-family",
+      title: "Theme family factory",
+      stackArea: "frontend",
       language: "typescript",
       summary:
-        "A workplace factory creates matching desks, chairs, and cabinets for a modern or classic office theme.",
+        "Create coordinated UI families such as buttons, forms, and cards for each theme.",
       intent:
-        "Create a coordinated family of office objects that switch together by theme.",
+        "Keep theme selection separate from component construction.",
+      problem:
+        "UI families drift when each control is created independently.",
       solution:
-        "Use an abstract factory to produce a theme-consistent family of office products.",
+        "Use an abstract factory to build a matched set of themed UI components.",
+      dependencies: ["abstract factory"],
+      relatedVariants: ["abstract-factory-tenant-family", "abstract-factory-integration-family"],
       examplePatternSlugs: ["abstract-factory"],
+      notes:
+        "This is the best fit when the variation is primarily visual or interaction-focused.",
     },
     {
-      slug: "ui-component-suite",
-      title: "UI component suite",
-      layer: "frontend",
+      slug: "abstract-factory-tenant-family",
+      title: "Tenant family factory",
+      stackArea: "backend",
+      language: "java",
+      summary:
+        "Create tenant-specific backend object families such as repositories, services, and workflows.",
+      intent:
+        "Keep tenant or region selection separate from backend object creation.",
+      problem:
+        "Tenant-specific backend objects become inconsistent when each one is wired separately.",
+      solution:
+        "Use an abstract factory to produce a matched set of tenant-aware backend components.",
+      dependencies: ["abstract factory"],
+      relatedVariants: ["abstract-factory-theme-family", "abstract-factory-integration-family"],
+      examplePatternSlugs: ["abstract-factory"],
+      notes:
+        "Use this when backend behavior varies by deployment target, customer, or locale.",
+    },
+    {
+      slug: "abstract-factory-integration-family",
+      title: "Integration family factory",
+      stackArea: "integration",
       language: "typescript",
       summary:
-        "A design system factory provides related buttons, inputs, cards, and alerts for light and dark themes without visual drift.",
+        "Create vendor-specific integration families such as clients, transformers, and adapters.",
       intent:
-        "Create a coordinated family of frontend components for each theme.",
+        "Keep external vendor selection separate from integration wiring.",
+      problem:
+        "Integrations become hard to swap when provider-specific code leaks across the system.",
       solution:
-        "Use an abstract factory to build a consistent set of frontend UI objects.",
+        "Use an abstract factory to assemble a vendor-aligned integration family behind one contract.",
+      dependencies: ["abstract factory"],
+      relatedVariants: ["abstract-factory-theme-family", "abstract-factory-tenant-family"],
       examplePatternSlugs: ["abstract-factory"],
-    },
-    {
-      slug: "backend-product-line",
-      title: "Backend product line",
-      layer: "backend",
-      language: "typescript",
-      summary:
-        "A backend service provisions a consistent family of resources, rules, and workflows for each tenant or region.",
-      intent:
-        "Create a backend family that varies by tenant, region, or deployment target.",
-      solution:
-        "Use an abstract factory to provision tenant-specific backend objects together.",
-      examplePatternSlugs: ["abstract-factory"],
-    },
-    {
-      slug: "integration-vendor-bridge",
-      title: "Integration vendor bridge",
-      layer: "integration",
-      language: "typescript",
-      summary:
-        "An integration layer builds matching adapters, transformers, and clients for different vendors or external APIs.",
-      intent:
-        "Keep vendor-specific integration logic behind one stable contract.",
-      solution:
-        "Use an abstract factory to create a vendor-specific integration family.",
-      examplePatternSlugs: ["abstract-factory"],
-    },
-    {
-      slug: "mobile-device-family",
-      title: "Mobile device family",
-      layer: "frontend",
-      language: "react-native",
-      summary:
-        "A mobile app creates coordinated UI and service objects for iOS and Android variants while keeping app behavior aligned.",
-      intent:
-        "Create device-specific mobile families with a consistent shape.",
-      solution:
-        "Use an abstract factory to build mobile objects tuned to device conventions.",
-      examplePatternSlugs: ["abstract-factory"],
-    },
-    {
-      slug: "document-generation-family",
-      title: "Document generation family",
-      layer: "integration",
-      language: "typescript",
-      summary:
-        "A document system creates consistent invoices, receipts, and reports for each brand or locale.",
-      intent:
-        "Generate document families that share brand and locale rules.",
-      solution:
-        "Use an abstract factory to assemble document templates and formatting together.",
-      examplePatternSlugs: ["abstract-factory"],
+      notes:
+        "This variant is useful when the pattern is mainly about external dependencies and provider switching.",
     },
   ],
   realWorldExamples: [
     {
-      title: "Themeable design systems",
+      title: "Theming engines",
       description:
-        "Applications often need a consistent family of UI controls that change together when the theme changes.",
+        "Design systems often need families of UI controls that change together for light and dark themes.",
     },
     {
-      title: "Cross-platform product lines",
+      title: "Tenant-aware provisioning",
       description:
-        "A platform might create compatible services, controls, and adapters for each vendor or deployment target.",
+        "Backend platforms commonly create families of tenant-specific services, repositories, and workflows.",
     },
     {
-      title: "Brand-specific product kits",
+      title: "Vendor integration kits",
       description:
-        "Businesses sometimes need matching sets of documents, assets, or interface components that vary by brand family.",
-    },
-    {
-      title: "Tenant-aware backend provisioning",
-      description:
-        "A SaaS backend may need to create a coherent set of tenant-specific resources and workflows per customer tier.",
-    },
-    {
-      title: "Vendor integration packs",
-      description:
-        "An integration platform may need a complete set of vendor-specific adapters, transforms, and API clients.",
+        "Integration layers often bundle vendor-specific clients, mappers, and handlers as one unit.",
     },
   ],
 };

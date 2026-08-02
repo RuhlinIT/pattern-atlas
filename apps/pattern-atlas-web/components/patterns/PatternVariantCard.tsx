@@ -6,12 +6,13 @@ export function PatternVariantCard({ variant }: { variant: PatternVariant }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-wide text-sky-400">
-            {variant.layer}
+            {variant.stackArea}
           </p>
           <h3 className="mt-1 text-lg font-semibold text-slate-50">
             {variant.title}
           </h3>
         </div>
+
         <span className="rounded-full border border-slate-600 px-2 py-1 text-xs text-slate-300">
           {variant.language}
         </span>
@@ -37,8 +38,62 @@ export function PatternVariantCard({ variant }: { variant: PatternVariant }) {
         </p>
       ) : null}
 
+      {variant.dependencies?.length ? (
+        <div className="mt-4">
+          <p className="text-xs uppercase tracking-wide text-slate-400">
+            Dependencies
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {variant.dependencies.map((dependency) => (
+              <span
+                key={dependency}
+                className="rounded-full border border-slate-600 px-2 py-1 text-xs text-slate-300"
+              >
+                {dependency}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {variant.relatedVariants?.length ? (
+        <div className="mt-4">
+          <p className="text-xs uppercase tracking-wide text-slate-400">
+            Related variants
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {variant.relatedVariants.map((relatedVariant) => (
+              <span
+                key={relatedVariant}
+                className="rounded-full border border-slate-600 px-2 py-1 text-xs text-slate-300"
+              >
+                {relatedVariant}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {variant.examplePatternSlugs?.length ? (
+        <div className="mt-4">
+          <p className="text-xs uppercase tracking-wide text-slate-400">
+            Examples
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {variant.examplePatternSlugs.map((slug) => (
+              <span
+                key={slug}
+                className="rounded-full border border-slate-600 px-2 py-1 text-xs text-slate-300"
+              >
+                {slug}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
       {variant.notes ? (
-        <p className="mt-2 text-sm text-slate-400">{variant.notes}</p>
+        <p className="mt-4 text-sm text-slate-400">{variant.notes}</p>
       ) : null}
     </article>
   );

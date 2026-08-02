@@ -2,17 +2,51 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 
 export const dotnet: PatternLanguageExample = {
   language: "dotnet",
-  title: ".NET document factory",
-  code: `public interface IInvoice { string Locale { get; } }
-public interface IReceipt { string Locale { get; } }
-public interface IReport { string Locale { get; } }
-
-public abstract class DocumentFactory
+  title: "Document generation family",
+  code: `public interface IInvoice
 {
-    public abstract IInvoice CreateInvoice();
-    public abstract IReceipt CreateReceipt();
-    public abstract IReport CreateReport();
-}`,
+    string Render();
+}
+
+public interface IReceipt
+{
+    string Render();
+}
+
+public interface IReport
+{
+    string Render();
+}
+
+public interface IDocumentFactory
+{
+    IInvoice CreateInvoice();
+    IReceipt CreateReceipt();
+    IReport CreateReport();
+}
+
+public class BrandAInvoice : IInvoice
+{
+    public string Render() => "Render Brand A invoice";
+}
+
+public class BrandAReceipt : IReceipt
+{
+    public string Render() => "Render Brand A receipt";
+}
+
+public class BrandAReport : IReport
+{
+    public string Render() => "Render Brand A report";
+}
+
+public class BrandADocumentFactory : IDocumentFactory
+{
+    public IInvoice CreateInvoice() => new BrandAInvoice();
+    public IReceipt CreateReceipt() => new BrandAReceipt();
+    public IReport CreateReport() => new BrandAReport();
+}
+`,
   explanation:
-    ".NET is a good fit for abstract factories that generate document families across regions.",
+    ".NET fits well for service-side document generation where one factory must keep all branded outputs aligned.",
 };

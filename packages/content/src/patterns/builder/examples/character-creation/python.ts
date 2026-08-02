@@ -3,6 +3,56 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const python: PatternLanguageExample = {
   language: "python",
   title: "Character creation",
-  code: "class Character:\n    def __init__(\n        self,\n        name: str,\n        class_type: str,\n        strength: int,\n        agility: int,\n        intelligence: int,\n    ) -> None:\n        self.name = name\n        self.class_type = class_type\n        self.strength = strength\n        self.agility = agility\n        self.intelligence = intelligence\n\n\nclass CharacterBuilder:\n    def __init__(self) -> None:\n        self.name = \"Unnamed\"\n        self.class_type = \"Adventurer\"\n        self.strength = 5\n        self.agility = 5\n        self.intelligence = 5\n\n    def with_name(self, name: str) -> \"CharacterBuilder\":\n        self.name = name\n        return self\n\n    def with_class_type(self, class_type: str) -> \"CharacterBuilder\":\n        self.class_type = class_type\n        return self\n\n    def with_strength(self, strength: int) -> \"CharacterBuilder\":\n        self.strength = strength\n        return self\n\n    def with_agility(self, agility: int) -> \"CharacterBuilder\":\n        self.agility = agility\n        return self\n\n    def with_intelligence(self, intelligence: int) -> \"CharacterBuilder\":\n        self.intelligence = intelligence\n        return self\n\n    def build(self) -> Character:\n        return Character(\n            self.name,\n            self.class_type,\n            self.strength,\n            self.agility,\n            self.intelligence,\n        )\n\n\ncharacter = (\n    CharacterBuilder()\n    .with_name(\"Aria\")\n    .with_class_type(\"Mage\")\n    .with_strength(3)\n    .with_agility(7)\n    .with_intelligence(10)\n    .build()\n)\n\nprint(character.__dict__)",
-  explanation: "The builder gives a clear path for assembling a character with optional stats and class selection.",
+  code: `from dataclasses import dataclass, field
+
+@dataclass
+class Stats:
+    strength: int = 0
+    agility: int = 0
+    intelligence: int = 0
+
+@dataclass
+class Character:
+    name: str = ""
+    class_name: str = ""
+    stats: Stats = field(default_factory=Stats)
+
+class CharacterBuilder:
+    def __init__(self):
+        self._character = Character()
+
+    def name(self, name: str):
+        self._character.name = name
+        return self
+
+    def class_name(self, class_name: str):
+        self._character.class_name = class_name
+        return self
+
+    def strength(self, value: int):
+        self._character.stats.strength = value
+        return self
+
+    def agility(self, value: int):
+        self._character.stats.agility = value
+        return self
+
+    def intelligence(self, value: int):
+        self._character.stats.intelligence = value
+        return self
+
+    def build(self):
+        return self._character
+
+hero = (
+    CharacterBuilder()
+    .name("Astra")
+    .class_name("Mage")
+    .strength(4)
+    .agility(7)
+    .intelligence(12)
+    .build()
+)`,
+  explanation:
+    "Builder fits character creation because the character can be assembled in controlled steps with class-specific stats.",
 };

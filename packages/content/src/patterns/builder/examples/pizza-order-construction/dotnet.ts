@@ -3,6 +3,52 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const dotnet: PatternLanguageExample = {
   language: "dotnet",
   title: "Pizza order construction",
-  code: "using System;\nusing System.Collections.Generic;\nusing System.Linq;\nusing Microsoft.Extensions.DependencyInjection;\n\npublic class Pizza\n{\n    public string Size { get; }\n    public string Crust { get; }\n    public bool Cheese { get; }\n    public List<string> Toppings { get; }\n\n    public Pizza(string size, string crust, bool cheese, List<string> toppings)\n    {\n        Size = size;\n        Crust = crust;\n        Cheese = cheese;\n        Toppings = toppings;\n    }\n}\n\npublic class PizzaBuilder\n{\n    private string _size = \"medium\";\n    private string _crust = \"regular\";\n    private bool _cheese = true;\n    private readonly List<string> _toppings = new();\n\n    public PizzaBuilder WithSize(string size)\n    {\n        _size = size;\n        return this;\n    }\n\n    public PizzaBuilder WithCrust(string crust)\n    {\n        _crust = crust;\n        return this;\n    }\n\n    public PizzaBuilder WithCheese(bool cheese)\n    {\n        _cheese = cheese;\n        return this;\n    }\n\n    public PizzaBuilder AddTopping(string topping)\n    {\n        _toppings.Add(topping);\n        return this;\n    }\n\n    public Pizza Build()\n    {\n        return new Pizza(_size, _crust, _cheese, _toppings.ToList());\n    }\n}\n\nvar services = new ServiceCollection();\nservices.AddSingleton<PizzaBuilder>();\nvar provider = services.BuildServiceProvider();\n\nvar pizza = provider.GetRequiredService<PizzaBuilder>()\n    .WithSize(\"large\")\n    .WithCrust(\"thin\")\n    .AddTopping(\"pepperoni\")\n    .AddTopping(\"mushrooms\")\n    .Build();\n\nConsole.WriteLine(string.Join(\", \", pizza.Toppings));",
-  explanation: "The .NET version shows the same builder pattern with dependency injection available, so construction stays readable and flexible.",
+  code: `public class PizzaOrder
+{
+    public string Size { get; set; } = "medium";
+    public string Crust { get; set; } = "regular";
+    public List<string> Toppings { get; set; } = new();
+    public List<string> Extras { get; set; } = new();
+}
+
+public class PizzaOrderBuilder
+{
+    private readonly PizzaOrder order = new PizzaOrder();
+
+    public PizzaOrderBuilder Size(string size)
+    {
+        order.Size = size;
+        return this;
+    }
+
+    public PizzaOrderBuilder Crust(string crust)
+    {
+        order.Crust = crust;
+        return this;
+    }
+
+    public PizzaOrderBuilder AddTopping(string topping)
+    {
+        order.Toppings.Add(topping);
+        return this;
+    }
+
+    public PizzaOrderBuilder AddExtra(string extra)
+    {
+        order.Extras.Add(extra);
+        return this;
+    }
+
+    public PizzaOrder Build() => order;
+}
+
+var order = new PizzaOrderBuilder()
+    .Size("large")
+    .Crust("thin")
+    .AddTopping("pepperoni")
+    .AddTopping("mushrooms")
+    .AddExtra("garlic dip")
+    .Build();`,
+  explanation:
+    "Builder is a strong fit for pizza order construction because the order is composed incrementally from optional inputs.",
 };

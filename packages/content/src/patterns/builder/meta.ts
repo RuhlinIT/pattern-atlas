@@ -4,10 +4,12 @@ export const meta: PatternMeta = {
   slug: "builder",
   name: "Builder",
   category: "creational",
-  summary: "",
-  intent: "Separate the construction of a complex object from its representation so the same build process can create different configured results.",
+  summary:
+    "Construct a complex object step by step so the same construction process can create different representations.",
+  intent:
+    "Separate the construction of a complex object from its final representation.",
   difficulty: "intermediate",
-  tags: [],
+  tags: ["creational", "construction", "step-by-step", "objects"],
   relatedPatterns: [],
   aliases: [],
   order: 0,
@@ -15,13 +17,13 @@ export const meta: PatternMeta = {
   prerequisites: [],
   bestFor: [],
   languages: [
-  "typescript",
-  "java",
-  "python",
-  "angular",
-  "react",
-  "react-native",
-  "csharp",
-  "dotnet"
-],
+    "typescript",
+    "python",
+    "java",
+    "react",
+    "angular",
+    "go",
+    "csharp",
+    "dotnet",
+  ],
 };

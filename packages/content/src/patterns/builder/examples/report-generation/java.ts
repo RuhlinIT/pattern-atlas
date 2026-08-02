@@ -3,6 +3,47 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "Report generation",
-  code: "import java.util.ArrayList;\nimport java.util.List;\n\nclass Report {\n    public final String title;\n    public final String summary;\n    public final List<String> sections;\n    public final boolean includeCharts;\n\n    public Report(String title, String summary, List<String> sections, boolean includeCharts) {\n        this.title = title;\n        this.summary = summary;\n        this.sections = sections;\n        this.includeCharts = includeCharts;\n    }\n}\n\nclass ReportBuilder {\n    private String title = \"Untitled Report\";\n    private String summary = \"\";\n    private final List<String> sections = new ArrayList<>();\n    private boolean includeCharts = false;\n\n    public ReportBuilder withTitle(String title) {\n        this.title = title;\n        return this;\n    }\n\n    public ReportBuilder withSummary(String summary) {\n        this.summary = summary;\n        return this;\n    }\n\n    public ReportBuilder addSection(String section) {\n        sections.add(section);\n        return this;\n    }\n\n    public ReportBuilder withCharts(boolean includeCharts) {\n        this.includeCharts = includeCharts;\n        return this;\n    }\n\n    public Report build() {\n        return new Report(title, summary, new ArrayList<>(sections), includeCharts);\n    }\n}\n\nReport report = new ReportBuilder()\n    .withTitle(\"Quarterly Review\")\n    .withSummary(\"Q1 performance overview\")\n    .addSection(\"Revenue\")\n    .addSection(\"Growth\")\n    .withCharts(true)\n    .build();\n\nSystem.out.println(report.title);",
-  explanation: "The report builder makes it easy to configure a document with many optional parts while keeping construction code straightforward.",
+  code: `class Report {
+    String title;
+    java.util.List<String> sections = new java.util.ArrayList<>();
+    java.util.List<String> charts = new java.util.ArrayList<>();
+    String footer;
+}
+
+class ReportBuilder {
+    private final Report report = new Report();
+
+    ReportBuilder title(String title) {
+        report.title = title;
+        return this;
+    }
+
+    ReportBuilder addSection(String section) {
+        report.sections.add(section);
+        return this;
+    }
+
+    ReportBuilder addChart(String chart) {
+        report.charts.add(chart);
+        return this;
+    }
+
+    ReportBuilder footer(String footer) {
+        report.footer = footer;
+        return this;
+    }
+
+    Report build() {
+        return report;
+    }
+}
+
+Report report = new ReportBuilder()
+    .title("Quarterly Revenue")
+    .addSection("Summary")
+    .addChart("Revenue by Region")
+    .footer("Confidential")
+    .build();`,
+  explanation:
+    "A builder is useful when reports are assembled in stages and not every section is always required.",
 };
