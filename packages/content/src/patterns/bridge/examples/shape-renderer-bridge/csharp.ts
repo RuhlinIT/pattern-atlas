@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const csharp: PatternLanguageExample = {
-  language: "csharp",
-  title: "Shape renderer bridge",
-  code: "using System;\n\n\npublic interface IRenderer\n{\n    string RenderCircle(int radius);\n    string RenderSquare(int side);\n}\n\n\npublic class VectorRenderer : IRenderer\n{\n    public string RenderCircle(int radius)\n    {\n        return $\"Drawing a vector circle with radius {radius}\";\n    }\n\n\n    public string RenderSquare(int side)\n    {\n        return $\"Drawing a vector square with side {side}\";\n    }\n}\n\n\npublic class RasterRenderer : IRenderer\n{\n    public string RenderCircle(int radius)\n    {\n        return $\"Drawing a raster circle with radius {radius}\";\n    }\n\n\n    public string RenderSquare(int side)\n    {\n        return $\"Drawing a raster square with side {side}\";\n    }\n}\n\n\npublic abstract class Shape\n{\n    protected readonly IRenderer Renderer;\n\n\n    protected Shape(IRenderer renderer)\n    {\n        Renderer = renderer;\n    }\n\n\n    public abstract string Draw();\n}\n\n\npublic class Circle : Shape\n{\n    private readonly int _radius;\n\n\n    public Circle(IRenderer renderer, int radius) : base(renderer)\n    {\n        _radius = radius;\n    }\n\n\n    public override string Draw()\n    {\n        return Renderer.RenderCircle(_radius);\n    }\n}\n\n\nvar circle = new Circle(new VectorRenderer(), 10);\nConsole.WriteLine(circle.Draw());",
-  explanation: "The bridge separates shape behavior from the renderer so the same shape classes can work with multiple drawing implementations.",
-};
