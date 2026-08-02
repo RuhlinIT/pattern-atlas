@@ -5,11 +5,11 @@ export const meta: PatternMeta = {
   name: "Abstract Factory",
   category: "creational",
   summary:
-    "Provide an interface for creating families of related objects without specifying their concrete classes, so entire product families can be swapped consistently.",
+    "Provide an interface for creating families of related objects without specifying their concrete classes, so whole product families can be swapped consistently.",
   intent:
-    "Provide an interface for creating related objects without specifying their concrete classes, so entire product families can be swapped consistently.",
+    "Provide an interface for creating families of related objects without specifying their concrete classes, so whole product families can be swapped consistently.",
   difficulty: "intermediate",
-  tags: [],
+  tags: ["creational", "families", "themes", "products"],
   relatedPatterns: [],
   aliases: [],
   order: 0,
