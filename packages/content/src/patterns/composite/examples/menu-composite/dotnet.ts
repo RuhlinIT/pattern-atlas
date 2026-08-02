@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const dotnet: PatternLanguageExample = {
-  language: "dotnet",
-  title: "Menu composite",
-  code: "using System;\nusing System.Collections.Generic;\nusing System.Linq;\nusing Microsoft.Extensions.DependencyInjection;\n\n\npublic interface IMenuItem\n{\n    string Render();\n}\n\n\npublic class LeafMenuItem : IMenuItem\n{\n    private readonly string _label;\n\n\n    public LeafMenuItem(string label)\n    {\n        _label = label;\n    }\n\n\n    public string Render()\n    {\n        return _label;\n    }\n}\n\n\npublic class MenuGroup : IMenuItem\n{\n    private readonly string _label;\n    private readonly List<IMenuItem> _children = new List<IMenuItem>();\n\n\n    public MenuGroup(string label)\n    {\n        _label = label;\n    }\n\n\n    public void Add(IMenuItem item)\n    {\n        _children.Add(item);\n    }\n\n\n    public string Render()\n    {\n        return $\"{_label}: [{string.Join(\", \", _children.Select(child => child.Render()))}]\";\n    }\n}\n\n\nvar services = new ServiceCollection();\nservices.AddSingleton(new MenuGroup(\"File\"));\n\n\nvar provider = services.BuildServiceProvider();\nvar fileMenu = provider.GetRequiredService<MenuGroup>();\nfileMenu.Add(new LeafMenuItem(\"New\"));\nfileMenu.Add(new LeafMenuItem(\"Open\"));\n\n\nvar recentMenu = new MenuGroup(\"Recent\");\nrecentMenu.Add(new LeafMenuItem(\"Project A\"));\nrecentMenu.Add(new LeafMenuItem(\"Project B\"));\nfileMenu.Add(recentMenu);\n\n\nConsole.WriteLine(fileMenu.Render());",
-  explanation: "The .NET example uses a composite menu structure so nested menus can be managed and rendered uniformly.",
-};

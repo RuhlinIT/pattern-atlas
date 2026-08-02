@@ -1,8 +1,49 @@
 import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 
+interface FileSystemNode {
+  getName(): string;
+  getSize(): number;
+}
+
+class File implements FileSystemNode {
+  constructor(private name: string, private size: number) {}
+  getName() { return this.name; }
+  getSize() { return this.size; }
+}
+
+class Folder implements FileSystemNode {
+  constructor(private name: string, private children: FileSystemNode[] = []) {}
+  add(child: FileSystemNode) { this.children.push(child); }
+  getName() { return this.name; }
+  getSize() { return this.children.reduce((sum, child) => sum + child.getSize(), 0); }
+}
+
 export const typescript: PatternLanguageExample = {
   language: "typescript",
   title: "File system composite",
-  code: "interface FileSystemNode {\n  getSize(): number;\n  describe(): string;\n}\n\n\nclass FileNode implements FileSystemNode {\n  constructor(\n    private name: string,\n    private size: number,\n  ) {}\n\n\n  getSize(): number {\n    return this.size;\n  }\n\n\n  describe(): string {\n    return `${this.name} (${this.size} KB)`;\n  }\n}\n\n\nclass FolderNode implements FileSystemNode {\n  private children: FileSystemNode[] = [];\n\n\n  constructor(private name: string) {}\n\n\n  add(node: FileSystemNode): void {\n    this.children.push(node);\n  }\n\n\n  getSize(): number {\n    return this.children.reduce((total, child) => total + child.getSize(), 0);\n  }\n\n\n  describe(): string {\n    return `${this.name} folder with ${this.children.length} items`;\n  }\n}\n\n\nconst root = new FolderNode(\"Documents\");\nroot.add(new FileNode(\"resume.pdf\", 120));\nroot.add(new FileNode(\"invoice.xlsx\", 80));\n\n\nconst archive = new FolderNode(\"Archive\");\narchive.add(new FileNode(\"old-notes.txt\", 30));\nroot.add(archive);\n\n\nconsole.log(root.describe());\nconsole.log(root.getSize());",
-  explanation: "The file system composite treats files and folders through one interface, so nested folders can be handled recursively like leaf files.",
+  code: `interface FileSystemNode {
+  getName(): string;
+  getSize(): number;
+}
+
+class File implements FileSystemNode {
+  constructor(private name: string, private size: number) {}
+  getName() { return this.name; }
+  getSize() { return this.size; }
+}
+
+class Folder implements FileSystemNode {
+  constructor(private name: string, private children: FileSystemNode[] = []) {}
+  add(child: FileSystemNode) { this.children.push(child); }
+  getName() { return this.name; }
+  getSize() { return this.children.reduce((sum, child) => sum + child.getSize(), 0); }
+}
+
+const root = new Folder("root");
+root.add(new File("readme.md", 1200));
+const docs = new Folder("docs");
+docs.add(new File("guide.pdf", 2500));
+root.add(docs);
+root.getSize();`,
+  explanation: "Treat files and folders through the same interface so nested file trees can be traversed uniformly.",
 };

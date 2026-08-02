@@ -3,6 +3,29 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "Organization chart composite",
-  code: "interface OrgComponent {\n    String describe(int indent);\n}\n\n\nclass Employee implements OrgComponent {\n    private final String name;\n    private final String role;\n\n\n    public Employee(String name, String role) {\n        this.name = name;\n        this.role = role;\n    }\n\n\n    public String describe(int indent) {\n        return \" \".repeat(indent) + name + \" - \" + role;\n    }\n}\n\n\nclass Manager implements OrgComponent {\n    private final String name;\n    private final String role;\n    private final java.util.List<OrgComponent> children = new java.util.ArrayList<>();\n\n\n    public Manager(String name, String role) {\n        this.name = name;\n        this.role = role;\n    }\n\n\n    public void add(OrgComponent component) {\n        children.add(component);\n    }\n\n\n    public String describe(int indent) {\n        StringBuilder builder = new StringBuilder();\n        builder.append(\" \".repeat(indent)).append(name).append(\" - \").append(role);\n        for (OrgComponent child : children) {\n            builder.append(\"\\n\").append(child.describe(indent + 2));\n        }\n        return builder.toString();\n    }\n}\n\n\nManager director = new Manager(\"Ava\", \"Director\");\ndirector.add(new Employee(\"Ben\", \"Developer\"));\ndirector.add(new Employee(\"Cara\", \"Designer\"));\n\n\nManager lead = new Manager(\"Dana\", \"Team Lead\");\nlead.add(new Employee(\"Eli\", \"QA Engineer\"));\ndirector.add(lead);\n\n\nSystem.out.println(director.describe(0));",
-  explanation: "The organization chart composite lets managers contain both employees and other managers while exposing one common API.",
+  code: `import java.util.ArrayList;
+import java.util.List;
+
+interface OrgNode {
+    String getLabel();
+    List<OrgNode> getReports();
+}
+
+class Employee implements OrgNode {
+    private final String name;
+    Employee(String name) { this.name = name; }
+    public String getLabel() { return name; }
+    public List<OrgNode> getReports() { return List.of(); }
+}
+
+class Manager implements OrgNode {
+    private final String name;
+    private final List<OrgNode> reports = new ArrayList<>();
+    Manager(String name) { this.name = name; }
+    void add(OrgNode report) { reports.add(report); }
+    public String getLabel() { return name; }
+    public List<OrgNode> getReports() { return reports; }
+}
+`,
+  explanation: "Model employees and managers through the same interface so org hierarchies can be traversed recursively.",
 };

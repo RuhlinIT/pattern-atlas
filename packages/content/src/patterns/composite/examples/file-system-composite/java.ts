@@ -3,6 +3,44 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "File system composite",
-  code: "interface FileSystemNode {\n    int getSize();\n    String describe();\n}\n\n\nclass FileNode implements FileSystemNode {\n    private final String name;\n    private final int size;\n\n\n    public FileNode(String name, int size) {\n        this.name = name;\n        this.size = size;\n    }\n\n\n    public int getSize() {\n        return size;\n    }\n\n\n    public String describe() {\n        return name + \" (\" + size + \" KB)\";\n    }\n}\n\n\nclass FolderNode implements FileSystemNode {\n    private final String name;\n    private final java.util.List<FileSystemNode> children = new java.util.ArrayList<>();\n\n\n    public FolderNode(String name) {\n        this.name = name;\n    }\n\n\n    public void add(FileSystemNode node) {\n        children.add(node);\n    }\n\n\n    public int getSize() {\n        return children.stream().mapToInt(FileSystemNode::getSize).sum();\n    }\n\n\n    public String describe() {\n        return name + \" folder with \" + children.size() + \" items\";\n    }\n}\n\n\nFolderNode root = new FolderNode(\"Documents\");\nroot.add(new FileNode(\"resume.pdf\", 120));\nroot.add(new FileNode(\"invoice.xlsx\", 80));\n\n\nFolderNode archive = new FolderNode(\"Archive\");\narchive.add(new FileNode(\"old-notes.txt\", 30));\nroot.add(archive);\n\n\nSystem.out.println(root.describe());\nSystem.out.println(root.getSize());",
-  explanation: "The file system composite lets both files and folders share the same contract, which makes recursive aggregation straightforward.",
+  code: `import java.util.ArrayList;
+import java.util.List;
+
+interface FileSystemNode {
+    String getName();
+    int getSize();
+}
+
+class File implements FileSystemNode {
+    private final String name;
+    private final int size;
+
+    File(String name, int size) {
+        this.name = name;
+        this.size = size;
+    }
+
+    public String getName() { return name; }
+    public int getSize() { return size; }
+}
+
+class Folder implements FileSystemNode {
+    private final String name;
+    private final List<FileSystemNode> children = new ArrayList<>();
+
+    Folder(String name) {
+        this.name = name;
+    }
+
+    void add(FileSystemNode child) {
+        children.add(child);
+    }
+
+    public String getName() { return name; }
+    public int getSize() {
+        return children.stream().mapToInt(FileSystemNode::getSize).sum();
+    }
+}
+`,
+  explanation: "Treat files and folders through the same interface so nested file trees can be traversed uniformly.",
 };

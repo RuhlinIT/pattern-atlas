@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const csharp: PatternLanguageExample = {
-  language: "csharp",
-  title: "File system composite",
-  code: "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\n\npublic interface IFileSystemNode\n{\n    int GetSize();\n    string Describe();\n}\n\n\npublic class FileNode : IFileSystemNode\n{\n    private readonly string _name;\n    private readonly int _size;\n\n\n    public FileNode(string name, int size)\n    {\n        _name = name;\n        _size = size;\n    }\n\n\n    public int GetSize()\n    {\n        return _size;\n    }\n\n\n    public string Describe()\n    {\n        return $\"{_name} ({_size} KB)\";\n    }\n}\n\n\npublic class FolderNode : IFileSystemNode\n{\n    private readonly string _name;\n    private readonly List<IFileSystemNode> _children = new List<IFileSystemNode>();\n\n\n    public FolderNode(string name)\n    {\n        _name = name;\n    }\n\n\n    public void Add(IFileSystemNode node)\n    {\n        _children.Add(node);\n    }\n\n\n    public int GetSize()\n    {\n        return _children.Sum(child => child.GetSize());\n    }\n\n\n    public string Describe()\n    {\n        return $\"{_name} folder with {_children.Count} items\";\n    }\n}\n\n\nvar root = new FolderNode(\"Documents\");\nroot.Add(new FileNode(\"resume.pdf\", 120));\nroot.Add(new FileNode(\"invoice.xlsx\", 80));\n\n\nvar archive = new FolderNode(\"Archive\");\narchive.Add(new FileNode(\"old-notes.txt\", 30));\nroot.Add(archive);\n\n\nConsole.WriteLine(root.Describe());\nConsole.WriteLine(root.GetSize());",
-  explanation: "The C# file system composite treats files and folders through one interface, which makes recursive tree operations simple.",
-};
