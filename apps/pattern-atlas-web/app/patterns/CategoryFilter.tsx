@@ -1,15 +1,12 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type CategoryFilterProps = {
   categories: string[];
   activeCategory: string;
 };
-
-function normalizeCategoryKey(category: string) {
-  return category.toLowerCase();
-}
 
 function formatCategoryLabel(category: string) {
   const lower = category.toLowerCase();
@@ -21,55 +18,55 @@ export function CategoryFilter({
   activeCategory,
 }: CategoryFilterProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  function setCategory(category: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    const key = normalizeCategoryKey(category);
+  const tabs = useMemo(() => ["all", ...categories], [categories]);
 
-    if (key === "all") {
+  function updateCategory(nextCategory: string) {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (nextCategory === "all") {
       params.delete("category");
     } else {
-      params.set("category", key);
+      params.set("category", nextCategory.toLowerCase());
     }
 
     const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname);
+    router.push(query ? `/patterns?${query}` : "/patterns");
   }
 
-  const normalizedActiveCategory = normalizeCategoryKey(activeCategory);
-
   return (
-    <div className="filter-row" aria-label="Filter patterns by category">
-      <button
-        type="button"
-        className={
-          normalizedActiveCategory === "all"
-            ? "filter-chip active"
-            : "filter-chip"
-        }
-        onClick={() => setCategory("All")}
+    <div className="space-y-0">
+      <div
+        role="tablist"
+        aria-label="Pattern categories"
+        className="flex flex-wrap gap-2 border-b border-slate-700"
       >
-        All
-      </button>
+        {tabs.map((category) => {
+          const isActive =
+            category === "all"
+              ? activeCategory === "all"
+              : activeCategory === category.toLowerCase();
 
-      {Array.from(new Set(categories.map(normalizeCategoryKey))).map(
-        (category) => (
-          <button
-            key={category}
-            type="button"
-            className={
-              normalizedActiveCategory === category
-                ? "filter-chip active"
-                : "filter-chip"
-            }
-            onClick={() => setCategory(category)}
-          >
-            {formatCategoryLabel(category)}
-          </button>
-        ),
-      )}
+          return (
+            <button
+              key={category}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => updateCategory(category)}
+              className={[
+                "relative -mb-px rounded-t-lg border px-4 py-3 text-sm transition-all",
+                isActive
+                  ? "border-sky-400 border-b-slate-950 bg-slate-950 text-sky-400 shadow-sm"
+                  : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
+              ].join(" ")}
+            >
+              {category === "all" ? "All" : formatCategoryLabel(category)}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

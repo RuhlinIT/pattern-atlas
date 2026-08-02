@@ -76,12 +76,12 @@ export interface PatternMeta {
   intent: string;
   difficulty: PatternDifficulty;
   tags: readonly string[];
-  relatedPatterns?: readonly string[];
-  aliases?: readonly string[];
-  order?: number;
-  icon?: string;
-  prerequisites?: readonly string[];
-  bestFor?: readonly string[];
+  relatedPatterns?: readonly string[] | undefined;
+  aliases?: readonly string[] | undefined;
+  order?: number | undefined;
+  icon?: string | undefined;
+  prerequisites?: readonly string[] | undefined;
+  bestFor?: readonly string[] | undefined;
   languages: readonly PatternLanguage[];
 }
 
@@ -120,18 +120,33 @@ export interface LegacyPatternScenario extends PatternScenario {
   languageExamples?: readonly PatternLanguageExample[];
 }
 
-export interface PatternRecord extends PatternMeta {
+export interface PatternVariant {
+  slug: string;
+  title: string;
+  layer: PatternLayer;
+  language: PatternVariantLanguage;
+  summary: string;
+  intent?: string;
   problem?: string;
-  tradeoffs?: readonly string[];
-  platforms?: readonly string[];
-  integrationNotes?: string;
+  solution?: string;
+  dependencies?: readonly string[];
+  relatedVariants?: readonly string[];
+  examplePatternSlugs?: readonly string[];
+  notes?: string;
+}
+
+export interface PatternRecord extends PatternMeta {
+  problem?: string | undefined;
+  tradeoffs?: readonly string[] | undefined;
+  platforms?: readonly string[] | undefined;
+  integrationNotes?: string | undefined;
   scenarios: readonly PatternScenario[] | readonly LegacyPatternScenario[];
-  scenarioExamples?: PatternScenarioExamples;
-  realWorldExamples?: readonly PatternUseCase[];
-  whenToUse?: readonly string[];
-  flexibility?: PatternDifficulty;
-  antiPatterns?: readonly string[];
-  variants?: readonly PatternVariant[];
+  scenarioExamples?: PatternScenarioExamples | undefined;
+  realWorldExamples?: readonly PatternUseCase[] | undefined;
+  whenToUse?: readonly string[] | undefined;
+  flexibility?: PatternDifficulty | undefined;
+  antiPatterns?: readonly string[] | undefined;
+  variants?: readonly PatternVariant[] | undefined;
 }
 
 export const patternScenarioSchema = z.object({
@@ -222,4 +237,4 @@ export const patternRecordSchema = z.object({
 export const patternsSchema = z.array(patternRecordSchema);
 export type Patterns = z.infer<typeof patternsSchema>;
 
-export type PatternVariant = z.infer<typeof patternVariantSchema>;
+//export type PatternVariant = z.infer<typeof patternVariantSchema>;

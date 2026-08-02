@@ -8,16 +8,6 @@ export const metadata: Metadata = {
   title: "Patterns",
 };
 
-const patternCategories = [
-  "behavioral",
-  "structural",
-  "creational",
-] as const satisfies readonly PatternCategory[];
-
-function isPatternCategory(value: string): value is PatternCategory {
-  return (patternCategories as readonly string[]).includes(value.toLowerCase() as PatternCategory);
-}
-
 function normalizeCategoryKey(category: string) {
   return category.toLowerCase();
 }
@@ -45,12 +35,8 @@ export default async function PatternsPage({
   const requestedCategory = params?.category ?? "";
   const activeCategoryKey = normalizeCategoryKey(requestedCategory);
 
-  const activeCategory = isPatternCategory(activeCategoryKey)
-    ? formatCategoryLabel(activeCategoryKey)
-    : "All";
-
   const filteredPatterns =
-    activeCategory === "All"
+    activeCategoryKey === ""
       ? patterns
       : patterns.filter(
           (pattern) =>
@@ -73,7 +59,7 @@ export default async function PatternsPage({
 
       <CategoryFilter
         categories={availableCategories}
-        activeCategory={activeCategory}
+        activeCategory={activeCategoryKey || "all"}
       />
 
       <p className="results-meta">
