@@ -3,6 +3,54 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const typescript: PatternLanguageExample = {
   language: "typescript",
   title: "Password validation chain",
-  code: "abstract class PasswordRule {\n  protected next: PasswordRule | null = null;\n\n\n  setNext(rule: PasswordRule): PasswordRule {\n    this.next = rule;\n    return rule;\n  }\n\n\n  validate(password: string): string | null {\n    const error = this.check(password);\n    if (error) {\n      return error;\n    }\n\n\n    if (this.next) {\n      return this.next.validate(password);\n    }\n\n\n    return null;\n  }\n\n\n  protected abstract check(password: string): string | null;\n}\n\n\nclass MinLengthRule extends PasswordRule {\n  constructor(private minLength: number) {\n    super();\n  }\n\n\n  protected check(password: string): string | null {\n    return password.length < this.minLength\n      ? `Password must be at least ${this.minLength} characters`\n      : null;\n  }\n}\n\n\nclass HasNumberRule extends PasswordRule {\n  protected check(password: string): string | null {\n    return /[0-9]/.test(password) ? null : \"Password must contain a number\";\n  }\n}\n\n\nclass HasSymbolRule extends PasswordRule {\n  protected check(password: string): string | null {\n    return /[^a-zA-Z0-9]/.test(password) ? null : \"Password must contain a symbol\";\n  }\n}\n\n\nconst rules = new MinLengthRule(8);\nrules.setNext(new HasNumberRule()).setNext(new HasSymbolRule());\n\n\nconsole.log(rules.validate(\"abc\"));\nconsole.log(rules.validate(\"abc123!\"));",
-  explanation: "The password validation chain checks each rule in order and stops when one rule fails, which keeps validation logic modular and easy to extend.",
+  code: `type PasswordRequest = {
+  password: string;
+};
+
+type Handler = {
+  setNext(handler: Handler): Handler;
+  handle(request: PasswordRequest): string | null;
+};
+
+abstract class PasswordValidator implements Handler {
+  protected next: Handler | null = null;
+
+  setNext(handler: Handler) {
+    this.next = handler;
+    return handler;
+  }
+
+  handle(request: PasswordRequest): string | null {
+    if (this.next) return this.next.handle(request);
+    return null;
+  }
+}
+
+class LengthValidator extends PasswordValidator {
+  handle(request: PasswordRequest) {
+    if (request.password.length < 12) return "Password must be at least 12 characters.";
+    return super.handle(request);
+  }
+}
+
+class NumberValidator extends PasswordValidator {
+  handle(request: PasswordRequest) {
+    if (!/[0-9]/.test(request.password)) return "Password must include a number.";
+    return super.handle(request);
+  }
+}
+
+class SpecialCharValidator extends PasswordValidator {
+  handle(request: PasswordRequest) {
+    if (!/[!@#$%^&*]/.test(request.password)) return "Password must include a special character.";
+    return super.handle(request);
+  }
+}
+
+const chain = new LengthValidator();
+chain.setNext(new NumberValidator()).setNext(new SpecialCharValidator());
+
+const result = chain.handle({ password: "example" });`,
+  explanation:
+    "A validation chain keeps each rule isolated so the password can pass through multiple checks in order.",
 };

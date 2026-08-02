@@ -3,6 +3,46 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const typescript: PatternLanguageExample = {
   language: "typescript",
   title: "Approval workflow chain",
-  code: "interface ExpenseRequest {\n  id: string;\n  amount: number;\n  description: string;\n}\n\n\nabstract class ApprovalHandler {\n  protected next: ApprovalHandler | null = null;\n\n\n  setNext(handler: ApprovalHandler): ApprovalHandler {\n    this.next = handler;\n    return handler;\n  }\n\n\n  approve(request: ExpenseRequest): string {\n    const result = this.handle(request);\n    if (result) {\n      return result;\n    }\n\n\n    if (this.next) {\n      return this.next.approve(request);\n    }\n\n\n    return `Expense ${request.id} was not approved`;\n  }\n\n\n  protected abstract handle(request: ExpenseRequest): string | null;\n}\n\n\nclass ManagerApprovalHandler extends ApprovalHandler {\n  protected handle(request: ExpenseRequest): string | null {\n    return request.amount <= 500\n      ? `Manager approved expense ${request.id}: ${request.description}`\n      : null;\n  }\n}\n\n\nclass DirectorApprovalHandler extends ApprovalHandler {\n  protected handle(request: ExpenseRequest): string | null {\n    return request.amount <= 2000\n      ? `Director approved expense ${request.id}: ${request.description}`\n      : null;\n  }\n}\n\n\nclass CEOApprovalHandler extends ApprovalHandler {\n  protected handle(request: ExpenseRequest): string | null {\n    return request.amount <= 10000\n      ? `CEO approved expense ${request.id}: ${request.description}`\n      : null;\n  }\n}\n\n\nconst approvals = new ManagerApprovalHandler();\napprovals.setNext(new DirectorApprovalHandler()).setNext(new CEOApprovalHandler());\n\n\nconsole.log(approvals.approve({ id: \"E-1001\", amount: 150, description: \"Team lunch\" }));\nconsole.log(approvals.approve({ id: \"E-1002\", amount: 1500, description: \"Conference tickets\" }));\nconsole.log(approvals.approve({ id: \"E-1003\", amount: 7000, description: \"New laptops\" }));",
-  explanation: "The approval workflow chain sends expense requests through increasingly senior approvers until one of them can approve the request.",
+  code: `type ApprovalRequest = {
+  amount: number;
+  department: string;
+};
+
+abstract class Approver {
+  protected next: Approver | null = null;
+
+  setNext(handler: Approver) {
+    this.next = handler;
+    return handler;
+  }
+
+  handle(request: ApprovalRequest): string | null {
+    return this.next ? this.next.handle(request) : null;
+  }
+}
+
+class ManagerApproval extends Approver {
+  handle(request: ApprovalRequest) {
+    if (request.amount <= 500) return "Manager approved the request.";
+    return super.handle(request);
+  }
+}
+
+class FinanceApproval extends Approver {
+  handle(request: ApprovalRequest) {
+    if (request.amount <= 5000) return "Finance approved the request.";
+    return super.handle(request);
+  }
+}
+
+class ExecutiveApproval extends Approver {
+  handle(request: ApprovalRequest) {
+    return "Executive approved the request.";
+  }
+}
+
+const chain = new ManagerApproval();
+chain.setNext(new FinanceApproval()).setNext(new ExecutiveApproval());`,
+  explanation:
+    "An approval chain lets each approver either sign off or move the request to the next level.",
 };

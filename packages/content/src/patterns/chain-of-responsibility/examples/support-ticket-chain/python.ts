@@ -3,6 +3,35 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const python: PatternLanguageExample = {
   language: "python",
   title: "Support ticket chain",
-  code: "from abc import ABC, abstractmethod\nfrom dataclasses import dataclass\n\n\n@dataclass\nclass SupportTicket:\n    id: str\n    priority: int\n    description: str\n\n\nclass SupportHandler(ABC):\n    def __init__(self) -> None:\n        self.next: SupportHandler | None = None\n\n\n    def set_next(self, handler: \"SupportHandler\") -> \"SupportHandler\":\n        self.next = handler\n        return handler\n\n\n    def handle(self, ticket: SupportTicket) -> str:\n        response = self.process(ticket)\n        if response:\n            return response\n\n\n        if self.next:\n            return self.next.handle(ticket)\n\n\n        return f\"Ticket {ticket.id} could not be handled\"\n\n\n    @abstractmethod\n    def process(self, ticket: SupportTicket) -> str | None:\n        pass\n\n\nclass Tier1SupportHandler(SupportHandler):\n    def process(self, ticket: SupportTicket) -> str | None:\n        return (\n            f\"Tier 1 resolved ticket {ticket.id}: {ticket.description}\"\n            if ticket.priority <= 1\n            else None\n        )\n\n\nclass Tier2SupportHandler(SupportHandler):\n    def process(self, ticket: SupportTicket) -> str | None:\n        return (\n            f\"Tier 2 resolved ticket {ticket.id}: {ticket.description}\"\n            if ticket.priority == 2\n            else None\n        )\n\n\nclass Tier3SupportHandler(SupportHandler):\n    def process(self, ticket: SupportTicket) -> str | None:\n        return f\"Tier 3 resolved ticket {ticket.id}: {ticket.description}\"\n\n\nchain = Tier1SupportHandler()\nchain.set_next(Tier2SupportHandler()).set_next(Tier3SupportHandler())\n\n\nprint(chain.handle(SupportTicket(\"T-1001\", 1, \"Password reset\")))\nprint(chain.handle(SupportTicket(\"T-1002\", 2, \"Billing issue\")))\nprint(chain.handle(SupportTicket(\"T-1003\", 5, \"System outage\")))",
-  explanation: "The support ticket chain moves each ticket through a sequence of handlers until one tier resolves it.",
+  code: `class TicketHandler:
+    def __init__(self):
+        self._next = None
+
+    def set_next(self, handler):
+        self._next = handler
+        return handler
+
+    def handle(self, ticket):
+        return self._next.handle(ticket) if self._next else None
+
+class TierOneHandler(TicketHandler):
+    def handle(self, ticket):
+        if ticket["priority"] == "low":
+            return "Tier 1 resolves the ticket."
+        return super().handle(ticket)
+
+class TierTwoHandler(TicketHandler):
+    def handle(self, ticket):
+        if ticket["priority"] == "medium":
+            return "Tier 2 resolves the ticket."
+        return super().handle(ticket)
+
+class EscalationHandler(TicketHandler):
+    def handle(self, ticket):
+        return f"Escalated: {ticket['issue']}"
+
+chain = TierOneHandler()
+chain.set_next(TierTwoHandler()).set_next(EscalationHandler())`,
+  explanation:
+    "A support ticket chain lets each tier decide whether to resolve the issue or pass it on.",
 };

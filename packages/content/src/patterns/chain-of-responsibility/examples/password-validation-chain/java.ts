@@ -3,6 +3,51 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "Password validation chain",
-  code: "abstract class PasswordRule {\n    protected PasswordRule next;\n\n\n    public PasswordRule setNext(PasswordRule rule) {\n        this.next = rule;\n        return rule;\n    }\n\n\n    public String validate(String password) {\n        String error = check(password);\n        if (error != null) {\n            return error;\n        }\n\n\n        if (next != null) {\n            return next.validate(password);\n        }\n\n\n        return null;\n    }\n\n\n    protected abstract String check(String password);\n}\n\n\nclass MinLengthRule extends PasswordRule {\n    private final int minLength;\n\n\n    public MinLengthRule(int minLength) {\n        this.minLength = minLength;\n    }\n\n\n    protected String check(String password) {\n        return password.length() < minLength\n            ? \"Password must be at least \" + minLength + \" characters\"\n            : null;\n    }\n}\n\n\nclass HasNumberRule extends PasswordRule {\n    protected String check(String password) {\n        return password.matches(\".*[0-9].*\") ? null : \"Password must contain a number\";\n    }\n}\n\n\nclass HasSymbolRule extends PasswordRule {\n    protected String check(String password) {\n        return password.matches(\".*[^a-zA-Z0-9].*\") ? null : \"Password must contain a symbol\";\n    }\n}\n\n\nPasswordRule rules = new MinLengthRule(8);\nrules.setNext(new HasNumberRule()).setNext(new HasSymbolRule());\n\n\nSystem.out.println(rules.validate(\"abc\"));\nSystem.out.println(rules.validate(\"abc123!\"));",
-  explanation: "The password validation chain lets each rule decide whether to accept the password or pass it to the next validator.",
+  code: `class PasswordRequest {
+    String password;
+    PasswordRequest(String password) { this.password = password; }
+}
+
+abstract class PasswordValidator {
+    private PasswordValidator next;
+
+    public PasswordValidator setNext(PasswordValidator next) {
+        this.next = next;
+        return next;
+    }
+
+    public String handle(PasswordRequest request) {
+        return next == null ? null : next.handle(request);
+    }
+}
+
+class LengthValidator extends PasswordValidator {
+    @Override
+    public String handle(PasswordRequest request) {
+        if (request.password.length() < 12) return "Password must be at least 12 characters.";
+        return super.handle(request);
+    }
+}
+
+class NumberValidator extends PasswordValidator {
+    @Override
+    public String handle(PasswordRequest request) {
+        if (!request.password.matches(".*[0-9].*")) return "Password must include a number.";
+        return super.handle(request);
+    }
+}
+
+class SpecialCharValidator extends PasswordValidator {
+    @Override
+    public String handle(PasswordRequest request) {
+        if (!request.password.matches(".*[!@#$%^&*].*")) return "Password must include a special character.";
+        return super.handle(request);
+    }
+}
+
+PasswordValidator chain = new LengthValidator();
+chain.setNext(new NumberValidator()).setNext(new SpecialCharValidator());
+String result = chain.handle(new PasswordRequest("example"));`,
+  explanation:
+    "A validation chain keeps password rules isolated and easy to extend.",
 };

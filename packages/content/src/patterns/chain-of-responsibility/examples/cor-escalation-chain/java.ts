@@ -2,7 +2,7 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 
 export const java: PatternLanguageExample = {
   language: "java",
-  title: "Support ticket chain",
+  title: "Escalation chain",
   code: `class Ticket {
     String priority;
     String issue;
@@ -12,44 +12,42 @@ export const java: PatternLanguageExample = {
     }
 }
 
-abstract class TicketHandler {
-    private TicketHandler next;
-
-    public TicketHandler setNext(TicketHandler next) {
+abstract class EscalationHandler {
+    private EscalationHandler next;
+    public EscalationHandler setNext(EscalationHandler next) {
         this.next = next;
         return next;
     }
-
     public String handle(Ticket ticket) {
         return next == null ? null : next.handle(ticket);
     }
 }
 
-class TierOneHandler extends TicketHandler {
+class TierOne extends EscalationHandler {
     @Override
     public String handle(Ticket ticket) {
-        if ("low".equals(ticket.priority)) return "Tier 1 resolves the ticket.";
+        if ("low".equals(ticket.priority)) return "Tier 1 resolved.";
         return super.handle(ticket);
     }
 }
 
-class TierTwoHandler extends TicketHandler {
+class TierTwo extends EscalationHandler {
     @Override
     public String handle(Ticket ticket) {
-        if ("medium".equals(ticket.priority)) return "Tier 2 resolves the ticket.";
+        if ("medium".equals(ticket.priority)) return "Tier 2 resolved.";
         return super.handle(ticket);
     }
 }
 
-class EscalationHandler extends TicketHandler {
+class TierThree extends EscalationHandler {
     @Override
     public String handle(Ticket ticket) {
-        return "Escalated: " + ticket.issue;
+        return "Escalated to specialist: " + ticket.issue;
     }
 }
 
-TicketHandler chain = new TierOneHandler();
-chain.setNext(new TierTwoHandler()).setNext(new EscalationHandler());`,
+EscalationHandler chain = new TierOne();
+chain.setNext(new TierTwo()).setNext(new TierThree());`,
   explanation:
-    "A chain is a good fit for support routing because each tier can decide whether to handle or forward the ticket.",
+    "This variant focuses on support escalation where each tier either resolves the issue or forwards it.",
 };

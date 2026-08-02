@@ -4,10 +4,12 @@ export const meta: PatternMeta = {
   slug: "chain-of-responsibility",
   name: "Chain of Responsibility",
   category: "behavioral",
-  summary: "",
-  intent: "Pass requests along a chain of handlers until one of them handles the request or the request reaches the end of the chain.",
+  summary:
+    "Pass a request through a sequence of handlers until one handles it or the chain ends.",
+  intent:
+    "Pass requests along a chain of handlers until one of them handles the request or the request reaches the end of the chain.",
   difficulty: "intermediate",
-  tags: [],
+  tags: ["behavioral", "chain", "handlers", "requests"],
   relatedPatterns: [],
   aliases: [],
   order: 0,
@@ -15,13 +17,13 @@ export const meta: PatternMeta = {
   prerequisites: [],
   bestFor: [],
   languages: [
-  "typescript",
-  "java",
-  "python",
-  "angular",
-  "react",
-  "react-native",
-  "csharp",
-  "dotnet"
-],
+    "typescript",
+    "java",
+    "python",
+    "angular",
+    "react",
+    "react-native",
+    "csharp",
+    "dotnet",
+  ],
 };

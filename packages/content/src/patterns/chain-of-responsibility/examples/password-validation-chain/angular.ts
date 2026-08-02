@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const angular: PatternLanguageExample = {
-  language: "angular",
-  title: "Password validation chain",
-  code: "abstract class PasswordRule {\n  protected next: PasswordRule | null = null;\n\n\n  setNext(rule: PasswordRule): PasswordRule {\n    this.next = rule;\n    return rule;\n  }\n\n\n  validate(password: string): string | null {\n    const error = this.check(password);\n    if (error) {\n      return error;\n    }\n\n\n    if (this.next) {\n      return this.next.validate(password);\n    }\n\n\n    return null;\n  }\n\n\n  protected abstract check(password: string): string | null;\n}\n\n\nclass MinLengthRule extends PasswordRule {\n  constructor(private minLength: number) {\n    super();\n  }\n\n\n  protected check(password: string): string | null {\n    return password.length < this.minLength\n      ? `Password must be at least ${this.minLength} characters`\n      : null;\n  }\n}\n\n\nclass HasNumberRule extends PasswordRule {\n  protected check(password: string): string | null {\n    return /[0-9]/.test(password) ? null : \"Password must contain a number\";\n  }\n}\n\n\nclass HasSymbolRule extends PasswordRule {\n  protected check(password: string): string | null {\n    return /[^a-zA-Z0-9]/.test(password) ? null : \"Password must contain a symbol\";\n  }\n}\n\n\nconst rules = new MinLengthRule(8);\nrules.setNext(new HasNumberRule()).setNext(new HasSymbolRule());\n\n\nconsole.log(rules.validate(\"abc\"));\nconsole.log(rules.validate(\"abc123!\"));",
-  explanation: "The Angular example keeps password rules separate and chains them together so validation logic remains flexible.",
-};

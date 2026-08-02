@@ -3,6 +3,35 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const python: PatternLanguageExample = {
   language: "python",
   title: "Approval workflow chain",
-  code: "from abc import ABC, abstractmethod\nfrom dataclasses import dataclass\n\n\n@dataclass\nclass ExpenseRequest:\n    id: str\n    amount: float\n    description: str\n\n\nclass ApprovalHandler(ABC):\n    def __init__(self) -> None:\n        self.next: ApprovalHandler | None = None\n\n\n    def set_next(self, handler: \"ApprovalHandler\") -> \"ApprovalHandler\":\n        self.next = handler\n        return handler\n\n\n    def approve(self, request: ExpenseRequest) -> str:\n        result = self.handle(request)\n        if result:\n            return result\n\n\n        if self.next:\n            return self.next.approve(request)\n\n\n        return f\"Expense {request.id} was not approved\"\n\n\n    @abstractmethod\n    def handle(self, request: ExpenseRequest) -> str | None:\n        pass\n\n\nclass ManagerApprovalHandler(ApprovalHandler):\n    def handle(self, request: ExpenseRequest) -> str | None:\n        return (\n            f\"Manager approved expense {request.id}: {request.description}\"\n            if request.amount <= 500\n            else None\n        )\n\n\nclass DirectorApprovalHandler(ApprovalHandler):\n    def handle(self, request: ExpenseRequest) -> str | None:\n        return (\n            f\"Director approved expense {request.id}: {request.description}\"\n            if request.amount <= 2000\n            else None\n        )\n\n\nclass CEOApprovalHandler(ApprovalHandler):\n    def handle(self, request: ExpenseRequest) -> str | None:\n        return (\n            f\"CEO approved expense {request.id}: {request.description}\"\n            if request.amount <= 10000\n            else None\n        )\n\n\napprovals = ManagerApprovalHandler()\napprovals.set_next(DirectorApprovalHandler()).set_next(CEOApprovalHandler())\n\n\nprint(approvals.approve(ExpenseRequest(\"E-1001\", 150, \"Team lunch\")))\nprint(approvals.approve(ExpenseRequest(\"E-1002\", 1500, \"Conference tickets\")))\nprint(approvals.approve(ExpenseRequest(\"E-1003\", 7000, \"New laptops\")))",
-  explanation: "The approval workflow chain lets each approver decide whether the expense fits their limit or should be escalated upward.",
+  code: `class Approver:
+    def __init__(self):
+        self._next = None
+
+    def set_next(self, handler):
+        self._next = handler
+        return handler
+
+    def handle(self, request):
+        return self._next.handle(request) if self._next else None
+
+class ManagerApproval(Approver):
+    def handle(self, request):
+        if request["amount"] <= 500:
+            return "Manager approved the request."
+        return super().handle(request)
+
+class FinanceApproval(Approver):
+    def handle(self, request):
+        if request["amount"] <= 5000:
+            return "Finance approved the request."
+        return super().handle(request)
+
+class ExecutiveApproval(Approver):
+    def handle(self, request):
+        return "Executive approved the request."
+
+chain = ManagerApproval()
+chain.set_next(FinanceApproval()).set_next(ExecutiveApproval())`,
+  explanation:
+    "An approval chain keeps each approval tier focused on its own policy threshold.",
 };

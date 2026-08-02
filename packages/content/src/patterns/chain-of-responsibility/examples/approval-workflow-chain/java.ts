@@ -3,6 +3,53 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "Approval workflow chain",
-  code: "interface ApprovalHandler {\n    ApprovalHandler setNext(ApprovalHandler handler);\n    String approve(ExpenseRequest request);\n}\n\n\nclass ExpenseRequest {\n    public final String id;\n    public final double amount;\n    public final String description;\n\n\n    public ExpenseRequest(String id, double amount, String description) {\n        this.id = id;\n        this.amount = amount;\n        this.description = description;\n    }\n}\n\n\nabstract class BaseApprovalHandler implements ApprovalHandler {\n    protected ApprovalHandler next;\n\n\n    public ApprovalHandler setNext(ApprovalHandler handler) {\n        this.next = handler;\n        return handler;\n    }\n\n\n    public String approve(ExpenseRequest request) {\n        String result = handle(request);\n        if (result != null) {\n            return result;\n        }\n\n\n        if (next != null) {\n            return next.approve(request);\n        }\n\n\n        return \"Expense \" + request.id + \" was not approved\";\n    }\n\n\n    protected abstract String handle(ExpenseRequest request);\n}\n\n\nclass ManagerApprovalHandler extends BaseApprovalHandler {\n    protected String handle(ExpenseRequest request) {\n        return request.amount <= 500\n            ? \"Manager approved expense \" + request.id + \": \" + request.description\n            : null;\n    }\n}\n\n\nclass DirectorApprovalHandler extends BaseApprovalHandler {\n    protected String handle(ExpenseRequest request) {\n        return request.amount <= 2000\n            ? \"Director approved expense \" + request.id + \": \" + request.description\n            : null;\n    }\n}\n\n\nclass CEOApprovalHandler extends BaseApprovalHandler {\n    protected String handle(ExpenseRequest request) {\n        return request.amount <= 10000\n            ? \"CEO approved expense \" + request.id + \": \" + request.description\n            : null;\n    }\n}\n\n\nApprovalHandler approvals = new ManagerApprovalHandler();\napprovals.setNext(new DirectorApprovalHandler()).setNext(new CEOApprovalHandler());\n\n\nSystem.out.println(approvals.approve(new ExpenseRequest(\"E-1001\", 150, \"Team lunch\")));\nSystem.out.println(approvals.approve(new ExpenseRequest(\"E-1002\", 1500, \"Conference tickets\")));\nSystem.out.println(approvals.approve(new ExpenseRequest(\"E-1003\", 7000, \"New laptops\")));",
-  explanation: "The approval workflow chain keeps approval limits isolated by role while letting requests move forward until the right approver handles them.",
+  code: `class ApprovalRequest {
+    double amount;
+    String department;
+    ApprovalRequest(double amount, String department) {
+        this.amount = amount;
+        this.department = department;
+    }
+}
+
+abstract class Approver {
+    private Approver next;
+
+    public Approver setNext(Approver next) {
+        this.next = next;
+        return next;
+    }
+
+    public String handle(ApprovalRequest request) {
+        return next == null ? null : next.handle(request);
+    }
+}
+
+class ManagerApproval extends Approver {
+    @Override
+    public String handle(ApprovalRequest request) {
+        if (request.amount <= 500) return "Manager approved the request.";
+        return super.handle(request);
+    }
+}
+
+class FinanceApproval extends Approver {
+    @Override
+    public String handle(ApprovalRequest request) {
+        if (request.amount <= 5000) return "Finance approved the request.";
+        return super.handle(request);
+    }
+}
+
+class ExecutiveApproval extends Approver {
+    @Override
+    public String handle(ApprovalRequest request) {
+        return "Executive approved the request.";
+    }
+}
+
+Approver chain = new ManagerApproval();
+chain.setNext(new FinanceApproval()).setNext(new ExecutiveApproval());`,
+  explanation:
+    "A chain is useful for approvals because each level can approve, reject, or pass the request onward.",
 };

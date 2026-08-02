@@ -3,6 +3,40 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const python: PatternLanguageExample = {
   language: "python",
   title: "Password validation chain",
-  code: "from abc import ABC, abstractmethod\n\n\nclass PasswordRule(ABC):\n    def __init__(self) -> None:\n        self.next: PasswordRule | None = None\n\n\n    def set_next(self, rule: \"PasswordRule\") -> \"PasswordRule\":\n        self.next = rule\n        return rule\n\n\n    def validate(self, password: str) -> str | None:\n        error = self.check(password)\n        if error:\n            return error\n\n\n        if self.next:\n            return self.next.validate(password)\n\n\n        return None\n\n\n    @abstractmethod\n    def check(self, password: str) -> str | None:\n        pass\n\n\nclass MinLengthRule(PasswordRule):\n    def __init__(self, min_length: int) -> None:\n        super().__init__()\n        self.min_length = min_length\n\n\n    def check(self, password: str) -> str | None:\n        if len(password) < self.min_length:\n            return f\"Password must be at least {self.min_length} characters\"\n        return None\n\n\nclass HasNumberRule(PasswordRule):\n    def check(self, password: str) -> str | None:\n        return None if any(char.isdigit() for char in password) else \"Password must contain a number\"\n\n\nclass HasSymbolRule(PasswordRule):\n    def check(self, password: str) -> str | None:\n        return None if any(not char.isalnum() for char in password) else \"Password must contain a symbol\"\n\n\nrules = MinLengthRule(8)\nrules.set_next(HasNumberRule()).set_next(HasSymbolRule())\n\n\nprint(rules.validate(\"abc\"))\nprint(rules.validate(\"abc123!\"))",
-  explanation: "The password validation chain lets each rule validate independently, then passes the password along only if the current rule succeeds.",
+  code: `class PasswordValidator:
+    def __init__(self):
+        self._next = None
+
+    def set_next(self, handler):
+        self._next = handler
+        return handler
+
+    def handle(self, password):
+        if self._next:
+            return self._next.handle(password)
+        return None
+
+class LengthValidator(PasswordValidator):
+    def handle(self, password):
+        if len(password) < 12:
+            return "Password must be at least 12 characters."
+        return super().handle(password)
+
+class NumberValidator(PasswordValidator):
+    def handle(self, password):
+        if not any(ch.isdigit() for ch in password):
+            return "Password must include a number."
+        return super().handle(password)
+
+class SpecialCharValidator(PasswordValidator):
+    def handle(self, password):
+        if not any(ch in "!@#$%^&*" for ch in password):
+            return "Password must include a special character."
+        return super().handle(password)
+
+chain = LengthValidator()
+chain.set_next(NumberValidator()).set_next(SpecialCharValidator())
+result = chain.handle("example")`,
+  explanation:
+    "A chain lets each password rule check the input independently before passing it along.",
 };
