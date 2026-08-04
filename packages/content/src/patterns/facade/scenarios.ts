@@ -25,7 +25,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Directly calling each media step makes the client code hard to read and maintain.",
     solution:
       "Use Facade to hide the internal pipeline behind one conversion API.",
-    stackArea: "backend",
+    stackArea: "integration",
   },
   {
     slug: "home-theater-startup",
@@ -64,7 +64,7 @@ export const scenarios: readonly PatternScenario[] = [
       "Report logic becomes tangled when each caller assembles the pipeline differently.",
     solution:
       "Use Facade to centralize report creation behind a smaller API.",
-    stackArea: "backend",
+    stackArea: "integration",
   },
   {
     slug: "device-setup",

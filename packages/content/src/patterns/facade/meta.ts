@@ -9,7 +9,7 @@ export const meta: PatternMeta = {
   intent:
     "Provide a simplified high-level interface that coordinates a complex subsystem behind a smaller and easier-to-use API.",
   difficulty: "intermediate",
-  tags: ["structural", "api", "coordination", "subsystem"],
+  tags: ["structural", "api", "coordination", "subsystem", "integration", "frontend"],
   relatedPatterns: [],
   aliases: [],
   order: 0,
