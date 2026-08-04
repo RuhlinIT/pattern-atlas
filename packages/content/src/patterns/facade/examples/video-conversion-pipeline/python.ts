@@ -3,6 +3,31 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const python: PatternLanguageExample = {
   language: "python",
   title: "Video conversion pipeline",
-  code: "class VideoReader:\n                        def read(self, file_name: str) -> None:\n                            print(f\"Reading {file_name}\")\n\n                    class VideoDecoder:\n                        def decode(self) -> None:\n                            print(\"Decoding video stream\")\n\n                    class VideoEncoder:\n                        def encode(self, format: str) -> None:\n                            print(f\"Encoding to {format}\")\n\n                    class VideoWriter:\n                        def write(self, output_file: str) -> None:\n                            print(f\"Writing output to {output_file}\")\n\n                    class VideoConversionFacade:\n                        def __init__(self) -> None:\n                            self.reader = VideoReader()\n                            self.decoder = VideoDecoder()\n                            self.encoder = VideoEncoder()\n                            self.writer = VideoWriter()\n\n                        def convert(self, input_file: str, output_file: str, format: str) -> None:\n                            self.reader.read(input_file)\n                            self.decoder.decode()\n                            self.encoder.encode(format)\n                            self.writer.write(output_file)\n\n                    converter = VideoConversionFacade()\n                    converter.convert(\"demo.mov\", \"demo.mp4\", \"mp4\")",
-  explanation: "The facade provides a single conversion call while keeping the pipeline steps inside the subsystem boundary.",
+  code: `class Decoder:
+    def decode(self, file):
+        return f"decoded:{file}"
+
+class Transcoder:
+    def transcode(self, data):
+        return f"transcoded:{data}"
+
+class Packager:
+    def package_video(self, data):
+        return f"packaged:{data}"
+
+class VideoFacade:
+    def __init__(self, decoder, transcoder, packager):
+        self.decoder = decoder
+        self.transcoder = transcoder
+        self.packager = packager
+
+    def convert(self, file):
+        decoded = self.decoder.decode(file)
+        transcoded = self.transcoder.transcode(decoded)
+        return self.packager.package_video(transcoded)
+
+facade = VideoFacade(Decoder(), Transcoder(), Packager())
+facade.convert("movie.mov")`,
+  explanation:
+    "Hide decode, transcode, and packaging behind one conversion call.",
 };

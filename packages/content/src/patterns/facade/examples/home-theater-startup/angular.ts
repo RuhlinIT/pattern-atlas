@@ -3,6 +3,79 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const angular: PatternLanguageExample = {
   language: "angular",
   title: "Home theater startup",
-  code: "import { Injectable } from '@angular/core';\n\n\n                    @Injectable({ providedIn: 'root' })\n                    class Lights {\n                        dim(): void {\n                            console.log(\"Dimming lights\");\n                        }\n                    }\n\n\n                    @Injectable({ providedIn: 'root' })\n                    class Projector {\n                        on(): void {\n                            console.log(\"Turning on projector\");\n                        }\n\n\n                        setInput(source: string): void {\n                            console.log(`Projector input set to ${source}`);\n                        }\n                    }\n\n\n                    @Injectable({ providedIn: 'root' })\n                    class SoundSystem {\n                        on(): void {\n                            console.log(\"Turning on sound system\");\n                        }\n\n\n                        setVolume(level: number): void {\n                            console.log(`Setting volume to ${level}`);\n                        }\n                    }\n\n\n                    @Injectable({ providedIn: 'root' })\n                    class StreamingPlayer {\n                        on(): void {\n                            console.log(\"Turning on streaming player\");\n                        }\n\n\n                        play(movie: string): void {\n                            console.log(`Playing ${movie}`);\n                        }\n                    }\n\n\n                    @Injectable({ providedIn: 'root' })\n                    class HomeTheaterFacade {\n                        constructor(\n                            private lights: Lights,\n                            private projector: Projector,\n                            private sound: SoundSystem,\n                            private player: StreamingPlayer,\n                        ) {}\n\n\n                        watchMovie(movie: string): void {\n                            this.lights.dim();\n                            this.projector.on();\n                            this.projector.setInput(\"HDMI 1\");\n                            this.sound.on();\n                            this.sound.setVolume(10);\n                            this.player.on();\n                            this.player.play(movie);\n                        }\n                    }",
-  explanation: "The Angular facade service exposes one movie-startup API while dependency injection supplies the underlying device services it coordinates.",
+  code: `import { Component, Input } from "@angular/core";
+
+@Component({
+  selector: "app-theater-control",
+  template: '<button (click)="onWatchMovie()">Watch movie</button>',
+})
+export class TheaterControlComponent {
+  @Input() onWatchMovie = () => {};
+}
+
+@Component({
+  selector: "app-theater-status",
+  template: '<div>{{ ready ? "Ready to watch" : "Preparing theater..." }}</div>',
+})
+export class TheaterStatusComponent {
+  @Input() ready = false;
+}
+
+class Lights {
+  dim() {
+    return "dimmed";
+  }
+}
+
+class Projector {
+  on() {
+    return "projector on";
+  }
+}
+
+class Amplifier {
+  on() {
+    return "amplifier on";
+  }
+}
+
+class HomeTheaterFacade {
+  constructor(
+    private lights: Lights,
+    private projector: Projector,
+    private amp: Amplifier,
+  ) {}
+
+  watchMovie() {
+    const steps = [
+      this.lights.dim(),
+      this.projector.on(),
+      this.amp.on(),
+    ];
+    return steps;
+  }
+}
+
+@Component({
+  selector: "app-home-theater-panel",
+  template: \`
+    <app-theater-control [onWatchMovie]="handleWatchMovie"></app-theater-control>
+    <app-theater-status [ready]="true"></app-theater-status>
+  \`,
+})
+export class HomeTheaterPanelComponent {
+  private facade = new HomeTheaterFacade(
+    new Lights(),
+    new Projector(),
+    new Amplifier(),
+  );
+
+  handleWatchMovie = () => {
+    const steps = this.facade.watchMovie();
+    console.log(steps);
+  };
+}
+`,
+  explanation:
+    "Simplify a multi-device startup sequence behind one movie-starting method.",
 };

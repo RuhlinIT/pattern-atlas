@@ -3,6 +3,76 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const react: PatternLanguageExample = {
   language: "react",
   title: "Home theater startup",
-  code: "import React, { useMemo } from \"react\";\n\nclass Lights {\n  dim(): void {\n    console.log(\"Dimming lights\");\n  }\n}\n\nclass Projector {\n  on(): void {\n    console.log(\"Turning on projector\");\n  }\n\n  setInput(source: string): void {\n    console.log(`Projector input set to ${source}`);\n  }\n}\n\nclass SoundSystem {\n  on(): void {\n    console.log(\"Turning on sound system\");\n  }\n\n  setVolume(level: number): void {\n    console.log(`Setting volume to ${level}`);\n  }\n}\n\nclass StreamingPlayer {\n  on(): void {\n    console.log(\"Turning on streaming player\");\n  }\n\n  play(movie: string): void {\n    console.log(`Playing ${movie}`);\n  }\n}\n\nclass HomeTheaterFacade {\n  constructor(\n    private lights = new Lights(),\n    private projector = new Projector(),\n    private sound = new SoundSystem(),\n    private player = new StreamingPlayer(),\n  ) {}\n\n  watchMovie(movie: string): void {\n    this.lights.dim();\n    this.projector.on();\n    this.projector.setInput(\"HDMI 1\");\n    this.sound.on();\n    this.sound.setVolume(10);\n    this.player.on();\n    this.player.play(movie);\n  }\n}\n\nfunction TheaterButton({ theater }: { theater: HomeTheaterFacade }) {\n  return <button onClick={() => theater.watchMovie(\"Inception\")}>Watch movie</button>;\n}\n\nexport function App() {\n  const theater = useMemo(() => new HomeTheaterFacade(), []);\n\n  return (\n    <main>\n      <h1>Home Theater</h1>\n      <TheaterButton theater={theater} />\n    </main>\n  );\n}",
-  explanation: "The React example exposes a single watchMovie action to the UI while the facade coordinates the ordered startup steps for all devices behind the scenes.",
+  code: `type TheaterControlProps = {
+  onWatchMovie: () => void;
+};
+
+export function TheaterControl({ onWatchMovie }: TheaterControlProps) {
+  return <button onClick={onWatchMovie}>Watch movie</button>;
+}
+
+type StatusProps = {
+  ready: boolean;
+};
+
+export function TheaterStatus({ ready }: StatusProps) {
+  return <div>{ready ? "Ready to watch" : "Preparing theater..."}</div>;
+}
+
+class Lights {
+  dim() {
+    return "dimmed";
+  }
+}
+
+class Projector {
+  on() {
+    return "projector on";
+  }
+}
+
+class Amplifier {
+  on() {
+    return "amplifier on";
+  }
+}
+
+class HomeTheaterFacade {
+  constructor(
+    private lights: Lights,
+    private projector: Projector,
+    private amp: Amplifier,
+  ) {}
+
+  watchMovie() {
+    const steps = [
+      this.lights.dim(),
+      this.projector.on(),
+      this.amp.on(),
+    ];
+    return steps;
+  }
+}
+
+export function HomeTheaterPanel() {
+  const facade = new HomeTheaterFacade(
+    new Lights(),
+    new Projector(),
+    new Amplifier(),
+  );
+
+  const handleWatchMovie = () => {
+    const steps = facade.watchMovie();
+    console.log(steps);
+  };
+
+  return (
+    <section>
+      <TheaterControl onWatchMovie={handleWatchMovie} />
+      <TheaterStatus ready={true} />
+    </section>
+  );
+}`,
+  explanation:
+    "Simplify a multi-device startup sequence behind one movie-starting method.",
 };

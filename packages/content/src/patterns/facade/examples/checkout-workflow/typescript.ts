@@ -1,8 +1,77 @@
 import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 
+class AuthService {
+  validate(userId: string) {
+    return userId.length > 0;
+  }
+}
+
+class InventoryService {
+  reserve(items: string[]) {
+    return items.length > 0;
+  }
+}
+
+class PaymentService {
+  charge(amount: number) {
+    return amount > 0;
+  }
+}
+
+class CheckoutFacade {
+  constructor(
+    private auth: AuthService,
+    private inventory: InventoryService,
+    private payment: PaymentService,
+  ) {}
+
+  placeOrder(userId: string, items: string[], amount: number) {
+    if (!this.auth.validate(userId)) return false;
+    if (!this.inventory.reserve(items)) return false;
+    return this.payment.charge(amount);
+  }
+}
+
 export const typescript: PatternLanguageExample = {
   language: "typescript",
   title: "Checkout workflow",
-  code: "class AuthService {\n                    authenticate(userId: string): boolean {\n                        console.log(`Authenticating ${userId}`);\n                        return true;\n                    }\n                }\n\n                class PaymentService {\n                    charge(userId: string, amount: number): void {\n                        console.log(`Charging ${userId} $${amount}`);\n                    }\n                }\n\n                class InventoryService {\n                    reserve(itemId: string): void {\n                        console.log(`Reserving item ${itemId}`);\n                    }\n                }\n\n                class NotificationService {\n                    sendConfirmation(userId: string): void {\n                        console.log(`Sending confirmation to ${userId}`);\n                    }\n                }\n\n                class CheckoutFacade {\n                    constructor(\n                        private auth = new AuthService(),\n                        private payment = new PaymentService(),\n                        private inventory = new InventoryService(),\n                        private notifications = new NotificationService(),\n                    ) {}\n\n                    placeOrder(userId: string, itemId: string, amount: number): void {\n                        if (!this.auth.authenticate(userId)) {\n                            throw new Error(\"Authentication failed\");\n                        }\n\n                        this.inventory.reserve(itemId);\n                        this.payment.charge(userId, amount);\n                        this.notifications.sendConfirmation(userId);\n                    }\n                }\n\n                const checkout = new CheckoutFacade();\n                checkout.placeOrder(\"user-42\", \"book-7\", 39.99);",
-  explanation: "The client calls one facade method, while the facade coordinates authentication, reservation, payment, and confirmation in the correct order.",
+  code: `class AuthService {
+  validate(userId: string) {
+    return userId.length > 0;
+  }
+}
+
+class InventoryService {
+  reserve(items: string[]) {
+    return items.length > 0;
+  }
+}
+
+class PaymentService {
+  charge(amount: number) {
+    return amount > 0;
+  }
+}
+
+class CheckoutFacade {
+  constructor(
+    private auth: AuthService,
+    private inventory: InventoryService,
+    private payment: PaymentService,
+  ) {}
+
+  placeOrder(userId: string, items: string[], amount: number) {
+    if (!this.auth.validate(userId)) return false;
+    if (!this.inventory.reserve(items)) return false;
+    return this.payment.charge(amount);
+  }
+}
+
+const facade = new CheckoutFacade(
+  new AuthService(),
+  new InventoryService(),
+  new PaymentService(),
+);
+facade.placeOrder("user-1", ["item-a"], 100);`,
+  explanation: "Expose one checkout method that coordinates authentication, inventory, and payment steps.",
 };

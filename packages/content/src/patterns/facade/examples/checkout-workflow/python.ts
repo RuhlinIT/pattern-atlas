@@ -3,6 +3,45 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const python: PatternLanguageExample = {
   language: "python",
   title: "Checkout workflow",
-  code: "class AuthService:\n                    def authenticate(self, user_id: str) -> bool:\n                        print(f\"Authenticating {user_id}\")\n                        return True\n\n                class PaymentService:\n                    def charge(self, user_id: str, amount: float) -> None:\n                        print(f\"Charging {user_id} ${amount}\")\n                class InventoryService:\n                    def reserve(self, item_id: str) -> None:\n                        print(f\"Reserving item {item_id}\")\n\n                class NotificationService:\n                    def send_confirmation(self, user_id: str) -> None:\n                        print(f\"Sending confirmation to {user_id}\")\n\n                class CheckoutFacade:\n                    def __init__(self) -> None:\n                        self.auth = AuthService()\n                        self.payment = PaymentService()\n                        self.inventory = InventoryService()\n                        self.notifications = NotificationService()\n\n                    def place_order(self, user_id: str, item_id: str, amount: float) -> None:\n                        if not self.auth.authenticate(user_id):\n                            raise ValueError(\"Authentication failed\")\n\n                        self.inventory.reserve(item_id)\n                        self.payment.charge(user_id, amount)\n                        self.notifications.send_confirmation(user_id)\n\n                checkout = CheckoutFacade()\n                checkout.place_order(\"user-42\", \"book-7\", 39.99)",
-  explanation: "The checkout facade gives callers one entrypoint while internally coordinating the subsystem calls needed to complete the order.",
+  code: `class AuthService:
+    def validate(self, user_id):
+        return user_id is not None and user_id != ""
+
+class InventoryService:
+    def reserve_items(self, items):
+        return items is not None and len(items) > 0
+
+class PaymentService:
+    def charge(self, amount):
+        return amount > 0
+
+class NotificationService:
+    def send_receipt(self, user_id):
+        return user_id is not None and user_id != ""
+
+class CheckoutFacade:
+    def __init__(self, auth_service, inventory_service, payment_service, notification_service):
+        self.auth_service = auth_service
+        self.inventory_service = inventory_service
+        self.payment_service = payment_service
+        self.notification_service = notification_service
+
+    def place_order(self, user_id, items, amount):
+        if not self.auth_service.validate(user_id):
+            return False
+        if not self.inventory_service.reserve_items(items):
+            return False
+        if not self.payment_service.charge(amount):
+            return False
+        return self.notification_service.send_receipt(user_id)
+
+facade = CheckoutFacade(
+    AuthService(),
+    InventoryService(),
+    PaymentService(),
+    NotificationService(),
+)
+facade.place_order("user-1", ["item-a", "item-b"], 100)`,
+  explanation:
+    "Expose one checkout method that coordinates authentication, inventory, payment, and notification steps.",
 };

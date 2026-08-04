@@ -3,6 +3,44 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "Video conversion pipeline",
-  code: "class VideoReader {\n                        public void read(String fileName) {\n                            System.out.println(\"Reading \" + fileName);\n                        }\n                    }\n\n                    class VideoDecoder {\n                        public void decode() {\n                            System.out.println(\"Decoding video stream\");\n                        }\n                    }\n\n                    class VideoEncoder {\n                        public void encode(String format) {\n                            System.out.println(\"Encoding to \" + format);\n                        }\n                    }\n\n                    class VideoWriter {\n                        public void write(String outputFile) {\n                            System.out.println(\"Writing output to \" + outputFile);\n                        }\n                    }\n\n                    class VideoConversionFacade {\n                        private final VideoReader reader = new VideoReader();\n                        private final VideoDecoder decoder = new VideoDecoder();\n                        private final VideoEncoder encoder = new VideoEncoder();\n                        private final VideoWriter writer = new VideoWriter();\n\n                        public void convert(String inputFile, String outputFile, String format) {\n                            reader.read(inputFile);\n                            decoder.decode();\n                            encoder.encode(format);\n                            writer.write(outputFile);\n                        }\n                    }\n\n                    VideoConversionFacade converter = new VideoConversionFacade();\n                    converter.convert(\"demo.mov\", \"demo.mp4\", \"mp4\");",
-  explanation: "The facade shields the client from the underlying video subsystem and exposes a smaller, task-oriented interface.",
+  code: `class Decoder {
+    String decode(String file) {
+        return "decoded:" + file;
+    }
+}
+
+class Transcoder {
+    String transcode(String data) {
+        return "transcoded:" + data;
+    }
+}
+
+class Packager {
+    String packageVideo(String data) {
+        return "packaged:" + data;
+    }
+}
+
+class VideoFacade {
+    private final Decoder decoder;
+    private final Transcoder transcoder;
+    private final Packager packager;
+
+    VideoFacade(Decoder decoder, Transcoder transcoder, Packager packager) {
+        this.decoder = decoder;
+        this.transcoder = transcoder;
+        this.packager = packager;
+    }
+
+    String convert(String file) {
+        String decoded = decoder.decode(file);
+        String transcoded = transcoder.transcode(decoded);
+        return packager.packageVideo(transcoded);
+    }
+}
+
+VideoFacade facade = new VideoFacade(new Decoder(), new Transcoder(), new Packager());
+facade.convert("movie.mov");`,
+  explanation:
+    "Hide decode, transcode, and packaging behind one conversion call.",
 };
