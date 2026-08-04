@@ -1,8 +1,58 @@
 import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 
+interface Storage {
+  write(name: string, data: string): void;
+}
+
+class FileStorage implements Storage {
+  write(name: string, data: string) {
+    console.log(`store ${name}: ${data}`);
+  }
+}
+
+class CompressionStorage implements Storage {
+  constructor(private wrapped: Storage) {}
+  write(name: string, data: string) {
+    this.wrapped.write(name, `[compressed] ${data}`);
+  }
+}
+
+class EncryptionStorage implements Storage {
+  constructor(private wrapped: Storage) {}
+  write(name: string, data: string) {
+    this.wrapped.write(name, `[encrypted] ${data}`);
+  }
+}
+
 export const typescript: PatternLanguageExample = {
   language: "typescript",
   title: "File storage",
-  code: "interface DataSource {\n  writeData(data: string): void;\n}\n\nclass FileDataSource implements DataSource {\n  writeData(data: string): void {\n    console.log(`Writing file: ${data}`);\n  }\n}\n\nabstract class DataSourceDecorator implements DataSource {\n  constructor(protected wrappee: DataSource) {}\n\n  writeData(data: string): void {\n    this.wrappee.writeData(data);\n  }\n}\n\nclass CompressionDecorator extends DataSourceDecorator {\n  writeData(data: string): void {\n    const compressed = `compressed(${data})`;\n    super.writeData(compressed);\n  }\n}\n\nclass EncryptionDecorator extends DataSourceDecorator {\n  writeData(data: string): void {\n    const encrypted = `encrypted(${data})`;\n    super.writeData(encrypted);\n  }\n}\n\nconst source = new EncryptionDecorator(\n  new CompressionDecorator(new FileDataSource()),\n);\n\nsource.writeData(\"Quarterly report\");",
-  explanation: "Compression and encryption are layered independently around the file writer, so storage behavior is extended without altering the base class.",
+  code: `interface Storage {
+  write(name: string, data: string): void;
+}
+
+class FileStorage implements Storage {
+  write(name: string, data: string) {
+    console.log(\`store \${name}: \${data}\`);
+  }
+}
+
+class CompressionStorage implements Storage {
+  constructor(private wrapped: Storage) {}
+  write(name: string, data: string) {
+    this.wrapped.write(name, \`[compressed] \${data}\`);
+  }
+}
+
+class EncryptionStorage implements Storage {
+  constructor(private wrapped: Storage) {}
+  write(name: string, data: string) {
+    this.wrapped.write(name, \`[encrypted] \${data}\`);
+  }
+}
+
+const storage = new CompressionStorage(new EncryptionStorage(new FileStorage()));
+storage.write("a.txt", "hello world");`,
+  explanation:
+    "Layer compression and encryption around storage before the base write operation runs.",
 };

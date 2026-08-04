@@ -4,10 +4,12 @@ export const meta: PatternMeta = {
   slug: "decorator",
   name: "Decorator",
   category: "structural",
-  summary: "",
-  intent: "Wrap an object with other objects that implement the same contract so responsibilities can be layered dynamically.",
+  summary:
+    "Wrap an object with other objects that implement the same contract so responsibilities can be layered dynamically.",
+  intent:
+    "Wrap an object with other objects that implement the same contract so responsibilities can be layered dynamically.",
   difficulty: "intermediate",
-  tags: [],
+  tags: ["structural", "wrapping", "composition", "layering"],
   relatedPatterns: [],
   aliases: [],
   order: 0,
@@ -15,13 +17,13 @@ export const meta: PatternMeta = {
   prerequisites: [],
   bestFor: [],
   languages: [
-  "typescript",
-  "java",
-  "python",
-  "angular",
-  "react",
-  "react-native",
-  "csharp",
-  "dotnet"
-],
+    "typescript",
+    "java",
+    "python",
+    "angular",
+    "react",
+    "react-native",
+    "csharp",
+    "dotnet",
+  ],
 };

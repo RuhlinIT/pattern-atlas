@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const react: PatternLanguageExample = {
-  language: "react",
-  title: "File storage",
-  code: "import React, { useMemo } from \"react\";\n\ninterface DataSource {\n  writeData(data: string): void;\n}\n\nclass FileDataSource implements DataSource {\n  writeData(data: string): void {\n    console.log(`Writing file: ${data}`);\n  }\n}\n\nabstract class DataSourceDecorator implements DataSource {\n  constructor(protected wrappee: DataSource) {}\n\n  writeData(data: string): void {\n    this.wrappee.writeData(data);\n  }\n}\n\nclass CompressionDecorator extends DataSourceDecorator {\n  writeData(data: string): void {\n    const compressed = `compressed(${data})`;\n    super.writeData(compressed);\n  }\n}\n\nclass EncryptionDecorator extends DataSourceDecorator {\n  writeData(data: string): void {\n    const encrypted = `encrypted(${data})`;\n    super.writeData(encrypted);\n  }\n}\n\nfunction StoragePanel({ source }: { source: DataSource }) {\n  return (\n    <button onClick={() => source.writeData(\"Quarterly report\")}>\n      Save report\n    </button>\n  );\n}\n\nexport function App() {\n  const source = useMemo(\n    () => new EncryptionDecorator(new CompressionDecorator(new FileDataSource())),\n    []\n  );\n\n  return (\n    <main>\n      <h1>File Storage</h1>\n      <StoragePanel source={source} />\n    </main>\n  );\n}",
-  explanation: "The React example layers compression and encryption around the file writer, so the UI can save data without knowing how the storage pipeline is composed.",
-};

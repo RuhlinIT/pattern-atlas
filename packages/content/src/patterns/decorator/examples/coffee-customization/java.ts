@@ -3,6 +3,15 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "Coffee customization",
-  code: "interface Coffee {\n    String getDescription();\n    int getCost();\n}\n\nclass SimpleCoffee implements Coffee {\n    public String getDescription() {\n        return \"Simple coffee\";\n    }\n\n    public int getCost() {\n        return 3;\n    }\n}\n\nabstract class CoffeeDecorator implements Coffee {\n    protected final Coffee coffee;\n\n    public CoffeeDecorator(Coffee coffee) {\n        this.coffee = coffee;\n    }\n\n    public String getDescription() {\n        return coffee.getDescription();\n    }\n\n    public int getCost() {\n        return coffee.getCost();\n    }\n}\n\nclass MilkDecorator extends CoffeeDecorator {\n    public MilkDecorator(Coffee coffee) {\n        super(coffee);\n    }\n\n    public String getDescription() {\n        return super.getDescription() + \", milk\";\n    }\n\n    public int getCost() {\n        return super.getCost() + 1;\n    }\n}\n\nclass MochaDecorator extends CoffeeDecorator {\n    public MochaDecorator(Coffee coffee) {\n        super(coffee);\n    }\n\n    public String getDescription() {\n        return super.getDescription() + \", mocha\";\n    }\n\n    public int getCost() {\n        return super.getCost() + 2;\n    }\n}\n\nclass WhipDecorator extends CoffeeDecorator {\n    public WhipDecorator(Coffee coffee) {\n        super(coffee);\n    }\n\n    public String getDescription() {\n        return super.getDescription() + \", whip\";\n    }\n\n    public int getCost() {\n        return super.getCost() + 1;\n    }\n}\n\nCoffee order =\n    new WhipDecorator(\n        new MochaDecorator(\n            new MilkDecorator(new SimpleCoffee())\n        )\n    );\n\nSystem.out.println(order.getDescription());\nSystem.out.println(order.getCost());",
-  explanation: "The drink remains a Coffee at every layer, so clients can treat simple and decorated drinks through the same interface.",
+  code: `interface Beverage {
+    int cost();
+    String description();
+}
+
+class Espresso implements Beverage {
+    public int cost() { return 3; }
+    public String description() { return "Espresso"; }
+}
+`,
+  explanation: "Add toppings or extras by wrapping the base drink with optional cost and description layers.",
 };

@@ -3,6 +3,15 @@ import type { PatternLanguageExample } from "@atlas-patterns/schemas";
 export const java: PatternLanguageExample = {
   language: "java",
   title: "HTTP client",
-  code: "import java.util.HashMap;\nimport java.util.Map;\n\ninterface HttpClient {\n    String get(String url);\n}\n\nclass BaseHttpClient implements HttpClient {\n    public String get(String url) {\n        return \"response from \" + url;\n    }\n}\n\nabstract class HttpClientDecorator implements HttpClient {\n    protected final HttpClient wrappee;\n\n    public HttpClientDecorator(HttpClient wrappee) {\n        this.wrappee = wrappee;\n    }\n\n    public String get(String url) {\n        return wrappee.get(url);\n    }\n}\n\nclass MetricsHttpClient extends HttpClientDecorator {\n    public MetricsHttpClient(HttpClient wrappee) {\n        super(wrappee);\n    }\n\n    public String get(String url) {\n        System.out.println(\"Measuring request to \" + url);\n        return super.get(url);\n    }\n}\n\nclass CachingHttpClient extends HttpClientDecorator {\n    private final Map<String, String> cache = new HashMap<>();\n\n    public CachingHttpClient(HttpClient wrappee) {\n        super(wrappee);\n    }\n\n    public String get(String url) {\n        if (cache.containsKey(url)) {\n            return cache.get(url);\n        }\n\n        String response = super.get(url);\n        cache.put(url, response);\n        return response;\n    }\n}\n\nHttpClient client =\n    new CachingHttpClient(new MetricsHttpClient(new BaseHttpClient()));\n\nSystem.out.println(client.get(\"/users\"));\nSystem.out.println(client.get(\"/users\"));",
-  explanation: "The client interface stays constant while metrics and caching act as composable wrappers around the base implementation.",
+  code: `interface HttpClient {
+    String get(String url);
+}
+
+class BasicHttpClient implements HttpClient {
+    public String get(String url) {
+        return "response from " + url;
+    }
+}
+`,
+  explanation: "Wrap a client to add caching, tracing, or metrics without changing the request interface.",
 };

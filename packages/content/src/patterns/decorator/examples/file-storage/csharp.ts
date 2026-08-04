@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const csharp: PatternLanguageExample = {
-  language: "csharp",
-  title: "File storage",
-  code: "using System;\n\npublic interface IDataSource\n{\n    void WriteData(string data);\n}\n\npublic class FileDataSource : IDataSource\n{\n    public void WriteData(string data)\n    {\n        Console.WriteLine($\"Writing file: {data}\");\n    }\n}\n\npublic abstract class DataSourceDecorator : IDataSource\n{\n    protected readonly IDataSource Wrappee;\n\n    protected DataSourceDecorator(IDataSource wrappee)\n    {\n        Wrappee = wrappee;\n    }\n\n    public virtual void WriteData(string data)\n    {\n        Wrappee.WriteData(data);\n    }\n}\n\npublic class CompressionDecorator : DataSourceDecorator\n{\n    public CompressionDecorator(IDataSource wrappee) : base(wrappee) { }\n\n    public override void WriteData(string data)\n    {\n        var compressed = $\"compressed({data})\";\n        base.WriteData(compressed);\n    }\n}\n\npublic class EncryptionDecorator : DataSourceDecorator\n{\n    public EncryptionDecorator(IDataSource wrappee) : base(wrappee) { }\n\n    public override void WriteData(string data)\n    {\n        var encrypted = $\"encrypted({data})\";\n        base.WriteData(encrypted);\n    }\n}\n\nIDataSource source = new EncryptionDecorator(\n    new CompressionDecorator(new FileDataSource())\n);\n\nsource.WriteData(\"Quarterly report\");",
-  explanation: "The C# example keeps the writer interface stable while decorators add optional transformation steps before the final write.",
-};

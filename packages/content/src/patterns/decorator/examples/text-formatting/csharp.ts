@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const csharp: PatternLanguageExample = {
-  language: "csharp",
-  title: "Text formatting",
-  code: "using System;\n\npublic interface IText\n{\n    string Render();\n}\n\npublic class PlainText : IText\n{\n    private readonly string _value;\n\n    public PlainText(string value)\n    {\n        _value = value;\n    }\n\n    public string Render()\n    {\n        return _value;\n    }\n}\n\npublic abstract class TextDecorator : IText\n{\n    protected readonly IText Text;\n\n    protected TextDecorator(IText text)\n    {\n        Text = text;\n    }\n\n    public virtual string Render()\n    {\n        return Text.Render();\n    }\n}\n\npublic class BoldDecorator : TextDecorator\n{\n    public BoldDecorator(IText text) : base(text) { }\n\n    public override string Render()\n    {\n        return $\"<b>{base.Render()}</b>\";\n    }\n}\n\npublic class ItalicDecorator : TextDecorator\n{\n    public ItalicDecorator(IText text) : base(text) { }\n\n    public override string Render()\n    {\n        return $\"<i>{base.Render()}</i>\";\n    }\n}\n\npublic class UnderlineDecorator : TextDecorator\n{\n    public UnderlineDecorator(IText text) : base(text) { }\n\n    public override string Render()\n    {\n        return $\"<u>{base.Render()}</u>\";\n    }\n}\n\nIText formatted =\n    new UnderlineDecorator(\n        new ItalicDecorator(\n            new BoldDecorator(new PlainText(\"Pattern Atlas\"))\n        )\n    );\n\nConsole.WriteLine(formatted.Render());",
-  explanation: "The C# example keeps the render contract stable while each decorator adds one formatting layer around the base text.",
-};

@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const reactNative: PatternLanguageExample = {
-  language: "react-native",
-  title: "Text formatting",
-  code: "import React, { useMemo } from \"react\";\nimport { SafeAreaView, Text, View } from \"react-native\";\n\ninterface TextValue {\n  render(): string;\n}\n\nclass PlainText implements TextValue {\n  constructor(private value: string) {}\n\n  render(): string {\n    return this.value;\n  }\n}\n\nabstract class TextDecorator implements TextValue {\n  constructor(protected text: TextValue) {}\n\n  render(): string {\n    return this.text.render();\n  }\n}\n\nclass BoldDecorator extends TextDecorator {\n  render(): string {\n    return `<b>${super.render()}</b>`;\n  }\n}\n\nclass ItalicDecorator extends TextDecorator {\n  render(): string {\n    return `<i>${super.render()}</i>`;\n  }\n}\n\nclass UnderlineDecorator extends TextDecorator {\n  render(): string {\n    return `<u>${super.render()}</u>`;\n  }\n}\n\nfunction Preview({ text }: { text: TextValue }) {\n  return (\n    <View>\n      <Text>{text.render()}</Text>\n    </View>\n  );\n}\n\nexport function App() {\n  const formatted = useMemo(\n    () => new UnderlineDecorator(new ItalicDecorator(new BoldDecorator(new PlainText(\"Pattern Atlas\")))),\n    []\n  );\n\n  return (\n    <SafeAreaView style={{ flex: 1, justifyContent: \"center\", padding: 24 }}>\n      <View style={{ gap: 16 }}>\n        <Text style={{ fontSize: 24, fontWeight: \"600\" }}>Text Formatting</Text>\n        <Preview text={formatted} />\n      </View>\n    </SafeAreaView>\n  );\n}",
-  explanation: "The React Native version uses the same decorator chain, but displays the formatted text in a mobile-friendly layout.",
-};

@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const java: PatternLanguageExample = {
-  language: "java",
-  title: "Notification channels",
-  code: "interface Notifier {\n    String send(String message);\n}\n\nclass BasicNotifier implements Notifier {\n    public String send(String message) {\n        return \"In-app: \" + message;\n    }\n}\n\nabstract class NotifierDecorator implements Notifier {\n    protected final Notifier notifier;\n\n    public NotifierDecorator(Notifier notifier) {\n        this.notifier = notifier;\n    }\n\n    public String send(String message) {\n        return notifier.send(message);\n    }\n}\n\nclass EmailDecorator extends NotifierDecorator {\n    public EmailDecorator(Notifier notifier) {\n        super(notifier);\n    }\n\n    public String send(String message) {\n        return super.send(message) + \" | Email: \" + message;\n    }\n}\n\nclass SmsDecorator extends NotifierDecorator {\n    public SmsDecorator(Notifier notifier) {\n        super(notifier);\n    }\n\n    public String send(String message) {\n        return super.send(message) + \" | SMS: \" + message;\n    }\n}\n\nclass SlackDecorator extends NotifierDecorator {\n    public SlackDecorator(Notifier notifier) {\n        super(notifier);\n    }\n\n    public String send(String message) {\n        return super.send(message) + \" | Slack: \" + message;\n    }\n}\n\nNotifier notifier =\n    new SlackDecorator(\n        new SmsDecorator(\n            new EmailDecorator(new BasicNotifier())\n        )\n    );\n\nSystem.out.println(notifier.send(\"Build completed\"));",
-  explanation: "The decorator chain keeps the same notifier interface while adding new channel behavior around the wrapped notifier.",
-};
