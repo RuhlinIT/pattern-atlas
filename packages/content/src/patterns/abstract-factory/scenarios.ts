@@ -2,81 +2,81 @@ import type { PatternScenario } from "@atlas-patterns/schemas";
 
 export const scenarios: readonly PatternScenario[] = [
   {
-    slug: "modern-office-setup",
-    title: "Modern office setup",
+    slug: "ui-theme-kit",
+    title: "UI theme kit",
     summary:
-      "A workplace factory creates matching desks, chairs, and cabinets for a modern or classic office theme.",
+      "An abstract factory creates matching UI controls such as buttons, inputs, and dialogs for a light or dark theme.",
     context:
-      "A product team needs to generate a coordinated office setup for different customer themes without mixing styles.",
+      "A design system needs to produce consistent component families across themes.",
     problem:
-      "Directly creating each office piece makes it easy for the furniture, colors, and materials to drift out of sync.",
+      "Creating themed components one by one leads to inconsistent styling and scattered conditionals.",
     solution:
-      "Use an abstract factory to produce a consistent family of office items that all match the selected theme.",
-    stackArea: "backend",
-  },
-  {
-    slug: "ui-component-suite",
-    title: "UI component suite",
-    summary:
-      "A design system factory provides related buttons, inputs, cards, and alerts for light and dark themes without visual drift.",
-    context:
-      "A frontend team needs a consistent component family that can change theme without breaking layout or style rules.",
-    problem:
-      "Creating UI pieces independently can lead to mismatched colors, spacing, and behavior across the app.",
-    solution:
-      "Use an abstract factory to generate a coordinated family of UI components for each theme.",
+      "Use Abstract Factory to create a family of related UI controls through a single theme factory.",
     stackArea: "frontend",
   },
   {
-    slug: "backend-product-line",
-    title: "Backend product line",
+    slug: "cloud-provider-kit",
+    title: "Cloud provider kit",
     summary:
-      "A backend service provisions a consistent family of resources, rules, and workflows for each tenant or region.",
+      "An abstract factory creates a matching set of storage, queue, and compute clients for a selected cloud provider.",
     context:
-      "A platform serves multiple customers or regions that each need compatible backend objects.",
+      "An integration layer must switch cleanly between vendor ecosystems.",
     problem:
-      "Direct construction ties the service to specific implementations and makes tenant-specific variation difficult.",
+      "Vendor-specific object creation leaks provider details into business logic.",
     solution:
-      "Use an abstract factory to create backend families that vary by tenant, region, or deployment target.",
-    stackArea: "backend",
-  },
-  {
-    slug: "integration-vendor-bridge",
-    title: "Integration vendor bridge",
-    summary:
-      "An integration layer builds matching adapters, transformers, and clients for different vendors or external APIs.",
-    context:
-      "The system must integrate with multiple third-party providers while keeping a stable internal interface.",
-    problem:
-      "Hardcoding vendor logic creates fragile integrations and makes switching providers painful.",
-    solution:
-      "Use an abstract factory to create a vendor-specific integration family behind a stable contract.",
+      "Use Abstract Factory to encapsulate provider-specific client creation behind one interface.",
     stackArea: "integration",
   },
   {
-    slug: "mobile-device-family",
-    title: "Mobile device family",
+    slug: "game-environment-kit",
+    title: "Game environment kit",
     summary:
-      "A mobile app creates coordinated UI and service objects for iOS and Android variants while keeping app behavior aligned.",
+      "A game factory creates related assets such as terrain, enemies, and effects for a particular environment.",
     context:
-      "A cross-platform app must adapt to device-specific capabilities and conventions.",
+      "A game needs to swap entire environment families without rewriting gameplay code.",
     problem:
-      "Creating device-specific objects separately can lead to inconsistent mobile experiences.",
+      "Direct construction of individual assets makes environment switching fragile.",
     solution:
-      "Use an abstract factory to create a device family of related mobile objects together.",
+      "Use Abstract Factory to generate a coherent family of environment objects.",
+    stackArea: "backend",
+  },
+  {
+    slug: "document-suite",
+    title: "Document suite",
+    summary:
+      "A document factory creates matching export handlers for PDF, HTML, and spreadsheet outputs.",
+    context:
+      "A reporting app supports multiple output formats with shared styling rules.",
+    problem:
+      "Format-specific creation logic spreads across reporting code.",
+    solution:
+      "Use Abstract Factory to centralize creation of related document renderers.",
+    stackArea: "backend",
+  },
+  {
+    slug: "device-os-kit",
+    title: "Device OS kit",
+    summary:
+      "An abstract factory creates a set of UI and system services tailored to a device family or platform.",
+    context:
+      "An app must adapt its object family for phone, tablet, or desktop deployments.",
+    problem:
+      "Platform branching inside constructors makes the code difficult to extend.",
+    solution:
+      "Use Abstract Factory to produce the correct platform-specific object family.",
     stackArea: "frontend",
   },
   {
-    slug: "document-generation-family",
-    title: "Document generation family",
+    slug: "analytics-stack-kit",
+    title: "Analytics stack kit",
     summary:
-      "A document system creates consistent invoices, receipts, and reports for each brand or locale.",
+      "An abstract factory creates a family of data ingestion, transformation, and persistence components for a selected pipeline.",
     context:
-      "The business needs printable and exportable documents to vary by region or brand while staying coordinated.",
+      "A data platform supports multiple pipeline variants.",
     problem:
-      "Independent document creation can cause mismatched layouts, formats, and data rules.",
+      "Wiring each pipeline manually invites inconsistency and duplication.",
     solution:
-      "Use an abstract factory to generate a family of documents that share the same brand or locale rules.",
-    stackArea: "backend",
+      "Use Abstract Factory to assemble the related pipeline objects from one source.",
+    stackArea: "integration",
   },
 ];

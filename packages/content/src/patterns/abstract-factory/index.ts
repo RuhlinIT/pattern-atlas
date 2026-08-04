@@ -3,165 +3,158 @@ import { meta } from "./meta";
 import { scenarios } from "./scenarios";
 import { normalizeExamples } from "../normalize-examples";
 
-import { typescript as modernOfficeSetupTypescript } from "./examples/modern-office-setup/typescript";
-import { java as modernOfficeSetupJava } from "./examples/modern-office-setup/java";
-import { python as modernOfficeSetupPython } from "./examples/modern-office-setup/python";
+import { typescript as uiThemeKitTypescript } from "./scenarios/ui-theme-kit/typescript";
+import { react as uiThemeKitReact } from "./scenarios/ui-theme-kit/react";
+import { angular as uiThemeKitAngular } from "./scenarios/ui-theme-kit/angular";
 
-import { typescript as uiComponentSuiteTypescript } from "./examples/ui-component-suite/typescript";
-import { react as uiComponentSuiteReact } from "./examples/ui-component-suite/react";
-import { angular as uiComponentSuiteAngular } from "./examples/ui-component-suite/angular";
+import { typescript as cloudProviderKitTypescript } from "./scenarios/cloud-provider-kit/typescript";
+import { java as cloudProviderKitJava } from "./scenarios/cloud-provider-kit/java";
+import { python as cloudProviderKitPython } from "./scenarios/cloud-provider-kit/python";
 
-import { typescript as backendProductLineTypescript } from "./examples/backend-product-line/typescript";
-import { java as backendProductLineJava } from "./examples/backend-product-line/java";
-import { python as backendProductLinePython } from "./examples/backend-product-line/python";
+import { typescript as gameEnvironmentKitTypescript } from "./scenarios/game-environment-kit/typescript";
+import { java as gameEnvironmentKitJava } from "./scenarios/game-environment-kit/java";
+import { python as gameEnvironmentKitPython } from "./scenarios/game-environment-kit/python";
 
-import { typescript as integrationVendorBridgeTypescript } from "./examples/integration-vendor-bridge/typescript";
-import { react as integrationVendorBridgeReact } from "./examples/integration-vendor-bridge/react";
+import { typescript as documentSuiteTypescript } from "./scenarios/document-suite/typescript";
+import { java as documentSuiteJava } from "./scenarios/document-suite/java";
+import { python as documentSuitePython } from "./scenarios/document-suite/python";
 
-import { typescript as mobileDeviceFamilyTypescript } from "./examples/mobile-device-family/typescript";
-import { java as mobileDeviceFamilyJava } from "./examples/mobile-device-family/java";
-import { python as mobileDeviceFamilyPython } from "./examples/mobile-device-family/python";
-import { reactNative as mobileDeviceFamilyReactNative } from "./examples/mobile-device-family/react-native";
+import { typescript as deviceOsKitTypescript } from "./scenarios/device-os-kit/typescript";
+import { react as deviceOsKitReact } from "./scenarios/device-os-kit/react";
+import { angular as deviceOsKitAngular } from "./scenarios/device-os-kit/angular";
 
-import { typescript as documentGenerationFamilyTypescript } from "./examples/document-generation-family/typescript";
-import { java as documentGenerationFamilyJava } from "./examples/document-generation-family/java";
-import { python as documentGenerationFamilyPython } from "./examples/document-generation-family/python";
-import { csharp as documentGenerationFamilyCsharp } from "./examples/document-generation-family/csharp";
-import { dotnet as documentGenerationFamilyDotnet } from "./examples/document-generation-family/dotnet";
+import { typescript as analyticsStackKitTypescript } from "./scenarios/analytics-stack-kit/typescript";
+import { java as analyticsStackKitJava } from "./scenarios/analytics-stack-kit/java";
+import { python as analyticsStackKitPython } from "./scenarios/analytics-stack-kit/python";
 
-const modernOfficeSetupExamples = normalizeExamples({
-  typescript: modernOfficeSetupTypescript,
-  java: modernOfficeSetupJava,
-  python: modernOfficeSetupPython,
+const uiThemeKitExamples = normalizeExamples({
+  typescript: uiThemeKitTypescript,
+  react: uiThemeKitReact,
+  angular: uiThemeKitAngular,
 });
 
-const uiComponentSuiteExamples = normalizeExamples({
-  typescript: uiComponentSuiteTypescript,
-  react: uiComponentSuiteReact,
-  angular: uiComponentSuiteAngular,
+const cloudProviderKitExamples = normalizeExamples({
+  typescript: cloudProviderKitTypescript,
+  java: cloudProviderKitJava,
+  python: cloudProviderKitPython,
 });
 
-const backendProductLineExamples = normalizeExamples({
-  typescript: backendProductLineTypescript,
-  java: backendProductLineJava,
-  python: backendProductLinePython,
+const gameEnvironmentKitExamples = normalizeExamples({
+  typescript: gameEnvironmentKitTypescript,
+  java: gameEnvironmentKitJava,
+  python: gameEnvironmentKitPython,
 });
 
-const integrationVendorBridgeExamples = normalizeExamples({
-  typescript: integrationVendorBridgeTypescript,
-  react: integrationVendorBridgeReact,
+const documentSuiteExamples = normalizeExamples({
+  typescript: documentSuiteTypescript,
+  java: documentSuiteJava,
+  python: documentSuitePython,
 });
 
-const mobileDeviceFamilyExamples = normalizeExamples({
-  typescript: mobileDeviceFamilyTypescript,
-  java: mobileDeviceFamilyJava,
-  python: mobileDeviceFamilyPython,
-  "react-native": mobileDeviceFamilyReactNative,
+const deviceOsKitExamples = normalizeExamples({
+  typescript: deviceOsKitTypescript,
+  react: deviceOsKitReact,
+  angular: deviceOsKitAngular,
 });
 
-const documentGenerationFamilyExamples = normalizeExamples({
-  typescript: documentGenerationFamilyTypescript,
-  java: documentGenerationFamilyJava,
-  python: documentGenerationFamilyPython,
-  csharp: documentGenerationFamilyCsharp,
-  dotnet: documentGenerationFamilyDotnet,
+const analyticsStackKitExamples = normalizeExamples({
+  typescript: analyticsStackKitTypescript,
+  java: analyticsStackKitJava,
+  python: analyticsStackKitPython,
 });
 
 export const abstractFactoryPattern: PatternRecord = {
   ...meta,
   problem:
-    "When related objects are created independently, they can drift out of sync and become hard to swap as a family.",
+    "Client code needs to create families of related objects, but hardcoding concrete classes makes the code rigid and hard to swap.",
   tradeoffs: [
-    "Adds more abstraction and more types.",
-    "Can be overkill for simple object creation.",
-    "Makes it easier to swap entire families of objects consistently.",
+    "Adds an extra abstraction layer.",
+    "Can overcomplicate simple object creation.",
+    "Makes family-wide swapping and consistency much easier.",
   ],
-  platforms: ["frontend", "backend", "integration"],
+  platforms: ["applications", "ui systems", "integration layers"],
   integrationNotes:
-    "Abstract Factory is most useful when a product family must remain consistent across themes, tenants, vendors, or platforms.",
+    "Abstract Factory is especially useful when your app must produce matching sets of related objects for a theme, provider, platform, or pipeline.",
   scenarios,
   scenarioExamples: {
-    "modern-office-setup": modernOfficeSetupExamples,
-    "ui-component-suite": uiComponentSuiteExamples,
-    "backend-product-line": backendProductLineExamples,
-    "integration-vendor-bridge": integrationVendorBridgeExamples,
-    "mobile-device-family": mobileDeviceFamilyExamples,
-    "document-generation-family": documentGenerationFamilyExamples,
+    "ui-theme-kit": uiThemeKitExamples,
+    "cloud-provider-kit": cloudProviderKitExamples,
+    "game-environment-kit": gameEnvironmentKitExamples,
+    "document-suite": documentSuiteExamples,
+    "device-os-kit": deviceOsKitExamples,
+    "analytics-stack-kit": analyticsStackKitExamples,
   },
   variants: [
     {
-      slug: "abstract-factory-theme-family",
-      title: "Theme family factory",
+      slug: "abstract-factory-theme-system",
+      title: "Theme system factory",
       stackArea: "frontend",
       language: "typescript",
       summary:
-        "Create coordinated UI families such as buttons, forms, and cards for each theme.",
-      intent:
-        "Keep theme selection separate from component construction.",
+        "Create matching UI component families for a selected visual theme.",
+      intent: "Keep themed UI components consistent across a screen or application.",
       problem:
-        "UI families drift when each control is created independently.",
+        "Theme-specific components become inconsistent when each one is created independently.",
       solution:
-        "Use an abstract factory to build a matched set of themed UI components.",
-      dependencies: ["abstract factory"],
-      relatedVariants: ["abstract-factory-tenant-family", "abstract-factory-integration-family"],
+        "Use Abstract Factory to create an aligned set of themed UI objects.",
+      dependencies: ["abstract-factory"],
+      relatedVariants: ["abstract-factory-provider-kit", "abstract-factory-platform-kit"],
       examplePatternSlugs: ["abstract-factory"],
       notes:
-        "This is the best fit when the variation is primarily visual or interaction-focused.",
+        "Useful for design systems, theming engines, and component libraries.",
     },
     {
-      slug: "abstract-factory-tenant-family",
-      title: "Tenant family factory",
-      stackArea: "backend",
+      slug: "abstract-factory-provider-kit",
+      title: "Provider kit factory",
+      stackArea: "integration",
       language: "java",
       summary:
-        "Create tenant-specific backend object families such as repositories, services, and workflows.",
-      intent:
-        "Keep tenant or region selection separate from backend object creation.",
+        "Create a consistent family of clients for one external vendor or service provider.",
+      intent: "Hide provider-specific setup behind one factory interface.",
       problem:
-        "Tenant-specific backend objects become inconsistent when each one is wired separately.",
+        "Vendor branching spreads across the app when each client is built separately.",
       solution:
-        "Use an abstract factory to produce a matched set of tenant-aware backend components.",
-      dependencies: ["abstract factory"],
-      relatedVariants: ["abstract-factory-theme-family", "abstract-factory-integration-family"],
+        "Use Abstract Factory to assemble the correct provider-specific client set.",
+      dependencies: ["abstract-factory"],
+      relatedVariants: ["abstract-factory-theme-system", "abstract-factory-platform-kit"],
       examplePatternSlugs: ["abstract-factory"],
       notes:
-        "Use this when backend behavior varies by deployment target, customer, or locale.",
+        "Fits payment providers, cloud providers, and third-party SDK families.",
     },
     {
-      slug: "abstract-factory-integration-family",
-      title: "Integration family factory",
-      stackArea: "integration",
-      language: "typescript",
+      slug: "abstract-factory-platform-kit",
+      title: "Platform kit factory",
+      stackArea: "frontend",
+      language: "react",
       summary:
-        "Create vendor-specific integration families such as clients, transformers, and adapters.",
-      intent:
-        "Keep external vendor selection separate from integration wiring.",
+        "Create a family of platform-specific UI and behavior objects for a target device class.",
+      intent: "Keep platform-aware creation logic in one place.",
       problem:
-        "Integrations become hard to swap when provider-specific code leaks across the system.",
+        "Platform checks scattered through constructors make app logic brittle.",
       solution:
-        "Use an abstract factory to assemble a vendor-aligned integration family behind one contract.",
-      dependencies: ["abstract factory"],
-      relatedVariants: ["abstract-factory-theme-family", "abstract-factory-tenant-family"],
+        "Use Abstract Factory to build the correct platform object family.",
+      dependencies: ["abstract-factory"],
+      relatedVariants: ["abstract-factory-theme-system", "abstract-factory-provider-kit"],
       examplePatternSlugs: ["abstract-factory"],
       notes:
-        "This variant is useful when the pattern is mainly about external dependencies and provider switching.",
+        "Good for mobile, desktop, and responsive UI system variation.",
     },
   ],
   realWorldExamples: [
     {
-      title: "Theming engines",
+      title: "Themed component kits",
       description:
-        "Design systems often need families of UI controls that change together for light and dark themes.",
+        "Generate matching buttons, inputs, and dialog styles from one theme-aware factory.",
     },
     {
-      title: "Tenant-aware provisioning",
+      title: "Cloud provider integrations",
       description:
-        "Backend platforms commonly create families of tenant-specific services, repositories, and workflows.",
+        "Create coordinated storage, queue, and compute clients for one provider without leaking vendor logic.",
     },
     {
-      title: "Vendor integration kits",
+      title: "Platform-specific app shells",
       description:
-        "Integration layers often bundle vendor-specific clients, mappers, and handlers as one unit.",
+        "Build the correct object family for mobile, tablet, or desktop from one abstract factory.",
     },
   ],
 };
