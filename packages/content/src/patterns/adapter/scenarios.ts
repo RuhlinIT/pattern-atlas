@@ -2,81 +2,42 @@ import type { PatternScenario } from "@atlas-patterns/schemas";
 
 export const scenarios: readonly PatternScenario[] = [
   {
-    slug: "payment-gateway-integration",
-    title: "Payment gateway integration",
+    slug: "legacy-payment-gateway",
+    title: "Legacy payment gateway",
     summary:
-      "A checkout flow connects to Stripe, Adyen, or PayPal without exposing vendor-specific details to the rest of the app.",
+      "An adapter translates a legacy payment API into the checkout service interface the app expects.",
     context:
-      "An e-commerce team needs to support multiple payment providers while keeping checkout behavior stable.",
+      "A product team needs to keep using an old provider while the rest of the platform speaks a modern payment contract.",
     problem:
-      "Payment provider contracts leak into business logic when each gateway is wired directly.",
+      "The legacy API uses different method names and data shapes, which leaks ugly translation code into checkout logic.",
     solution:
-      "Use an adapter to translate checkout operations into the provider's request and response shapes.",
+      "Use Adapter to wrap the legacy gateway and expose the expected payment service interface.",
     stackArea: "integration",
   },
   {
-    slug: "legacy-notification-service",
-    title: "Legacy notification service",
+    slug: "third-party-task-api",
+    title: "Third-party task API",
     summary:
-      "An app sends email or SMS through an older service without inheriting its awkward interface.",
+      "An adapter normalizes a third-party task payload into the app's internal task model.",
     context:
-      "A product still depends on a notification system with inconsistent payloads and methods.",
+      "A productivity app consumes multiple external task providers and needs one internal shape.",
     problem:
-      "Business logic becomes fragile when it must understand legacy notification details.",
+      "Each external API returns tasks differently, making the UI and domain logic harder to keep consistent.",
     solution:
-      "Use an adapter to normalize the legacy notification API into a modern notifier contract.",
-    stackArea: "backend",
-  },
-  {
-    slug: "file-format-conversion",
-    title: "File format conversion",
-    summary:
-      "A file import pipeline accepts CSV, XML, JSON, or proprietary inputs and converts them into a consistent internal model.",
-    context:
-      "Partners and customers upload files in different shapes that the system must process reliably.",
-    problem:
-      "Every consumer handling file quirks on its own leads to duplicated parsing logic.",
-    solution:
-      "Use an adapter to centralize file translation before the data reaches the application core.",
-    stackArea: "backend",
-  },
-  {
-    slug: "adapter-frontend-normalize-api-response",
-    title: "Frontend response normalization",
-    summary:
-      "A UI layer converts backend DTOs into view models before rendering components.",
-    context:
-      "Frontend teams need predictable data shapes even when backend payloads change over time.",
-    problem:
-      "UI code becomes brittle when components depend directly on transport-specific fields.",
-    solution:
-      "Use an adapter to normalize API responses into a component-friendly model.",
-    stackArea: "frontend",
-  },
-  {
-    slug: "adapter-backend-isolate-legacy-service",
-    title: "Backend service isolation",
-    summary:
-      "A backend layer wraps a legacy billing, inventory, or identity service behind a clean domain interface.",
-    context:
-      "The domain must remain stable even though an external system exposes XML, RPC, or other awkward contracts.",
-    problem:
-      "Direct coupling to legacy services makes the backend hard to refactor or replace.",
-    solution:
-      "Use an adapter to translate legacy requests and responses into domain-friendly objects.",
-    stackArea: "backend",
-  },
-  {
-    slug: "adapter-integration-bridge-front-and-backend-contracts",
-    title: "Contract translation boundary",
-    summary:
-      "A boundary layer keeps frontend models and backend DTOs aligned through explicit mapping.",
-    context:
-      "Frontend and backend teams evolve independently and need a stable translation layer between them.",
-    problem:
-      "Shared assumptions about data shape create coupling across team boundaries.",
-    solution:
-      "Use an adapter to centralize contract translation at the system boundary.",
+      "Use Adapter to convert vendor payloads into a single internal task contract.",
     stackArea: "integration",
+  },
+  {
+    slug: "event-payload-mapper",
+    title: "Event payload mapper",
+    summary:
+      "An adapter converts incoming event payloads into the normalized analytics event shape used by the system.",
+    context:
+      "An event pipeline receives messages from several producer systems with different field names and formats.",
+    problem:
+      "Downstream processors should not need per-source conditionals for every incoming payload type.",
+    solution:
+      "Use Adapter to translate each source payload into one canonical event format.",
+    stackArea: "backend",
   },
 ];

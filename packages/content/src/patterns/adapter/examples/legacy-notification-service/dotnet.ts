@@ -1,8 +1,0 @@
-import type { PatternLanguageExample } from "@atlas-patterns/schemas";
-
-export const dotnet: PatternLanguageExample = {
-  language: "dotnet",
-  title: "Legacy notification service",
-  code: "using System;\nusing Microsoft.Extensions.DependencyInjection;\n\npublic interface INotifier\n{\n    void Send(string message);\n}\n\npublic class LegacyMessenger\n{\n    public void Deliver(MessagePayload payload)\n    {\n        Console.WriteLine($\"Legacy messenger sent: {payload.Body}\");\n    }\n}\n\npublic class MessagePayload\n{\n    public string Body { get; }\n\n    public MessagePayload(string body)\n    {\n        Body = body;\n    }\n}\n\npublic class NotificationAdapter : INotifier\n{\n    private readonly LegacyMessenger _messenger;\n\n    public NotificationAdapter(LegacyMessenger messenger)\n    {\n        _messenger = messenger;\n    }\n\n    public void Send(string message)\n    {\n        _messenger.Deliver(new MessagePayload(message));\n    }\n}\n\npublic class AlertService\n{\n    private readonly INotifier _notifier;\n\n    public AlertService(INotifier notifier)\n    {\n        _notifier = notifier;\n    }\n\n    public void TriggerAlert(string message)\n    {\n        _notifier.Send(message);\n    }\n}\n\nvar services = new ServiceCollection();\nservices.AddSingleton<LegacyMessenger>();\nservices.AddSingleton<INotifier, NotificationAdapter>();\nservices.AddTransient<AlertService>();\n\nvar provider = services.BuildServiceProvider();\nvar alerts = provider.GetRequiredService<AlertService>();\nalerts.TriggerAlert(\"CPU threshold exceeded\");",
-  explanation: "The .NET version shows the same adapter pattern with dependency injection, so the alert service stays decoupled from the legacy payload-based messenger.",
-};

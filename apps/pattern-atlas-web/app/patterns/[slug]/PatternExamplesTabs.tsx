@@ -2,40 +2,58 @@
 
 import { useMemo, useState } from "react";
 import type {
-  PatternLanguageExample,
+  NormalizedExample,
   PatternRecord,
   PatternScenario,
   PatternScenarioExamples,
-  PatternStackArea,
 } from "@atlas-patterns/schemas";
-import { CodeBlock, SectionCard, Tag } from "@atlas-patterns/ui";
+import {
+  CodeBlock,
+  SectionCard,
+  Tag,
+  coreLanguageLabels,
+  getCoreLanguage,
+  type CoreLanguage,
+} from "@atlas-patterns/ui";
 
-type StackAreaFilter = "all" | PatternStackArea;
+type StackAreaFilter = "all" | NonNullable<PatternScenario["stackArea"]>;
 
-const STACK_AREA_ORDER: readonly PatternStackArea[] = [
+type CoreLanguageFilter = "all" | CoreLanguage;
+
+const STACK_AREA_ORDER = [
   "frontend",
   "backend",
   "integration",
   "devops",
   "cloud",
   "fullstack",
-];
+] as const;
 
-function getScenarioExampleLanguages(
+function getScenarioExamples(
   scenarioSlug: string,
   scenarioExamples?: PatternScenarioExamples,
-): PatternLanguageExample[] {
+): NormalizedExample[] {
   const exampleMap = scenarioExamples?.[scenarioSlug];
-  if (!exampleMap) return [];
+
+  if (!exampleMap) {
+    return [];
+  }
+
   return Object.values(exampleMap);
 }
 
-function ExampleCodeBlock({ example }: { example: PatternLanguageExample }) {
+function getTabId(prefix: string, value: string): string {
+  const safeValue = value.replace(/[^a-zA-Z0-9_-]/g, "-").replace(/-+/g, "-");
+
+  return `${prefix}-${safeValue}`;
+}
+
+function ExampleCodeBlock({ example }: { example: NormalizedExample }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
+        <Tag>{example.label}</Tag>
         <Tag>{example.language}</Tag>
-        {example.title ? <Tag>{example.title}</Tag> : null}
       </div>
 
       {example.explanation ? <p>{example.explanation}</p> : null}
@@ -52,67 +70,150 @@ export function PatternExamplesTabs({
   scenarios: PatternRecord["scenarios"];
   scenarioExamples?: PatternScenarioExamples;
 }) {
-  const scenarioList = useMemo(() => scenarios as PatternScenario[], [scenarios]);
+  const scenarioList = useMemo(
+    () => scenarios as PatternScenario[],
+    [scenarios],
+  );
 
   const groupedScenarios = useMemo(
     () => ({
-      frontend: scenarioList.filter((scenario) => scenario.stackArea === "frontend"),
-      backend: scenarioList.filter((scenario) => scenario.stackArea === "backend"),
-      integration: scenarioList.filter((scenario) => scenario.stackArea === "integration"),
-      devops: scenarioList.filter((scenario) => scenario.stackArea === "devops"),
+      frontend: scenarioList.filter(
+        (scenario) => scenario.stackArea === "frontend",
+      ),
+      backend: scenarioList.filter(
+        (scenario) => scenario.stackArea === "backend",
+      ),
+      integration: scenarioList.filter(
+        (scenario) => scenario.stackArea === "integration",
+      ),
+      devops: scenarioList.filter(
+        (scenario) => scenario.stackArea === "devops",
+      ),
       cloud: scenarioList.filter((scenario) => scenario.stackArea === "cloud"),
-      fullstack: scenarioList.filter((scenario) => scenario.stackArea === "fullstack"),
+      fullstack: scenarioList.filter(
+        (scenario) => scenario.stackArea === "fullstack",
+      ),
     }),
     [scenarioList],
   );
 
   const initialStackArea = useMemo<StackAreaFilter>(() => {
-    return STACK_AREA_ORDER.find((area) => groupedScenarios[area].length > 0) ?? "all";
+    return (
+      STACK_AREA_ORDER.find((area) => groupedScenarios[area].length > 0) ??
+      "all"
+    );
   }, [groupedScenarios]);
 
-  const [stackAreaFilter, setStackAreaFilter] = useState<StackAreaFilter>(initialStackArea);
-  const [activeScenarioSlug, setActiveScenarioSlug] = useState(() => {
-    const seedList = initialStackArea === "all" ? scenarioList : groupedScenarios[initialStackArea];
-    return seedList[0]?.slug ?? "";
-  });
-  const [activeLanguage, setActiveLanguage] = useState(() => {
-    const seedList = initialStackArea === "all" ? scenarioList : groupedScenarios[initialStackArea];
-    const seedScenario = seedList[0];
-    return seedScenario ? getScenarioExampleLanguages(seedScenario.slug, scenarioExamples)[0]?.language ?? "" : "";
-  });
+  const initialScenarioList =
+    initialStackArea === "all"
+      ? scenarioList
+      : groupedScenarios[initialStackArea];
+
+  const initialScenario = initialScenarioList[0];
+
+  const initialExamples = initialScenario
+    ? getScenarioExamples(initialScenario.slug, scenarioExamples)
+    : [];
+
+  const [stackAreaFilter, setStackAreaFilter] =
+    useState<StackAreaFilter>(initialStackArea);
+
+  const [activeScenarioSlug, setActiveScenarioSlug] = useState(
+    initialScenario?.slug ?? "",
+  );
+
+  const [coreLanguageFilter, setCoreLanguageFilter] =
+    useState<CoreLanguageFilter>("all");
+
+  const [activeExampleId, setActiveExampleId] = useState(
+    initialExamples[0]?.id ?? "",
+  );
 
   const visibleScenarios = useMemo(() => {
-    if (stackAreaFilter === "all") return scenarioList;
+    if (stackAreaFilter === "all") {
+      return scenarioList;
+    }
+
     return groupedScenarios[stackAreaFilter];
-  }, [stackAreaFilter, groupedScenarios, scenarioList]);
+  }, [groupedScenarios, scenarioList, stackAreaFilter]);
 
   const activeScenario =
     visibleScenarios.find((scenario) => scenario.slug === activeScenarioSlug) ??
     visibleScenarios[0] ??
     null;
 
-  const activeExamples = activeScenario
-    ? getScenarioExampleLanguages(activeScenario.slug, scenarioExamples)
-    : [];
+  const activeExamples = useMemo(
+    () =>
+      activeScenario
+        ? getScenarioExamples(activeScenario.slug, scenarioExamples)
+        : [],
+    [activeScenario, scenarioExamples],
+  );
+
+  const availableCoreLanguages = useMemo(() => {
+    const languages = activeExamples.map((example) =>
+      getCoreLanguage(example.language),
+    );
+
+    return Array.from(new Set(languages));
+  }, [activeExamples]);
+
+  const filteredExamples = useMemo(() => {
+    if (coreLanguageFilter === "all") {
+      return activeExamples;
+    }
+
+    return activeExamples.filter(
+      (example) => getCoreLanguage(example.language) === coreLanguageFilter,
+    );
+  }, [activeExamples, coreLanguageFilter]);
 
   const activeExample =
-    activeExamples.find((example) => example.language === activeLanguage) ??
-    activeExamples[0] ??
+    filteredExamples.find((example) => example.id === activeExampleId) ??
+    filteredExamples[0] ??
     null;
+
+  function selectCoreLanguage(nextFilter: CoreLanguageFilter) {
+    setCoreLanguageFilter(nextFilter);
+
+    const nextExamples =
+      nextFilter === "all"
+        ? activeExamples
+        : activeExamples.filter(
+            (example) => getCoreLanguage(example.language) === nextFilter,
+          );
+
+    setActiveExampleId(nextExamples[0]?.id ?? "");
+  }
 
   function handleStackAreaChange(nextArea: StackAreaFilter) {
     setStackAreaFilter(nextArea);
-    const nextScenarios = nextArea === "all" ? scenarioList : groupedScenarios[nextArea];
+    setCoreLanguageFilter("all");
+
+    const nextScenarios =
+      nextArea === "all" ? scenarioList : groupedScenarios[nextArea];
+
     const nextScenario = nextScenarios[0];
+
     setActiveScenarioSlug(nextScenario?.slug ?? "");
-    const nextExamples = nextScenario ? getScenarioExampleLanguages(nextScenario.slug, scenarioExamples) : [];
-    setActiveLanguage(nextExamples[0]?.language ?? "");
+
+    const nextExamples = nextScenario
+      ? getScenarioExamples(nextScenario.slug, scenarioExamples)
+      : [];
+
+    setActiveExampleId(nextExamples[0]?.id ?? "");
   }
 
   function handleScenarioChange(nextScenarioSlug: string) {
     setActiveScenarioSlug(nextScenarioSlug);
-    const nextExamples = getScenarioExampleLanguages(nextScenarioSlug, scenarioExamples);
-    setActiveLanguage(nextExamples[0]?.language ?? "");
+    setCoreLanguageFilter("all");
+
+    const nextExamples = getScenarioExamples(
+      nextScenarioSlug,
+      scenarioExamples,
+    );
+
+    setActiveExampleId(nextExamples[0]?.id ?? "");
   }
 
   if (!scenarioList.length) {
@@ -128,9 +229,12 @@ export function PatternExamplesTabs({
       >
         {STACK_AREA_ORDER.map((filter) => {
           const isActive = stackAreaFilter === filter;
+
           const count = groupedScenarios[filter].length;
 
-          if (count === 0) return null;
+          if (count === 0) {
+            return null;
+          }
 
           return (
             <button
@@ -170,7 +274,11 @@ export function PatternExamplesTabs({
       <div className="flex flex-wrap gap-2">
         {visibleScenarios.map((scenario) => {
           const isActive = scenario.slug === activeScenario?.slug;
-          const exampleCount = getScenarioExampleLanguages(scenario.slug, scenarioExamples).length;
+
+          const exampleCount = getScenarioExamples(
+            scenario.slug,
+            scenarioExamples,
+          ).length;
 
           return (
             <button
@@ -180,7 +288,7 @@ export function PatternExamplesTabs({
               className={[
                 "rounded-lg border px-4 py-3 text-sm transition-all",
                 isActive
-                  ? "border-sky-400 bg-slate-950 text-sky-400 shadow-sm translate-y-[-1px]"
+                  ? "translate-y-[-1px] border-sky-400 bg-slate-950 text-sky-400 shadow-sm"
                   : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
               ].join(" ")}
             >
@@ -195,22 +303,28 @@ export function PatternExamplesTabs({
           <SectionCard title={activeScenario.title}>
             <div className="space-y-3">
               <p>{activeScenario.summary}</p>
+
               {activeScenario.context ? (
                 <p>
                   <strong>Context:</strong> {activeScenario.context}
                 </p>
               ) : null}
+
               {activeScenario.problem ? (
                 <p>
                   <strong>Problem:</strong> {activeScenario.problem}
                 </p>
               ) : null}
+
               {activeScenario.solution ? (
                 <p>
                   <strong>Solution:</strong> {activeScenario.solution}
                 </p>
               ) : null}
-              {activeScenario.stackArea ? <Tag>{activeScenario.stackArea}</Tag> : null}
+
+              {activeScenario.stackArea ? (
+                <Tag>{activeScenario.stackArea}</Tag>
+              ) : null}
             </div>
           </SectionCard>
 
@@ -218,46 +332,147 @@ export function PatternExamplesTabs({
             {activeExamples.length === 0 ? (
               <p>No examples yet.</p>
             ) : (
-              <div className="space-y-0">
-                <div
-                  role="tablist"
-                  aria-label="Language examples"
-                  className="flex flex-wrap gap-2 border-b border-slate-700"
+              <div className="space-y-6">
+                <section
+                  aria-labelledby="core-languages-heading"
+                  className="space-y-3"
                 >
-                  {activeExamples.map((example) => {
-                    const isActive = example.language === activeLanguage;
-                    return (
-                      <button
-                        key={example.language}
-                        type="button"
-                        role="tab"
-                        aria-selected={isActive}
-                        aria-controls={`language-panel-${example.language}`}
-                        id={`language-tab-${example.language}`}
-                        onClick={() => setActiveLanguage(example.language)}
-                        className={[
-                          "relative -mb-px rounded-t-lg border px-4 py-3 text-sm transition-all",
-                          isActive
-                            ? "border-sky-400 border-b-slate-950 bg-slate-950 text-sky-400 shadow-sm"
-                            : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
-                        ].join(" ")}
-                      >
-                        {example.language}
-                      </button>
-                    );
-                  })}
-                </div>
+                  <div className="flex items-center gap-3">
+                    <h3
+                      id="core-languages-heading"
+                      className="text-sm font-semibold uppercase tracking-wide text-slate-200"
+                    >
+                      Core languages
+                    </h3>
 
-                {activeExample ? (
-                  <div
-                    role="tabpanel"
-                    id={`language-panel-${activeExample.language}`}
-                    aria-labelledby={`language-tab-${activeExample.language}`}
-                    className="rounded-b-lg border border-t-0 border-slate-700 bg-slate-950 p-4"
-                  >
-                    <ExampleCodeBlock example={activeExample} />
+                    <div
+                      aria-hidden="true"
+                      className="h-px flex-1 bg-slate-700"
+                    />
                   </div>
-                ) : null}
+
+                  <div
+                    role="group"
+                    aria-label="Filter examples by core language"
+                    className="flex flex-wrap gap-2"
+                  >
+                    <button
+                      type="button"
+                      aria-pressed={coreLanguageFilter === "all"}
+                      onClick={() => selectCoreLanguage("all")}
+                      className={[
+                        "rounded-lg border px-3 py-2 text-sm transition-all",
+                        coreLanguageFilter === "all"
+                          ? "border-sky-400 bg-slate-950 text-sky-400"
+                          : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500",
+                      ].join(" ")}
+                    >
+                      All ({activeExamples.length})
+                    </button>
+
+                    {availableCoreLanguages.map((coreLanguage) => {
+                      const count = activeExamples.filter(
+                        (example) =>
+                          getCoreLanguage(example.language) === coreLanguage,
+                      ).length;
+
+                      const isActive = coreLanguageFilter === coreLanguage;
+
+                      return (
+                        <button
+                          key={coreLanguage}
+                          type="button"
+                          aria-pressed={isActive}
+                          onClick={() => selectCoreLanguage(coreLanguage)}
+                          className={[
+                            "rounded-lg border px-3 py-2 text-sm transition-all",
+                            isActive
+                              ? "border-sky-400 bg-slate-950 text-sky-400"
+                              : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500",
+                          ].join(" ")}
+                        >
+                          {coreLanguageLabels[coreLanguage]} ({count})
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                <section
+                  aria-labelledby="framework-examples-heading"
+                  className="space-y-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <h3
+                      id="framework-examples-heading"
+                      className="text-sm font-semibold uppercase tracking-wide text-slate-200"
+                    >
+                      Frameworks and libraries
+                    </h3>
+
+                    <div
+                      aria-hidden="true"
+                      className="h-px flex-1 bg-slate-700"
+                    />
+                  </div>
+
+                  {filteredExamples.length === 0 ? (
+                    <p>No examples for this core language.</p>
+                  ) : (
+                    <div className="space-y-0">
+                      <div
+                        role="tablist"
+                        aria-label="Framework and library examples"
+                        className="flex flex-wrap gap-2 border-b border-slate-700"
+                      >
+                        {filteredExamples.map((example) => {
+                          const isActive = example.id === activeExampleId;
+
+                          const tabId = getTabId("language-tab", example.id);
+
+                          const panelId = getTabId(
+                            "language-panel",
+                            example.id,
+                          );
+
+                          return (
+                            <button
+                              key={example.id}
+                              type="button"
+                              role="tab"
+                              aria-selected={isActive}
+                              aria-controls={panelId}
+                              id={tabId}
+                              onClick={() => setActiveExampleId(example.id)}
+                              className={[
+                                "relative -mb-px rounded-t-lg border px-4 py-3 text-sm transition-all",
+                                isActive
+                                  ? "border-sky-400 border-b-slate-950 bg-slate-950 text-sky-400 shadow-sm"
+                                  : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100",
+                              ].join(" ")}
+                            >
+                              {example.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {activeExample ? (
+                        <div
+                          role="tabpanel"
+                          id={getTabId("language-panel", activeExample.id)}
+                          aria-labelledby={getTabId(
+                            "language-tab",
+                            activeExample.id,
+                          )}
+                          className="rounded-b-lg border border-t-0 border-slate-700 bg-slate-950 p-4"
+                        >
+                          <ExampleCodeBlock example={activeExample} />
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
+                </section>
               </div>
             )}
           </SectionCard>

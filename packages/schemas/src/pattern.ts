@@ -32,6 +32,40 @@ export const patternLanguageSchema = z.enum([
   "tsx",
   "go",
   "php",
+  "basic",
+  "coffeescript",
+  "cobol",
+  "coldfusion",
+  "cpp",
+  "crystal",
+  "actionscript",
+  "gdscript",
+  "livescript",
+  "dart",
+  "elixir",
+  "erlang",
+  "fortran",
+  "groovy",
+  "haskell",
+  "julia",
+  "lisp",
+  "lua",
+  "luau",
+  "qbasic",
+  "qwik",
+  "quick",
+  "railo",
+  "apex",
+  "swift",
+  "matlab",
+  "vbnet",
+  "objective-c",
+  "perl",
+  "r",
+  "ruby",
+  "rust",
+  "scala",
+  "vbscript",
 ]);
 export type PatternLanguage = z.infer<typeof patternLanguageSchema>;
 
@@ -113,7 +147,20 @@ export type PatternExampleMap = Partial<
   Record<PatternLanguage, PatternLanguageExample>
 >;
 
-export type PatternScenarioExamples = Partial<Record<string, PatternExampleMap>>;
+export type NormalizedExample =
+  PatternLanguageExample & {
+    id: string;
+    label: string;
+  };
+
+export type PatternScenarioExampleMap = Record<
+  string,
+  NormalizedExample
+>;
+
+export type PatternScenarioExamples = Partial<
+  Record<string, PatternScenarioExampleMap>
+>;
 
 export interface LegacyPatternScenario extends PatternScenario {
   languageExamples?: readonly PatternLanguageExample[];

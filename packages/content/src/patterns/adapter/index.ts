@@ -3,157 +3,210 @@ import { adapterMeta } from "./meta";
 import { scenarios } from "./scenarios";
 import { normalizeExamples } from "../normalize-examples";
 
-import { typescript as paymentGatewayTypescript } from "./examples/payment-gateway-integration/typescript";
-import { java as paymentGatewayJava } from "./examples/payment-gateway-integration/java";
+import { typescript as legacyPaymentGatewayTypescript } from "./scenarios/legacy-payment-gateway/typescript";
+import { java as legacyPaymentGatewayJava } from "./scenarios/legacy-payment-gateway/java";
+import { python as legacyPaymentGatewayPython } from "./scenarios/legacy-payment-gateway/python";
 
-import { typescript as legacyNotificationTypescript } from "./examples/legacy-notification-service/typescript";
-import { python as legacyNotificationPython } from "./examples/legacy-notification-service/python";
-import { csharp as legacyNotificationCsharp } from "./examples/legacy-notification-service/csharp";
+import { typescript as thirdPartyTaskApiTypescript } from "./scenarios/third-party-task-api/typescript";
+import { react as thirdPartyTaskApiReact } from "./scenarios/third-party-task-api/react";
+import { angular as thirdPartyTaskApiAngular } from "./scenarios/third-party-task-api/angular";
+import { apollo as thirdPartyTaskApiApollo } from "./scenarios/third-party-task-api/apollo";
+import { graphql as thirdPartyTaskApiGraphql } from "./scenarios/third-party-task-api/graphql";
+import { coldfusion as thirdPartyTaskApiColdfusion } from "./scenarios/third-party-task-api/coldfusion";
+import { cobol as thirdPartyTaskApiCobol } from "./scenarios/third-party-task-api/cobol";
+import { railo as thirdPartyTaskApiRailo } from "./scenarios/third-party-task-api/railo";
+import { salesforce as thirdPartyTaskApiSalesforce } from "./scenarios/third-party-task-api/salesforce";
+import { flash as thirdPartyTaskApiFlash } from "./scenarios/third-party-task-api/flash";
+import { activescript as thirdPartyTaskApiActivescript } from "./scenarios/third-party-task-api/activescript";
+import { coffeescript as thirdPartyTaskApiCoffeescript } from "./scenarios/third-party-task-api/coffeescript";
+import { livescript as thirdPartyTaskApiLivescript } from "./scenarios/third-party-task-api/livescript";
+import { matplotlib as thirdPartyTaskApiMatplotlib } from "./scenarios/third-party-task-api/matplotlib";
+import { typeorm as thirdPartyTaskApiTypeorm } from "./scenarios/third-party-task-api/typeorm";
+import { seaborn as thirdPartyTaskApiSeaborn } from "./scenarios/third-party-task-api/seaborn";
+import { d3Js as thirdPartyTaskApiD3Js } from "./scenarios/third-party-task-api/d3-js";
+import { microsoftPowerBi as thirdPartyTaskApiMicrosoftPowerBi } from "./scenarios/third-party-task-api/microsoft-power-bi";
+import { tableau as thirdPartyTaskApiTableau } from "./scenarios/third-party-task-api/tableau";
+import { ggplot2 as thirdPartyTaskApiGgplot2 } from "./scenarios/third-party-task-api/ggplot2";
+import { plotly as thirdPartyTaskApiPlotly } from "./scenarios/third-party-task-api/plotly";
+import { chartJs as thirdPartyTaskApiChartJs } from "./scenarios/third-party-task-api/chart-js";
+import { apacheEcharts as thirdPartyTaskApiApacheEcharts } from "./scenarios/third-party-task-api/apache-echarts";
+import { bokeh as thirdPartyTaskApiBokeh } from "./scenarios/third-party-task-api/bokeh";
+import { apacheSuperset as thirdPartyTaskApiApacheSuperset } from "./scenarios/third-party-task-api/apache-superset";
+import { jenkins as thirdPartyTaskApiJenkins } from "./scenarios/third-party-task-api/jenkins";
+import { googleCharts as thirdPartyTaskApiGoogleCharts } from "./scenarios/third-party-task-api/google-charts";
+import { tensorflow as thirdPartyTaskApiTensorflow } from "./scenarios/third-party-task-api/tensorflow";
+import { pytorch as thirdPartyTaskApiPytorch } from "./scenarios/third-party-task-api/pytorch";
+import { serverless as thirdPartyTaskApiServerless } from "./scenarios/third-party-task-api/serverless";
+import { langChain as thirdPartyTaskApiLangChain } from "./scenarios/third-party-task-api/lang-chain";
+import { kafkaStreams as thirdPartyTaskApiKafkaStreams } from "./scenarios/third-party-task-api/kafka-streams";
+import { apacheKafka as thirdPartyTaskApiApacheKafka } from "./scenarios/third-party-task-api/apache-kafka";
+import { apacheSparkStructuredStreaming as thirdPartyTaskApiApacheSparkStructuredStreaming } from "./scenarios/third-party-task-api/apache-spark-structured-streaming";
+import { apacheFlink as thirdPartyTaskApiApacheFlink } from "./scenarios/third-party-task-api/apache-flink";
+import { amazonKinesisDataAnalytics as thirdPartyTaskApiAmazonKinesisDataAnalytics } from "./scenarios/third-party-task-api/amazon-kinesis-data-analytics";
+import { googleCloudDataflow as thirdPartyTaskApiGoogleCloudDataflow } from "./scenarios/third-party-task-api/google-cloud-dataflow";
+import { apacheBeam as thirdPartyTaskApiApacheBeam } from "./scenarios/third-party-task-api/apache-beam";
+import { azureStreamAnalytics as thirdPartyTaskApiAzureStreamAnalytics } from "./scenarios/third-party-task-api/azure-stream-analytics";
+import { apacheSamza as thirdPartyTaskApiApacheSamza } from "./scenarios/third-party-task-api/apache-samza";
+import { apacheStorm as thirdPartyTaskApiApacheStorm } from "./scenarios/third-party-task-api/apache-storm";
+import { hibernate as thirdPartyTaskApiHibernate } from "./scenarios/third-party-task-api/hibernate";
+import { redpanda as thirdPartyTaskApiRedpanda } from "./scenarios/third-party-task-api/redpanda";
 
-import { typescript as fileFormatTypescript } from "./examples/file-format-conversion/typescript";
-import { go as fileFormatGo } from "./examples/file-format-conversion/go";
-import { java as fileFormatJava } from "./examples/file-format-conversion/java";
+import { typescript as eventPayloadMapperTypescript } from "./scenarios/event-payload-mapper/typescript";
+import { java as eventPayloadMapperJava } from "./scenarios/event-payload-mapper/java";
+import { python as eventPayloadMapperPython } from "./scenarios/event-payload-mapper/python";
 
-import { typescript as frontendTypescript } from "./examples/adapter-frontend-normalize-api-response/typescript";
-import { react as frontendReact } from "./examples/adapter-frontend-normalize-api-response/react";
-import { angular as frontendAngular } from "./examples/adapter-frontend-normalize-api-response/angular";
-
-import { java as backendJava } from "./examples/adapter-backend-isolate-legacy-service/java";
-import { typescript as backendTypescript } from "./examples/adapter-backend-isolate-legacy-service/typescript";
-import { python as backendPython } from "./examples/adapter-backend-isolate-legacy-service/python";
-
-import { typescript as integrationTypescript } from "./examples/adapter-integration-bridge-front-and-backend-contracts/typescript";
-import { react as integrationReact } from "./examples/adapter-integration-bridge-front-and-backend-contracts/react";
-
-const paymentGatewayExamples = normalizeExamples({
-  typescript: paymentGatewayTypescript,
-  java: paymentGatewayJava,
+const legacyPaymentGatewayExamples = normalizeExamples({
+  typescript: legacyPaymentGatewayTypescript,
+  java: legacyPaymentGatewayJava,
+  python: legacyPaymentGatewayPython,
 });
 
-const legacyNotificationExamples = normalizeExamples({
-  typescript: legacyNotificationTypescript,
-  python: legacyNotificationPython,
-  csharp: legacyNotificationCsharp,
+const thirdPartyTaskApiExamples = normalizeExamples({
+  typescript: thirdPartyTaskApiTypescript,
+  react: thirdPartyTaskApiReact,
+  angular: thirdPartyTaskApiAngular,
+
+  apollo: thirdPartyTaskApiApollo,
+  graphql: thirdPartyTaskApiGraphql,
+  coldfusion: thirdPartyTaskApiColdfusion,
+  cobol: thirdPartyTaskApiCobol,
+  railo: thirdPartyTaskApiRailo,
+  salesforce: thirdPartyTaskApiSalesforce,
+  flash: thirdPartyTaskApiFlash,
+  activescript: thirdPartyTaskApiActivescript,
+  coffeescript: thirdPartyTaskApiCoffeescript,
+  livescript: thirdPartyTaskApiLivescript,
+  matplotlib: thirdPartyTaskApiMatplotlib,
+  typeorm: thirdPartyTaskApiTypeorm,
+  seaborn: thirdPartyTaskApiSeaborn,
+  "d3-js": thirdPartyTaskApiD3Js,
+  "microsoft-power-bi": thirdPartyTaskApiMicrosoftPowerBi,
+  tableau: thirdPartyTaskApiTableau,
+  ggplot2: thirdPartyTaskApiGgplot2,
+  plotly: thirdPartyTaskApiPlotly,
+  "chart-js": thirdPartyTaskApiChartJs,
+  "apache-echarts": thirdPartyTaskApiApacheEcharts,
+  bokeh: thirdPartyTaskApiBokeh,
+  "apache-superset": thirdPartyTaskApiApacheSuperset,
+  jenkins: thirdPartyTaskApiJenkins,
+  "google-charts": thirdPartyTaskApiGoogleCharts,
+  tensorflow: thirdPartyTaskApiTensorflow,
+  pytorch: thirdPartyTaskApiPytorch,
+  serverless: thirdPartyTaskApiServerless,
+  "lang-chain": thirdPartyTaskApiLangChain,
+  "kafka-streams": thirdPartyTaskApiKafkaStreams,
+  "apache-kafka": thirdPartyTaskApiApacheKafka,
+  "apache-spark-structured-streaming":
+    thirdPartyTaskApiApacheSparkStructuredStreaming,
+  "apache-flink": thirdPartyTaskApiApacheFlink,
+  "amazon-kinesis-data-analytics":
+    thirdPartyTaskApiAmazonKinesisDataAnalytics,
+  "google-cloud-dataflow":
+    thirdPartyTaskApiGoogleCloudDataflow,
+  "apache-beam": thirdPartyTaskApiApacheBeam,
+  "azure-stream-analytics":
+    thirdPartyTaskApiAzureStreamAnalytics,
+  "apache-samza": thirdPartyTaskApiApacheSamza,
+  "apache-storm": thirdPartyTaskApiApacheStorm,
+  hibernate: thirdPartyTaskApiHibernate,
+  redpanda: thirdPartyTaskApiRedpanda,
 });
 
-const fileFormatExamples = normalizeExamples({
-  typescript: fileFormatTypescript,
-  go: fileFormatGo,
-  java: fileFormatJava,
-});
-
-const frontendExamples = normalizeExamples({
-  typescript: frontendTypescript,
-  react: frontendReact,
-  angular: frontendAngular,
-});
-
-const backendExamples = normalizeExamples({
-  java: backendJava,
-  typescript: backendTypescript,
-  python: backendPython,
-});
-
-const integrationExamples = normalizeExamples({
-  typescript: integrationTypescript,
-  react: integrationReact,
+const eventPayloadMapperExamples = normalizeExamples({
+  typescript: eventPayloadMapperTypescript,
+  java: eventPayloadMapperJava,
+  python: eventPayloadMapperPython,
 });
 
 export const adapterPattern: PatternRecord = {
   ...adapterMeta,
   problem:
-    "Different systems often expose incompatible shapes, forcing consumers to know too much about implementation details.",
+    "A client needs to talk to a legacy class or external service whose interface does not match the rest of the codebase.",
   tradeoffs: [
-    "Adds an extra abstraction layer.",
-    "Can obscure data flow if overused.",
-    "Improves isolation from external changes.",
+    "Adds an extra layer of indirection.",
+    "Can hide useful vendor-specific capabilities if overused.",
+    "Keeps integration code isolated from core domain logic.",
   ],
-  platforms: ["web", "backend", "services", "integration"],
+  platforms: ["applications", "apis", "service layers", "integrations"],
   integrationNotes:
-    "Use adapters at the boundary between transport models, UI models, domain models, and third-party APIs.",
+    "Adapters are useful when exposing a stable boundary over a legacy API, vendor SDK, or payload format mismatch.",
   scenarios,
   scenarioExamples: {
-    "payment-gateway-integration": paymentGatewayExamples,
-    "legacy-notification-service": legacyNotificationExamples,
-    "file-format-conversion": fileFormatExamples,
-    "adapter-frontend-normalize-api-response": frontendExamples,
-    "adapter-backend-isolate-legacy-service": backendExamples,
-    "adapter-integration-bridge-front-and-backend-contracts": integrationExamples,
+    "legacy-payment-gateway": legacyPaymentGatewayExamples,
+    "third-party-task-api": thirdPartyTaskApiExamples,
+    "event-payload-mapper": eventPayloadMapperExamples,
   },
   variants: [
     {
-      slug: "adapter-frontend-model-shape",
-      title: "Frontend model shaping",
-      stackArea: "frontend",
-      language: "typescript",
-      summary:
-        "Translate API payloads into a UI-friendly view model before rendering components.",
-      intent:
-        "Keep presentation code isolated from transport-specific payload details.",
-      problem:
-        "UI code becomes brittle when every component understands raw backend field names.",
-      solution:
-        "Use an adapter to shape transport data into component-ready models.",
-      dependencies: ["adapter"],
-      relatedVariants: ["adapter-backend-boundary", "adapter-integration-contract"],
-      examplePatternSlugs: ["adapter"],
-      notes:
-        "This is the right choice when the primary concern is protecting UI components from DTO churn.",
-    },
-    {
-      slug: "adapter-backend-boundary",
-      title: "Backend boundary isolation",
-      stackArea: "backend",
-      language: "java",
-      summary:
-        "Wrap legacy systems, external SDKs, or storage APIs behind a stable backend interface.",
-      intent:
-        "Keep domain logic independent from infrastructure quirks.",
-      problem:
-        "Service code becomes hard to maintain when it depends directly on external payloads or protocols.",
-      solution:
-        "Use an adapter to translate external responses into domain entities or commands.",
-      dependencies: ["adapter"],
-      relatedVariants: ["adapter-frontend-model-shape", "adapter-integration-contract"],
-      examplePatternSlugs: ["adapter"],
-      notes:
-        "Use this when the backend needs to absorb legacy contracts, vendor APIs, or storage peculiarities.",
-    },
-    {
-      slug: "adapter-integration-contract",
-      title: "Integration contract translation",
+      slug: "adapter-payment-wrapper",
+      title: "Payment wrapper",
       stackArea: "integration",
       language: "typescript",
       summary:
-        "Translate between internal workflows and external contracts such as payment gateways, notification providers, or partner APIs.",
-      intent:
-        "Keep contract translation explicit at the boundary.",
+        "Wrap a legacy payment service behind the app's modern checkout contract.",
+      intent: "Normalize old payment APIs without changing checkout code.",
       problem:
-        "Integrations become fragile when vendor-specific data shapes leak into shared workflows.",
+        "The checkout flow expects modern method names and fields that the old provider does not expose.",
       solution:
-        "Use an adapter to centralize contract translation behind one boundary layer.",
+        "Use an adapter that translates the modern interface into calls on the legacy payment system.",
       dependencies: ["adapter"],
-      relatedVariants: ["adapter-frontend-model-shape", "adapter-backend-boundary"],
+      relatedVariants: ["adapter-api-normalizer", "adapter-event-translator"],
       examplePatternSlugs: ["adapter"],
       notes:
-        "This is the best fit when the system is primarily mediating between two independently evolving contracts.",
+        "Great for gateways, payment SDKs, and provider migrations.",
+    },
+    {
+      slug: "adapter-api-normalizer",
+      title: "API normalizer",
+      stackArea: "frontend",
+      language: "react",
+      summary:
+        "Convert mismatched third-party payloads into a consistent UI-friendly shape.",
+      intent: "Keep UI code clean when data sources disagree.",
+      problem:
+        "Components should not know vendor-specific field names or response quirks.",
+      solution:
+        "Use an adapter layer to return one consistent model to the UI.",
+      dependencies: ["adapter"],
+      relatedVariants: ["adapter-payment-wrapper", "adapter-event-translator"],
+      examplePatternSlugs: ["adapter"],
+      notes:
+        "Useful for task boards, dashboards, and data-rich React apps.",
+    },
+    {
+      slug: "adapter-event-translator",
+      title: "Event translator",
+      stackArea: "backend",
+      language: "python",
+      summary:
+        "Translate source-specific event payloads into one canonical event contract.",
+      intent: "Decouple consumers from upstream message formats.",
+      problem:
+        "Multiple producers emit payloads with incompatible shapes and naming conventions.",
+      solution:
+        "Use an adapter to transform each incoming payload into the normalized event model.",
+      dependencies: ["adapter"],
+      relatedVariants: ["adapter-payment-wrapper", "adapter-api-normalizer"],
+      examplePatternSlugs: ["adapter"],
+      notes:
+        "Works well for analytics, ETL, and event-driven backend pipelines.",
     },
   ],
   realWorldExamples: [
     {
-      title: "REST API response mapping",
+      title: "Legacy payment wrapper",
       description:
-        "Map backend DTOs into frontend view models before rendering UI components.",
+        "Translate a provider's old charge API into the app's checkout service interface.",
     },
     {
-      title: "Legacy billing integration",
+      title: "Third-party API normalization",
       description:
-        "Wrap a legacy billing service in a backend adapter to protect the domain layer.",
+        "Map inconsistent vendor payloads into one internal model before they reach the UI.",
     },
     {
-      title: "Cross-service contract translation",
+      title: "Analytics event translation",
       description:
-        "Use a translation layer between API contracts and internal models during integration work.",
+        "Convert several producer-specific event shapes into one canonical analytics schema.",
     },
   ],
 };

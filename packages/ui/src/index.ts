@@ -1,2 +1,2 @@
 export * from "./components";
-export * from "./constants/languageLabels";
+export * from "./constants/language-labels";
